@@ -42,4 +42,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run('192.168.1.100', debug=True)
+    app.run('0.0.0.0', debug=True)
