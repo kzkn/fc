@@ -1,0 +1,24 @@
+/* ===== Primary Styles ========================================================
+   Author:
+   ========================================================================== */
+
+.hero-unit {
+    padding: 30px;
+}
+
+.hero-unit img {
+    float: left;
+}
+
+.hero-unit h2,
+.hero-unit p {
+    padding-left: 470px;
+}
+
+.hero-unit h2 {
+    padding-top: 110px;
+}
+
+.navbar .brand {
+    color: #fff;
+}
