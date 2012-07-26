@@ -6,17 +6,27 @@
     padding: 30px;
 }
 
-.hero-unit img {
-    float: left;
-}
-
-.hero-unit h2,
-.hero-unit p {
-    padding-left: 470px;
+.hero-unit div#top-logo {
+    width: 420px;
+    height: 280px;
+    background-image: url('/static/img/fc-logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .hero-unit h2 {
-    padding-top: 110px;
+    padding-top: 50px;
+}
+
+@media (max-width: 480px) {
+    .hero-unit div#top-logo {
+        width: 320px;
+        height: 240px;
+    }
+
+    .hero-unit h2 {
+        padding-top: 0;
+    }
 }
 
 .navbar .brand {
