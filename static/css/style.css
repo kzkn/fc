@@ -2,33 +2,24 @@
    Author:
    ========================================================================== */
 
-.hero-unit {
-    padding: 30px;
+.top-logo {
+    height: auto;
+    width: 100%;
+    max-width: 360px;
 }
 
-.hero-unit div#top-logo {
-    width: 420px;
-    height: 280px;
-    background-image: url('/static/img/fc-logo.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-
-.hero-unit h2 {
-    padding-top: 50px;
+@media (max-width: 767px) {
+    .hero-unit {
+        padding: 20px;
+    }
 }
 
 @media (max-width: 480px) {
-    .hero-unit div#top-logo {
-        width: 320px;
-        height: 240px;
+    .hero-unit {
+        text-align: center;
     }
 
-    .hero-unit h2 {
-        padding-top: 0;
+    .top-logo {
+        display: none;
     }
-}
-
-.navbar .brand {
-    color: #fff;
 }
