@@ -47,8 +47,8 @@
               <li><a href="{{ url_for('admin') }}">管理</a></li>
               <li class="dropdown">
                 <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                {% if user %}
-                {{ user }}
+                {% if g.user %}
+                {{ g.user['name'] }}
                 {% else %}
                 ログイン
                 {% endif %}

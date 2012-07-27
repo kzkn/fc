@@ -91,10 +91,7 @@ def do_login(password):
 
 @app.route('/')
 def index():
-    if is_logged_in():
-        return render_template('index.html', user=g.user['name'])
-    else:
-        return render_template('index.html')
+    return render_template('index.html')
 
 
 @app.route('/schedule')
