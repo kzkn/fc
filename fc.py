@@ -7,6 +7,7 @@ from flask import Flask, g, render_template, session, request, \
 app = Flask(__name__)
 app.secret_key = 'foo_bar-baz'
 
+import os
 import sqlite3
 import json
 from contextlib import closing
@@ -16,7 +17,8 @@ from contextlib import closing
 # DATABASE ACCESS
 #############
 
-DATABASE_URI = 'fc.db'
+DATABASE_URI = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)), 'fc.db')
 
 
 def connect_db():
