@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, g, render_template
+from flask import Flask, g, render_template, session, request, \
+    redirect, url_for, flash
 
 app = Flask(__name__)
+app.secret_key = 'foo_bar-baz'
 
 import sqlite3
 from contextlib import closing
 
 
-DATABASE_URI = ':memory:'
+DATABASE_URI = 'fc.db'
 
 
 def connect_db():
@@ -36,10 +38,56 @@ def init_db():
         db.commit()
 
 
+def is_logged_in():
+    return 'user_id' in session
+
+
+def get_current_user():
+    uid = session.get('user_id')
+    cur = g.db.execute('SELECT * FROM User WHERE id = ?', (uid, ))
+    return cur.fetchone()
+
+
+def do_login(passwd):
+    cur = g.db.execute('SELECT id, name FROM User WHERE password = ?',
+                       (passwd, ))
+    res = cur.fetchone()
+    if res:
+        session['user_id'] = res['id']
+    return True if res else False
+
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if is_logged_in():
+        user = get_current_user()
+        return render_template('index.html', user=user['name'])
+    else:
+        return render_template('index.html')
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    passwd = request.form['password']
+    if not do_login(passwd):
+        flash(u'E:ログインできません。パスワードが間違っています。')
+    return redirect(url_for('index'))
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id')
+    return redirect(url_for('index'))
+
+
+def insert_test_data():
+    with closing(connect_db()) as db:
+        db.execute(
+            "insert into User (name, password) values ('foo', '123456')")
+        db.commit()
 
 
 if __name__ == '__main__':
+    init_db()
+    insert_test_data()
     app.run('0.0.0.0', debug=True)

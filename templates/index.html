@@ -45,7 +45,31 @@
             </ul>
             <ul class="nav pull-right">
               <li><a href="/admin">管理</a></li>
-              <li><a href="/login">ログイン</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                {% if user %}
+                {{ user }}
+                {% else %}
+                ログイン
+                {% endif %}
+                <strong class="caret"></strong></a>
+                {% if user %}
+                <ul class="dropdown-menu">
+                  <li><a href="/logout">ログアウト</a></li>
+                </ul>
+                {% else %}
+                <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0;">
+                  <form action="/login" method="post">
+                    <input id="user_password" style="margin-bottom: 15px;" type="password" name="password" size="30" placeholder="パスワード"></input>
+                    <label class="checkbox">
+                      <input id="user_remember_me" style="float left; margin-right: 10px;" type="checkbox" name="remember_me" value="1"></input>
+                      記憶する
+                    </label>
+                    <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px;" type="submit" name="commit" value="ログイン"></input>
+                  </form>
+                </div>
+                {% endif %}
+              </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -53,6 +77,22 @@
     </div>
 
     <div class="container-fluid">
+
+      {% with msgs = get_flashed_messages() %}
+      {% if msgs %}
+      {% for msg in msgs %}
+      {% if msg[0:2] == 'E:' %}
+      <div class="alert alert-error">
+      {% elif msg[0:2] == 'I:' %}
+      <div class="alert alert-info">
+      {% endif %}
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
+        <h4 class="alert-heading">エラー!</h4>
+        {{ msg[2:] }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
 
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
