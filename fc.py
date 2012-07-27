@@ -11,6 +11,10 @@ import sqlite3
 from contextlib import closing
 
 
+#############
+# DATABASE ACCESS
+#############
+
 DATABASE_URI = 'fc.db'
 
 
@@ -20,10 +24,38 @@ def connect_db():
     return db
 
 
+def init_db():
+    with closing(connect_db()) as db:
+        with app.open_resource('schema.sql') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
+
+#############
+# DOMAIN LEVEL DATABASE ACCESS
+#############
+
+def insert_test_data():
+    with closing(connect_db()) as db:
+        db.execute(
+            "insert into User (name, password) values ('foo', '123456')")
+        db.commit()
+
+
 def find_user_by_id(uid):
     cur = g.db.execute('SELECT * FROM User WHERE id = ?', (uid, ))
     return cur.fetchone()
 
+
+def find_user_by_password(password):
+    cur = g.db.execute('SELECT id, name FROM User WHERE password = ?',
+                       (password, ))
+    return cur.fetchone()
+
+
+#############
+# REQUEST HOOKS
+#############
 
 @app.before_request
 def before_request():
@@ -38,25 +70,24 @@ def teardown_request(exception):
         g.db.close()
 
 
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
+#############
+# DOMAIN LAYER LOGIC
+#############
 
 def is_logged_in():
     return 'user_id' in session
 
 
-def do_login(passwd):
-    cur = g.db.execute('SELECT id, name FROM User WHERE password = ?',
-                       (passwd, ))
-    res = cur.fetchone()
-    if res:
-        session['user_id'] = res['id']
-    return True if res else False
+def do_login(password):
+    user = find_user_by_password(password)
+    if user:
+        session['user_id'] = user['id']
+    return True if user else False
 
+
+#############
+# VIEWS
+#############
 
 @app.route('/')
 def index():
@@ -120,12 +151,9 @@ def join():
     return redirect(url_for('index'))
 
 
-def insert_test_data():
-    with closing(connect_db()) as db:
-        db.execute(
-            "insert into User (name, password) values ('foo', '123456')")
-        db.commit()
-
+#############
+# DEVELOPMENT MAIN
+#############
 
 if __name__ == '__main__':
     init_db()
