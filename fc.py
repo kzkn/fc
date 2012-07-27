@@ -20,9 +20,16 @@ def connect_db():
     return db
 
 
+def find_user_by_id(uid):
+    cur = g.db.execute('SELECT * FROM User WHERE id = ?', (uid, ))
+    return cur.fetchone()
+
+
 @app.before_request
 def before_request():
     g.db = connect_db()
+    if is_logged_in():
+        g.user = find_user_by_id(session.get('user_id'))
 
 
 @app.teardown_request
@@ -42,12 +49,6 @@ def is_logged_in():
     return 'user_id' in session
 
 
-def get_current_user():
-    uid = session.get('user_id')
-    cur = g.db.execute('SELECT * FROM User WHERE id = ?', (uid, ))
-    return cur.fetchone()
-
-
 def do_login(passwd):
     cur = g.db.execute('SELECT id, name FROM User WHERE password = ?',
                        (passwd, ))
@@ -60,8 +61,7 @@ def do_login(passwd):
 @app.route('/')
 def index():
     if is_logged_in():
-        user = get_current_user()
-        return render_template('index.html', user=user['name'])
+        return render_template('index.html', user=g.user['name'])
     else:
         return render_template('index.html')
 
@@ -103,6 +103,7 @@ def login():
 def logout():
     session.pop('user_id')
     return redirect(url_for('index'))
+
 
 @app.route('/report')
 def report():
