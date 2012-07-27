@@ -12,6 +12,16 @@
     padding: 0 20px 40px 20px;
 }
 
+dt.enter,
+dd.enter {
+    color: #468847;
+}
+
+dt.leave,
+dd.leave {
+    color: #b94a48;
+}
+
 @media (max-width: 767px) {
     .hero-unit {
         padding: 20px;

@@ -21,5 +21,6 @@ CREATE TABLE Entry (
   user_id INTEGER,
   schedule_id INTEGER,
   is_entry BOOLEAN NOT NULL,
+  comment VARCHAR(512) NOT NULL,
   PRIMARY KEY (user_id, schedule_id)
 );

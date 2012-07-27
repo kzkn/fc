@@ -98,11 +98,13 @@
               </div>
               <div id="practice{{ p['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
+                  {% if g.user %}
                   <form action="{{ url_for('entry', sid=p['id']) }}" method="post">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
-                    <input class="btn btn-primary" type="submit" name="enter" value="参加する"></input>
-                    <input class="btn" type="submit" name="leave" value="参加しない"></input>
+                    <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
+                    <input class="btn" type="submit" name="action" value="参加しない"></input>
                   </form>
+                  {% endif %}
                   <table class="table table-bordered">
                     <thead>
                       <tr>
@@ -127,8 +129,8 @@
                         <td>
                           <dl>
                             {% for e in p['entries'] %}
-                            <dt>e['user']['name']</dt>
-                            <dd>e['comment']</dd>
+                            <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
+                            <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
                             {% endfor %}
                           </dl>
                         </td>
@@ -153,11 +155,13 @@
               </div>
               <div id="game{{ ga['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
+                  {% if g.user %}
                   <form action="{{ url_for('entry', sid=ga['id']) }}" method="post">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
-                    <input class="btn btn-primary" type="submit" name="enter" value="参加する"></input>
-                    <input class="btn" type="submit" name="leave" value="参加しない"></input>
+                    <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
+                    <input class="btn" type="submit" name="action" value="参加しない"></input>
                   </form>
+                  {% endif %}
                   <table class="table table-bordered">
                     <thead>
                       <tr>
@@ -186,8 +190,8 @@
                         <td>
                           <dl>
                             {% for e in ga['entries'] %}
-                            <dt>e['user']['name']</dt>
-                            <dd>e['comment']</dd>
+                            <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
+                            <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
                             {% endfor %}
                           </dl>
                         </td>
@@ -212,11 +216,13 @@
               </div>
               <div id="event{{ e['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
+                  {% if g.user %}
                   <form action="{{ url_for('entry', sid=e['id']) }}" method="post">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
-                    <input class="btn btn-primary" type="submit" name="enter" value="参加する"></input>
-                    <input class="btn" type="submit" name="leave" value="参加しない"></input>
+                    <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
+                    <input class="btn" type="submit" name="action" value="参加しない"></input>
                   </form>
+                  {% endif %}
                   <table class="table table-bordered">
                     <thead>
                       <tr>
@@ -239,8 +245,8 @@
                         <td>
                           <dl>
                             {% for e in e['entries'] %}
-                            <dt>e['user']['name']</dt>
-                            <dd>e['comment']</dd>
+                            <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
+                            <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
                             {% endfor %}
                           </dl>
                         </td>

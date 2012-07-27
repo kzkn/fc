@@ -100,9 +100,66 @@ def find_user_by_password(password):
 
 def find_schedules(type):
     cur = g.db.execute("""
-        SELECT * from Schedule
-        WHERE type = ? AND when_ >= datetime('now', 'localtime')""", (type, ))
-    return cur.fetchall()
+        SELECT *
+          FROM Schedule
+         WHERE type = ? AND when_ >= datetime('now', 'localtime')
+      ORDER BY when_""", (type, ))
+
+    # Row -> dict for `entries'
+    schedules = []
+    for row in cur.fetchall():
+        s = {}
+        s.update(row)
+        s.setdefault('entries', [])
+        schedules.append(s)
+
+    sids = '(%s)' % ','.join([str(s['id']) for s in schedules])
+    cur.execute("""
+        SELECT User.name AS user_name, Entry.user_id, Entry.schedule_id,
+               Entry.comment, Entry.is_entry
+          FROM Entry, User
+         WHERE User.id = Entry.user_id
+           AND Entry.schedule_id IN %s
+      ORDER BY User.name""" % sids)
+
+    entries = cur.fetchall()
+
+    if entries:
+        # make schedule-entry tree
+        sid2sc = {}
+        for s in schedules:
+            sid2sc[s['id']] = s
+
+        for e in entries:
+            sid = e['schedule_id']
+            schedule = sid2sc.get(sid, None)
+            if schedule:
+                schedule['entries'].append(e)
+
+    return schedules
+
+
+def find_my_entry(sid):
+    cur = g.db.execute("""
+        SELECT COUNT(*) FROM Entry
+        WHERE user_id = ? AND schedule_id = ?""", (g.user['id'], sid))
+    return cur.fetchone()[0] > 0
+
+
+def update_entry(sid, comment, entry):
+    g.db.execute("""
+        UPDATE Entry
+        SET is_entry = ?, comment = ?
+        WHERE user_id = ? AND schedule_id = ?
+        """, (entry, comment, g.user['id'], sid))
+    g.db.commit()
+
+
+def insert_entry(sid, comment, entry):
+    g.db.execute("""
+        INSERT INTO Entry (user_id, schedule_id, is_entry, comment)
+        VALUES (?, ?, ?, ?)""", (g.user['id'], sid, entry, comment))
+    g.db.commit()
 
 
 #############
@@ -137,28 +194,19 @@ def do_login(password):
     return True if user else False
 
 
-def make_practice(raw_practice):
-    practice = {}
-    practice.update(raw_practice)
-    body = json.loads(raw_practice['body'])
-    practice.update(body)
-    return practice
+def make_schedule(raw_schedule):
+    schedule = {}
+    schedule.update(raw_schedule)
+    body = json.loads(raw_schedule['body'])
+    schedule.update(body)
+    return schedule
 
 
-def make_game(raw_game):
-    game = {}
-    game.update(raw_game)
-    body = json.loads(raw_game['body'])
-    game.update(body)
-    return game
-
-
-def make_event(raw_event):
-    event = {}
-    event.update(raw_event)
-    body = json.loads(raw_event['body'])
-    event.update(body)
-    return event
+def do_entry(sid, comment, entry):
+    if find_my_entry(sid):
+        update_entry(sid, comment, entry)
+    else:
+        insert_entry(sid, comment, entry)
 
 
 #############
@@ -172,15 +220,21 @@ def index():
 
 @app.route('/schedule')
 def schedule():
-    ps = [make_practice(s) for s in find_schedules(SCHEDULE_TYPE_PRACTICE)]
-    gs = [make_game(s) for s in find_schedules(SCHEDULE_TYPE_GAME)]
-    es = [make_event(s) for s in find_schedules(SCHEDULE_TYPE_EVENT)]
+    ps = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_PRACTICE)]
+    gs = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_GAME)]
+    es = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_EVENT)]
     return render_template('schedule.html',
                            practices=ps, games=gs, events=es)
 
 
 @app.route('/entry/<int:sid>', methods=["POST"])
 def entry(sid):
+    action = request.form['action']
+    comment = request.form['comment']
+    if action == u'参加する':
+        do_entry(sid, comment, entry=True)
+    elif action == u'参加しない':
+        do_entry(sid, comment, entry=False)
     return redirect(url_for('schedule'))
 
 
