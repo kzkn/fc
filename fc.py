@@ -32,6 +32,13 @@ def init_db():
         db.commit()
 
 
+def insert_test_data():
+    with closing(connect_db()) as db:
+        with app.open_resource('testdata.sql') as f:
+            db.cursor().executescript(f.read())
+        db.commit()
+
+
 #############
 # DOMAIN LEVEL DATABASE ACCESS
 #############
@@ -39,52 +46,6 @@ def init_db():
 SCHEDULE_TYPE_PRACTICE = 1
 SCHEDULE_TYPE_GAME = 2
 SCHEDULE_TYPE_EVENT = 3
-
-
-def insert_test_data():
-    with closing(connect_db()) as db:
-        db.execute(
-            "insert into User (name, password) values ('foo', '123456')")
-        db.execute(
-            """insert into Schedule (type, when_, body) values (
-                 1, '2012-07-29 01:00:00', ?
-               )""", (json.dumps({'loc': u'ほげほげ',
-                                  'court': '5',
-                                  'end': '03:00',
-                                  'no': '123456789',
-                                  'price': '2400',
-                                  'note': ''}), ))
-        db.execute(
-            """insert into Schedule (type, when_, body) values (
-                 2, '2012-07-29 08:15:00', ?
-               )""", (json.dumps({'name': u'ぴよぴよ杯',
-                                  'loc': u'ふがふが',
-                                  'genre': u'男ダブルス A',
-                                  'deadline': '2012/07/28',
-                                  'price': '2500',
-                                  'begin_acceptance': '08:15',
-                                  'begin_game': '09:00',
-                                  'note': ''}), ))
-        db.execute(
-            """insert into Schedule (type, when_, body) values (
-                 2, '2012-08-15 08:15:00', ?
-               )""", (json.dumps({'name': u'ぶよぶよ杯',
-                                  'loc': u'どっか',
-                                  'genre': u'男ダブルス A',
-                                  'deadline': '2012/07/28',
-                                  'price': '2500',
-                                  'begin_acceptance': '08:15',
-                                  'begin_game': '09:00',
-                                  'note': '90kg 以上限定'}), ))
-        db.execute(
-            """insert into Schedule (type, when_, body) values (
-                 3, '2012-07-30 19:00:00', ?
-               )""", (json.dumps({'name': u'はなきん',
-                                  'loc': u'飲み屋',
-                                  'description': u'飲むぜぇー',
-                                  'deadline': '2012/07/28',
-                                  'price': '2500'}), ))
-        db.commit()
 
 
 def find_user_by_id(uid):
