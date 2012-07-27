@@ -13,17 +13,17 @@
 
 	<meta name="viewport" content="width=device-width">
 
-	<link rel="stylesheet" href="static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 	<style>
 	  body {
 	  padding-top: 60px;
 	  padding-bottom: 40px;
 	  }
 	</style>
-	<link rel="stylesheet" href="static/css/bootstrap-responsive.min.css">
-	<link rel="stylesheet" href="static/css/style.css">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-	<script src="static/js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
+	<script src="{{ url_for('static', filename='js/libs/modernizr-2.5.3-respond-1.1.0.min.js') }}"></script>
   </head>
   <body>
     <div class="navbar navbar-fixed-top">
@@ -34,17 +34,17 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/">Fight Club</a>
+          <a class="brand" href="{{ url_for('index') }}">Fight Club</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="/"><i class="icon-home icon-white"></i> ホーム</a></li>
-              <li><a href="/schedule"><i class="icon-calendar icon-white"></i> 活動予定</a></li>
-              <li><a href="/member"><i class="icon-user icon-white"></i> メンバー</a></li>
-              <li><a href="/bbs"><i class="icon-list-alt icon-white"></i> 掲示板</a></li>
-              <li><a href="/message"><i class="icon-envelope icon-white"></i> 私書箱</a></li>
+              <li class="active"><a href="{{ url_for('index') }}"><i class="icon-home icon-white"></i> ホーム</a></li>
+              <li><a href="{{ url_for('schedule') }}"><i class="icon-calendar icon-white"></i> 活動予定</a></li>
+              <li><a href="{{ url_for('member') }}"><i class="icon-user icon-white"></i> メンバー</a></li>
+              <li><a href="{{ url_for('bbs') }}"><i class="icon-list-alt icon-white"></i> 掲示板</a></li>
+              <li><a href="{{ url_for('message') }}"><i class="icon-envelope icon-white"></i> 私書箱</a></li>
             </ul>
             <ul class="nav pull-right">
-              <li><a href="/admin">管理</a></li>
+              <li><a href="{{ url_for('admin') }}">管理</a></li>
               <li class="dropdown">
                 <a class="dropdown-toggle" href="#" data-toggle="dropdown">
                 {% if user %}
@@ -55,11 +55,11 @@
                 <strong class="caret"></strong></a>
                 {% if user %}
                 <ul class="dropdown-menu">
-                  <li><a href="/logout">ログアウト</a></li>
+                  <li><a href="{{ url_for('logout') }}">ログアウト</a></li>
                 </ul>
                 {% else %}
                 <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0;">
-                  <form action="/login" method="post">
+                  <form action="{{ url_for('login') }}" method="post">
                     <input id="user_password" style="margin-bottom: 15px;" type="password" name="password" size="30" placeholder="パスワード"></input>
                     <label class="checkbox">
                       <input id="user_remember_me" style="float left; margin-right: 10px;" type="checkbox" name="remember_me" value="1"></input>
@@ -107,7 +107,7 @@
             </p>
           </div>
           <div class="span5">
-            <img class="top-logo" src="static/img/fc-logo.png">
+            <img class="top-logo" src="{{ url_for('static', filename='img/fc-logo.png') }}">
           </div>
         </div>
       </div>
@@ -117,17 +117,17 @@
         <div class="span4">
           <h2>活動記録</h2>
           <p>合宿やイベントなどの活動記録を掲載しています。</p>
-          <p><a class="btn" href="#">一覧へ &raquo;</a></p>
+          <p><a class="btn" href="{{ url_for('report') }}">一覧へ &raquo;</a></p>
         </div>
         <div class="span4">
           <h2>ギャラリー</h2>
           <p>日頃の練習風景や試合、イベントなどで撮影した写真を掲載しています。</p>
-          <p><a class="btn" href="#">一覧へ &raquo;</a></p>
+          <p><a class="btn" href="{{ url_for('gallery') }}">一覧へ &raquo;</a></p>
         </div>
         <div class="span4">
           <h2>募集</h2>
           <p>Fight Club では、定期的にメンバー募集しています。入りたい！という方は、気軽にご連絡ください。</p>
-          <p><a class="btn" href="#">詳しく &raquo;</a></p>
+          <p><a class="btn" href="{{ url_for('join') }}">詳しく &raquo;</a></p>
         </div>
       </div>
 
@@ -139,10 +139,10 @@
 
     </div> <!-- /container -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="static/js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/libs/jquery-1.7.2.min.js') }}"><\/script>')</script>
 
-      <script src="static/js/libs/bootstrap/bootstrap.min.js"></script>
+      <script src="{{ url_for('static', filename='js/libs/bootstrap/bootstrap.min.js') }}"></script>
 
-      <script src="static/js/script.js"></script>
+      <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   </body>
 </html>

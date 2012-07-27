@@ -66,6 +66,31 @@ def index():
         return render_template('index.html')
 
 
+@app.route('/schedule')
+def schedule():
+    return redirect(url_for('index'))
+
+
+@app.route('/member')
+def member():
+    return redirect(url_for('index'))
+
+
+@app.route('/bbs')
+def bbs():
+    return redirect(url_for('index'))
+
+
+@app.route('/message')
+def message():
+    return redirect(url_for('index'))
+
+
+@app.route('/admin')
+def admin():
+    return redirect(url_for('index'))
+
+
 @app.route('/login', methods=['POST'])
 def login():
     passwd = request.form['password']
@@ -77,6 +102,20 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('user_id')
+    return redirect(url_for('index'))
+
+@app.route('/report')
+def report():
+    return redirect(url_for('index'))
+
+
+@app.route('/gallery')
+def gallery():
+    return redirect(url_for('index'))
+
+
+@app.route('/join')
+def join():
     return redirect(url_for('index'))
 
 
