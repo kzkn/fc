@@ -53,7 +53,7 @@
                 ログイン
                 {% endif %}
                 <strong class="caret"></strong></a>
-                {% if user %}
+                {% if g.user %}
                 <ul class="dropdown-menu">
                   <li><a href="{{ url_for('logout') }}">ログアウト</a></li>
                 </ul>
