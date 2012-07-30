@@ -8,8 +8,11 @@ app = Flask(__name__)
 app.secret_key = 'foo_bar-baz'
 
 import os
+import time
+import datetime
 import sqlite3
 import json
+from collections import OrderedDict
 from contextlib import closing
 
 
@@ -125,6 +128,20 @@ def insert_entry(sid, comment, entry):
     g.db.commit()
 
 
+def insert_practice(when_, body):
+    g.db.execute("""
+        INSERT INTO Schedule (type, when_, body)
+        VALUES (?, ?, ?)""", (SCHEDULE_TYPE_PRACTICE, when_, body))
+    g.db.commit()
+
+
+def find_practice_locations():
+    cur = g.db.execute(
+        "SELECT body FROM Schedule WHERE type = ?", (SCHEDULE_TYPE_PRACTICE, ))
+    bodies = cur.fetchall()
+    return list(set([json.loads(body[0])['loc'] for body in bodies]))
+
+
 #############
 # REQUEST HOOKS
 #############
@@ -172,6 +189,80 @@ def do_entry(sid, comment, entry):
         insert_entry(sid, comment, entry)
 
 
+def make_practice_body(end, loc, court, no, price, note):
+    p = {'end': end,
+         'loc': loc,
+         'court': court,
+         'no': no,
+         'price': price,
+         'note': note}
+    return json.dumps(p)
+
+
+def make_new_practice(form):
+    date = form['date']
+    begintime = form['begintime']
+    endtime = form['endtime']
+    loc = form['loc']
+    court = form['court'] or '-'
+    no = form['no'] or '-'
+    price = form['price'] or '-'
+    note = form['note']
+    when = date + ' ' + begintime + ':00'
+    body = make_practice_body(endtime, loc, court, no, price, note)
+    insert_practice(when, body)
+
+
+#############
+# VALIDATIONS
+#############
+
+def do_validate(form, validations):
+    errors = {}
+
+    for name in validations:
+        input_value = form[name]
+        try:
+            [check(input_value) for check in validations[name]]
+        except ValueError, e:
+            errors[name] = e.message
+
+    if errors:
+        e = ValueError()
+        e.errors = errors
+        raise e
+
+
+def check_date(s):
+    try:
+        time.strptime(s, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError('日付形式ではありません')
+    return s
+
+
+def check_time(s):
+    try:
+        time.strptime(s, '%H:%M')
+    except ValueError:
+        raise ValueError('時刻形式ではありません')
+    return s
+
+
+def check_number(s):
+    if len(s) == 0:
+        return s
+    if not s.isdigit():
+        raise ValueError('数値にしてください')
+    return s
+
+
+def check_required(s):
+    if not s:
+        raise ValueError('入力してください')
+    return s
+
+
 #############
 # VIEWS
 #############
@@ -216,9 +307,35 @@ def message():
     return redirect(url_for('index'))
 
 
+def show_admin(errors=[]):
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+    practice_locs = json.dumps(find_practice_locations())
+    return render_template('admin.html',
+                           today=today,
+                           practice_locs=practice_locs)
+
+
 @app.route('/admin')
 def admin():
-    return redirect(url_for('index'))
+    return show_admin()
+
+
+@app.route('/admin/make_practice', methods=['POST'])
+def make_practice():
+    try:
+        validations = OrderedDict()
+        validations['date'] = [check_required, check_date]
+        validations['begintime'] = [check_required, check_time]
+        validations['endtime'] = [check_required, check_time]
+        validations['loc'] = [check_required]
+        validations['no'] = [check_number]
+        validations['price'] = [check_number]
+        do_validate(request.form, validations)
+    except ValueError, e:
+        return show_admin(errors=e.errors)
+
+    make_new_practice(request.form)
+    return redirect(url_for('admin'))
 
 
 @app.route('/login', methods=['POST'])
