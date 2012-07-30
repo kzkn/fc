@@ -12,7 +12,10 @@ import time
 import datetime
 import sqlite3
 import json
-from collections import OrderedDict
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 from contextlib import closing
 
 
