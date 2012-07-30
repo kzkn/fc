@@ -99,7 +99,7 @@
               <div id="practice{{ p['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
                   {% if g.user %}
-                  <form action="{{ url_for('entry', sid=p['id']) }}" method="post">
+                  <form action="{{ url_for('entry', sid=p['id']) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
                     <input class="btn" type="submit" name="action" value="参加しない"></input>
@@ -156,7 +156,7 @@
               <div id="game{{ ga['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
                   {% if g.user %}
-                  <form action="{{ url_for('entry', sid=ga['id']) }}" method="post">
+                  <form action="{{ url_for('entry', sid=ga['id']) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
                     <input class="btn" type="submit" name="action" value="参加しない"></input>
@@ -217,7 +217,7 @@
               <div id="event{{ e['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
                   {% if g.user %}
-                  <form action="{{ url_for('entry', sid=e['id']) }}" method="post">
+                  <form action="{{ url_for('entry', sid=e['id']) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
                     <input class="btn" type="submit" name="action" value="参加しない"></input>
