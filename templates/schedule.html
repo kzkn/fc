@@ -93,7 +93,7 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#practices" href="#practice{{ p['id'] }}">
-                  {{ p['when_'].strftime('%m/%d(%a) %H:%M') }}-{{ p['end'] }} @{{ p['loc'] }}
+                  {{ p['when_'].strftime('%m-%d(%a) %H:%M') }}-{{ p['end'] }} @{{ p['loc'] }}
                 </a>
               </div>
               <div id="practice{{ p['id'] }}" class="accordion-body collapse">
@@ -173,6 +173,8 @@
                       <tr>
                         <td>
                           <dl>
+                            <dt>開催日</dt>
+                            <dd>{{ ga['when_'].strftime('%m-%d(%a)') }}</dd>
                             <dt>ジャンル</dt>
                             <dd>{{ ga['genre'] }}</dd>
                             <dt>締め切り</dt>

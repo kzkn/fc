@@ -149,14 +149,14 @@ def insert_entry(sid, comment, entry):
     g.db.commit()
 
 
-def insert_practice(when_, body):
+def insert_schedule(type, when_, body):
     g.db.execute("""
         INSERT INTO Schedule (type, when_, body)
-        VALUES (?, ?, ?)""", (SCHEDULE_TYPE_PRACTICE, when_, body))
+        VALUES (?, ?, ?)""", (type, when_, body))
     g.db.commit()
 
 
-def update_practice(sid, when_, body):
+def update_schedule(sid, when_, body):
     g.db.execute("""
         UPDATE Schedule
            SET when_ = ?,
@@ -165,7 +165,7 @@ def update_practice(sid, when_, body):
     g.db.commit()
 
 
-def delete_practice_by_id(sid):
+def delete_schedule_by_id(sid):
     g.db.execute("""
         DELETE FROM Schedule
          WHERE id = ?""", (sid, ))
@@ -252,6 +252,37 @@ def make_practice_body(end, loc, court, no, price, note):
     return json.dumps(p)
 
 
+def make_game_obj(form):
+    name = form['name']
+    date = form['date']
+    loc = form['loc']
+    genre = form['genre']
+    deadline = form['deadline']
+    price = form['price']
+    begin_acceptance = form['begin_acceptance']
+    begin_game = form['begin_game']
+    note = form['note']
+
+    when = date + ' 00:00:00'
+    body = make_game_body(
+        name, loc, genre, deadline, price, begin_acceptance, begin_game, note)
+    return {'when': when,
+            'body': body}
+
+
+def make_game_body(
+        name, loc, genre, deadline, price, begin_acceptance, begin_game, note):
+    ga = {'name': name,
+          'loc': loc,
+          'genre': genre,
+          'deadline': deadline,
+          'price': price,
+          'begin_acceptance': begin_acceptance,
+          'begin_game': begin_game,
+          'note': note}
+    return json.dumps(ga)
+
+
 #############
 # VALIDATIONS
 #############
@@ -313,6 +344,19 @@ def validate_practice():
     do_validate(request.form, validations)
 
 
+def validate_game():
+    validations = OrderedDict()
+    validations['name'] = [check_required]
+    validations['date'] = [check_required, check_date]
+    validations['loc'] = [check_required]
+    validations['genre'] = [check_required]
+    validations['deadline'] = [check_date]
+    validations['price'] = [check_number]
+    validations['begin_acceptance'] = [check_time]
+    validations['begin_game'] = [check_time]
+    do_validate(request.form, validations)
+
+
 #############
 # VIEWS
 #############
@@ -369,12 +413,14 @@ def admin():
 
 @app.route('/admin/practice')
 def admin_practice():
-    return show_admin()
+    ps = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_PRACTICE)]
+    return render_template('admin_practice.html', practices=ps)
 
 
 @app.route('/admin/game')
 def admin_game():
-    return show_admin()
+    gs = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_GAME)]
+    return render_template('admin_game.html', games=gs)
 
 
 @app.route('/admin/event')
@@ -399,7 +445,7 @@ def new_practice():
             return redirect(url_for('new_practice'))
 
         p = make_practice_obj(request.form)
-        insert_practice(p['when'], p['body'])
+        insert_schedule(SCHEDULE_TYPE_PRACTICE, p['when'], p['body'])
         return redirect(url_for('admin_practice'))
 
 
@@ -415,7 +461,7 @@ def edit_practice(id):
             return redirect(url_for('edit_practice', id=id))
 
         p = make_practice_obj(request.form)
-        update_practice(id, p['when'], p['body'])
+        update_schedule(id, p['when'], p['body'])
         return redirect(url_for('admin_practice'))
 
 
@@ -427,8 +473,52 @@ def delete_practice(id):
     else:
         action = request.form['action']
         if action == u'はい':
-            delete_practice_by_id(id)
+            delete_schedule_by_id(id)
         return redirect(url_for('admin_practice'))
+
+
+@app.route('/admin/game/new', methods=['GET', 'POST'])
+def new_game():
+    if request.method == 'GET':
+        today = datetime.datetime.today()
+        return render_template('admin_edit_game.html', today=today)
+    else:
+        try:
+            validate_game()
+        except ValueError:
+            return redirect(url_for('new_game'))
+
+        ga = make_game_obj(request.form)
+        insert_schedule(SCHEDULE_TYPE_GAME, ga['when'], ga['body'])
+        return redirect(url_for('admin_game'))
+
+
+@app.route('/admin/game/edit/<int:id>', methods=['GET', 'POST'])
+def edit_game(id):
+    if request.method == 'GET':
+        p = make_schedule(find_schedule_by_id(id, with_entry=False))
+        return render_template('admin_edit_game.html', game=p)
+    else:
+        try:
+            validate_game()
+        except ValueError:
+            return redirect(url_for('edit_game', id=id))
+
+        ga = make_game_obj(request.form)
+        update_schedule(id, ga['when'], ga['body'])
+        return redirect(url_for('admin_game'))
+
+
+@app.route('/admin/game/delete/<int:id>', methods=['GET', 'POST'])
+def delete_game(id):
+    if request.method == 'GET':
+        ga = make_schedule(find_schedule_by_id(id))
+        return render_template('admin_delete_game.html', game=ga)
+    else:
+        action = request.form['action']
+        if action == u'はい':
+            delete_schedule_by_id(id)
+        return redirect(url_for('admin_game'))
 
 
 @app.route('/login', methods=['POST'])
