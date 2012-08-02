@@ -118,7 +118,7 @@ def find_schedule_by_id(sid, with_entry=True):
               FROM Entry, User
              WHERE User.id = Entry.user_id
                AND Entry.schedule_id = ?
-          ORDER BY User.name""", sid)
+          ORDER BY User.name""", (sid, ))
 
         entries = cur.fetchall()
         schedule['entries'] = entries
@@ -157,12 +157,18 @@ def insert_practice(when_, body):
 
 
 def update_practice(sid, when_, body):
-    print sid, when_, body
     g.db.execute("""
         UPDATE Schedule
            SET when_ = ?,
                body = ?
          WHERE id = ?""", (when_, body, sid))
+    g.db.commit()
+
+
+def delete_practice_by_id(sid):
+    g.db.execute("""
+        DELETE FROM Schedule
+         WHERE id = ?""", (sid, ))
     g.db.commit()
 
 
@@ -414,9 +420,15 @@ def edit_practice(id):
 
 
 @app.route('/admin/practice/delete/<int:id>', methods=['GET', 'POST'])
-def delete_practice():
-    p = make_schedule(find_schedule_by_id(id))
-    return render_template('admin_delete_practice.html', practice=p)
+def delete_practice(id):
+    if request.method == 'GET':
+        p = make_schedule(find_schedule_by_id(id))
+        return render_template('admin_delete_practice.html', practice=p)
+    else:
+        action = request.form['action']
+        if action == u'はい':
+            delete_practice_by_id(id)
+        return redirect(url_for('admin_practice'))
 
 
 @app.route('/login', methods=['POST'])

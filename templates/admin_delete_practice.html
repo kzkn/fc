@@ -103,22 +103,49 @@
             <li><a href="{{ url_for('admin_game') }}">試合</a></li>
             <li><a href="{{ url_for('admin_event') }}">イベント</a></li>
           </ul>
-          <p style="text-align: center;">
-            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('new_practice') }}">新規登録</a>
+          <form action="{{ url_for('delete_practice', id=practice['id']) }}" method="post" class="well">
+            <p>
+              本当に削除しますか？
+              <input type="submit" name="action" class="btn btn-danger" value="はい"></input>
+              <input type="submit" name="action" class="btn" value="いいえ"></input>
+            </p>
+          </form>
+          <p>
           </p>
           <table class="table table-bordered" style="margin-top: 12px;">
+            <thead>
+              <tr>
+                <th>詳細</th>
+                <th>状況</th>
+              </tr>
+            </thead>
             <tbody>
-              {% for p in practices %}
               <tr>
                 <td>
-                  {{ p['when_'].strftime('%m/%d(%a) %H:%M') }}-{{ p['end'] }} @{{ p['loc'] }}
+                  <dl>
+                    <dt>日程</dt>
+                    <dd>{{ practice['when_'].strftime('%m/%d(%a) %H:%M') }}-{{ practice['end'] }}</dd>
+                    <dt>場所</dt>
+                    <dd>{{ practice['loc'] }}</dd>
+                    <dt>コート</dt>
+                    <dd>{{ practice['court'] }}</dd>
+                    <dt>予約番号</dt>
+                    <dd>{{ practice['no'] }}</dd>
+                    <dt>コート代</dt>
+                    <dd>{{ practice['price'] }}円</dd>
+                    <dt>備考</dt>
+                    <dd>{{ practice['note'] }}</dd>
+                  </dl>
                 </td>
                 <td>
-                  <a class="btn" href="{{ url_for('edit_practice', id=p['id']) }}"><i class="icon-pencil"></i> 編集</a>
-                  <a class="btn btn-danger" href="{{ url_for('delete_practice', id=p['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <dl>
+                    {% for e in practice['entries'] %}
+                    <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
+                    <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
+                    {% endfor %}
+                  </dl>
                 </td>
               </tr>
-              {% endfor %}
             </tbody>
           </table>
         </div>
