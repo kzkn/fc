@@ -7,11 +7,12 @@ from flask import Flask, g, render_template, session, request, \
 app = Flask(__name__)
 app.secret_key = 'foo_bar-baz'
 
-import os
-import time
 import datetime
-import sqlite3
+import itertools
 import json
+import os
+import sqlite3
+import time
 try:
     from collections import OrderedDict
 except ImportError:
@@ -75,12 +76,7 @@ def find_schedules(type):
       ORDER BY when_""", (type, ))
 
     # Row -> dict for `entries'
-    schedules = []
-    for row in cur.fetchall():
-        s = {}
-        s.update(row)
-        s.setdefault('entries', [])
-        schedules.append(s)
+    schedules = [dict(r) for r in cur.fetchall()]
 
     sids = '(%s)' % ','.join([str(s['id']) for s in schedules])
     cur.execute("""
@@ -89,7 +85,7 @@ def find_schedules(type):
           FROM Entry, User
          WHERE User.id = Entry.user_id
            AND Entry.schedule_id IN %s
-      ORDER BY User.name""" % sids)
+      ORDER BY Entry.schedule_id, User.name""" % sids)
 
     entries = cur.fetchall()
 
@@ -99,11 +95,10 @@ def find_schedules(type):
         for s in schedules:
             sid2sc[s['id']] = s
 
-        for e in entries:
-            sid = e['schedule_id']
+        for sid, es in itertools.groupby(entries, lambda e: e['schedule_id']):
             schedule = sid2sc.get(sid, None)
             if schedule:
-                schedule['entries'].append(e)
+                schedule['entries'] = list(es)
 
     return schedules
 
