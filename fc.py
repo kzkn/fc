@@ -103,6 +103,29 @@ def find_schedules(type):
     return schedules
 
 
+def find_schedule_by_id(sid, with_entry=True):
+    cur = g.db.execute("""
+        SELECT *
+          FROM Schedule
+         WHERE id = ?""", (sid, ))
+
+    schedule = dict(cur.fetchone())
+
+    if with_entry:
+        cur.execute("""
+            SELECT User.name AS user_name, Entry.user_id,
+                   Entry.comment, Entry.is_entry
+              FROM Entry, User
+             WHERE User.id = Entry.user_id
+               AND Entry.schedule_id = ?
+          ORDER BY User.name""", sid)
+
+        entries = cur.fetchall()
+        schedule['entries'] = entries
+
+    return schedule
+
+
 def find_my_entry(sid):
     cur = g.db.execute("""
         SELECT COUNT(*) FROM Entry
@@ -130,6 +153,16 @@ def insert_practice(when_, body):
     g.db.execute("""
         INSERT INTO Schedule (type, when_, body)
         VALUES (?, ?, ?)""", (SCHEDULE_TYPE_PRACTICE, when_, body))
+    g.db.commit()
+
+
+def update_practice(sid, when_, body):
+    print sid, when_, body
+    g.db.execute("""
+        UPDATE Schedule
+           SET when_ = ?,
+               body = ?
+         WHERE id = ?""", (when_, body, sid))
     g.db.commit()
 
 
@@ -187,6 +220,22 @@ def do_entry(sid, comment, entry):
         insert_entry(sid, comment, entry)
 
 
+def make_practice_obj(form):
+    date = form['date']
+    begintime = form['begintime']
+    endtime = form['endtime']
+    loc = form['loc']
+    court = form['court']
+    no = form['no']
+    price = form['price']
+    note = form['note']
+
+    when = date + ' ' + begintime + ':00'
+    body = make_practice_body(endtime, loc, court, no, price, note)
+    return {'when': when,
+            'body': body}
+
+
 def make_practice_body(end, loc, court, no, price, note):
     p = {'end': end,
          'loc': loc,
@@ -195,20 +244,6 @@ def make_practice_body(end, loc, court, no, price, note):
          'price': price,
          'note': note}
     return json.dumps(p)
-
-
-def make_new_practice(form):
-    date = form['date']
-    begintime = form['begintime']
-    endtime = form['endtime']
-    loc = form['loc']
-    court = form['court'] or '-'
-    no = form['no'] or '-'
-    price = form['price'] or '-'
-    note = form['note']
-    when = date + ' ' + begintime + ':00'
-    body = make_practice_body(endtime, loc, court, no, price, note)
-    insert_practice(when, body)
 
 
 #############
@@ -259,6 +294,17 @@ def check_required(s):
     if not s:
         raise ValueError('入力してください')
     return s
+
+
+def validate_practice():
+    validations = OrderedDict()
+    validations['date'] = [check_required, check_date]
+    validations['begintime'] = [check_required, check_time]
+    validations['endtime'] = [check_required, check_time]
+    validations['loc'] = [check_required]
+    validations['no'] = [check_number]
+    validations['price'] = [check_number]
+    do_validate(request.form, validations)
 
 
 #############
@@ -338,23 +384,39 @@ def admin_member():
 @app.route('/admin/practice/new', methods=['GET', 'POST'])
 def new_practice():
     if request.method == 'GET':
-        today = datetime.datetime.today().strftime('%Y-%m-%d')
+        today = datetime.datetime.today()
         return render_template('admin_edit_practice.html', today=today)
     else:
         try:
-            validations = OrderedDict()
-            validations['date'] = [check_required, check_date]
-            validations['begintime'] = [check_required, check_time]
-            validations['endtime'] = [check_required, check_time]
-            validations['loc'] = [check_required]
-            validations['no'] = [check_number]
-            validations['price'] = [check_number]
-            do_validate(request.form, validations)
+            validate_practice()
         except ValueError:
             return redirect(url_for('new_practice'))
 
-        make_new_practice(request.form)
+        p = make_practice_obj(request.form)
+        insert_practice(p['when'], p['body'])
         return redirect(url_for('admin_practice'))
+
+
+@app.route('/admin/practice/edit/<int:id>', methods=['GET', 'POST'])
+def edit_practice(id):
+    if request.method == 'GET':
+        p = make_schedule(find_schedule_by_id(id, with_entry=False))
+        return render_template('admin_edit_practice.html', practice=p)
+    else:
+        try:
+            validate_practice()
+        except ValueError:
+            return redirect(url_for('edit_practice', id=id))
+
+        p = make_practice_obj(request.form)
+        update_practice(id, p['when'], p['body'])
+        return redirect(url_for('admin_practice'))
+
+
+@app.route('/admin/practice/delete/<int:id>', methods=['GET', 'POST'])
+def delete_practice():
+    p = make_schedule(find_schedule_by_id(id))
+    return render_template('admin_delete_practice.html', practice=p)
 
 
 @app.route('/login', methods=['POST'])
