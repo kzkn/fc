@@ -307,7 +307,7 @@ def message():
 
 def show_admin(errors=[]):
     ps = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_PRACTICE)]
-    return render_template('admin.html', practices=ps)
+    return render_template('admin_practice.html', practices=ps)
 
 
 @app.route('/admin')
@@ -335,27 +335,26 @@ def admin_member():
     return show_admin()
 
 
-@app.route('/admin/practice/new')
+@app.route('/admin/practice/new', methods=['GET', 'POST'])
 def new_practice():
-    return show_admin()
+    if request.method == 'GET':
+        today = datetime.datetime.today().strftime('%Y-%m-%d')
+        return render_template('admin_edit_practice.html', today=today)
+    else:
+        try:
+            validations = OrderedDict()
+            validations['date'] = [check_required, check_date]
+            validations['begintime'] = [check_required, check_time]
+            validations['endtime'] = [check_required, check_time]
+            validations['loc'] = [check_required]
+            validations['no'] = [check_number]
+            validations['price'] = [check_number]
+            do_validate(request.form, validations)
+        except ValueError:
+            return redirect(url_for('new_practice'))
 
-
-@app.route('/admin/make_practice', methods=['POST'])
-def make_practice():
-    try:
-        validations = OrderedDict()
-        validations['date'] = [check_required, check_date]
-        validations['begintime'] = [check_required, check_time]
-        validations['endtime'] = [check_required, check_time]
-        validations['loc'] = [check_required]
-        validations['no'] = [check_number]
-        validations['price'] = [check_number]
-        do_validate(request.form, validations)
-    except ValueError, e:
-        return show_admin(errors=e.errors)
-
-    make_new_practice(request.form)
-    return redirect(url_for('admin'))
+        make_new_practice(request.form)
+        return redirect(url_for('admin_practice'))
 
 
 @app.route('/login', methods=['POST'])
