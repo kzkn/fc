@@ -236,12 +236,14 @@
                       <tr>
                         <td>
                           <dl>
-                            <dt>内容</dt>
-                            <dd>{{ e['description'] }}</dd>
+                            <dt>開催日</dt>
+                            <dd>{{ e['when_'].strftime('%m-%d(%a)') }}</dd>
                             <dt>締め切り</dt>
                             <dd>{{ e['deadline'] }}</dd>
                             <dt>費用</dt>
                             <dd>{{ e['price'] }}円</dd>
+                            <dt>内容</dt>
+                            <dd>{{ e['description'] }}</dd>
                           </dl>
                         </td>
                         <td>

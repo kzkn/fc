@@ -283,6 +283,29 @@ def make_game_body(
     return json.dumps(ga)
 
 
+def make_event_obj(form):
+    name = form['name']
+    date = form['date']
+    loc = form['loc']
+    deadline = form['deadline']
+    price = form['price']
+    description = form['description']
+
+    when = date + ' 00:00:00'
+    body = make_event_body(name, loc, deadline, price, description)
+    return {'when': when,
+            'body': body}
+
+
+def make_event_body(name, loc, deadline, price, description):
+    e = {'name': name,
+         'loc': loc,
+         'deadline': deadline,
+         'price': price,
+         'description': description}
+    return json.dumps(e)
+
+
 #############
 # VALIDATIONS
 #############
@@ -357,6 +380,17 @@ def validate_game():
     do_validate(request.form, validations)
 
 
+def validate_event():
+    validations = OrderedDict()
+    validations['name'] = [check_required]
+    validations['date'] = [check_required, check_date]
+    validations['loc'] = [check_required]
+    validations['deadline'] = [check_date]
+    validations['price'] = [check_number]
+    validations['description'] = [check_required]
+    do_validate(request.form, validations)
+
+
 #############
 # VIEWS
 #############
@@ -425,7 +459,8 @@ def admin_game():
 
 @app.route('/admin/event')
 def admin_event():
-    return show_admin()
+    es = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_EVENT)]
+    return render_template('admin_event.html', events=es)
 
 
 @app.route('/admin/member')
@@ -519,6 +554,50 @@ def delete_game(id):
         if action == u'はい':
             delete_schedule_by_id(id)
         return redirect(url_for('admin_game'))
+
+
+@app.route('/admin/event/new', methods=['GET', 'POST'])
+def new_event():
+    if request.method == 'GET':
+        today = datetime.datetime.today()
+        return render_template('admin_edit_event.html', today=today)
+    else:
+        try:
+            validate_event()
+        except ValueError:
+            return redirect(url_for('new_event'))
+
+        e = make_event_obj(request.form)
+        insert_schedule(SCHEDULE_TYPE_EVENT, e['when'], e['body'])
+        return redirect(url_for('admin_event'))
+
+
+@app.route('/admin/event/edit/<int:id>', methods=['GET', 'POST'])
+def edit_event(id):
+    if request.method == 'GET':
+        e = make_schedule(find_schedule_by_id(id, with_entry=False))
+        return render_template('admin_edit_event.html', event=e)
+    else:
+        try:
+            validate_event()
+        except ValueError:
+            return redirect(url_for('edit_event', id=id))
+
+        e = make_event_obj(request.form)
+        update_schedule(id, e['when'], e['body'])
+        return redirect(url_for('admin_event'))
+
+
+@app.route('/admin/event/delete/<int:id>', methods=['GET', 'POST'])
+def delete_event(id):
+    if request.method == 'GET':
+        ga = make_schedule(find_schedule_by_id(id))
+        return render_template('admin_delete_event.html', event=ga)
+    else:
+        action = request.form['action']
+        if action == u'はい':
+            delete_schedule_by_id(id)
+        return redirect(url_for('admin_event'))
 
 
 @app.route('/login', methods=['POST'])
