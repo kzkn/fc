@@ -306,15 +306,37 @@ def message():
 
 
 def show_admin(errors=[]):
-    today = datetime.datetime.today().strftime('%Y-%m-%d')
-    practice_locs = json.dumps(find_practice_locations())
-    return render_template('admin.html',
-                           today=today,
-                           practice_locs=practice_locs)
+    ps = [make_schedule(s) for s in find_schedules(SCHEDULE_TYPE_PRACTICE)]
+    return render_template('admin.html', practices=ps)
 
 
 @app.route('/admin')
 def admin():
+    return show_admin()
+
+
+@app.route('/admin/practice')
+def admin_practice():
+    return show_admin()
+
+
+@app.route('/admin/game')
+def admin_game():
+    return show_admin()
+
+
+@app.route('/admin/event')
+def admin_event():
+    return show_admin()
+
+
+@app.route('/admin/member')
+def admin_member():
+    return show_admin()
+
+
+@app.route('/admin/practice/new')
+def new_practice():
     return show_admin()
 
 
