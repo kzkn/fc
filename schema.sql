@@ -6,7 +6,9 @@ CREATE TABLE User (
   id INTEGER PRIMARY KEY,
   name VARCHAR(20) UNIQUE NOT NULL,
   password VARCHAR(10) UNIQUE NOT NULL,
-  profile CLOB NOT NULL DEFAULT '{}' /* JSON */
+  sex INTEGER NOT NULL,
+  profile CLOB NOT NULL DEFAULT '{}', /* JSON */
+  CHECK (sex in (1, 2)) /* 1: male, 2: female */
 );
 
 CREATE TABLE Schedule (

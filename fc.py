@@ -52,6 +52,9 @@ def insert_test_data():
 # DOMAIN LEVEL DATABASE ACCESS
 #############
 
+USER_SEX_MALE = 1
+USER_SEX_FEMALE = 2
+
 SCHEDULE_TYPE_PRACTICE = 1
 SCHEDULE_TYPE_GAME = 2
 SCHEDULE_TYPE_EVENT = 3
@@ -66,6 +69,14 @@ def find_user_by_password(password):
     cur = g.db.execute('SELECT id, name FROM User WHERE password = ?',
                        (password, ))
     return cur.fetchone()
+
+
+def find_users_group_by_sex():
+    users = g.db.execute('SELECT * FROM User ORDER BY sex, name').fetchall()
+    bysex = {}
+    for sex, us in itertools.groupby(users, lambda u: u['sex']):
+        bysex[sex] = list(us)
+    return bysex
 
 
 def find_schedules(type):
@@ -421,8 +432,20 @@ def entry(sid):
 
 
 @app.route('/member')
-def member():
-    return redirect(url_for('index'))
+@app.route('/member/<int:id>')
+def member(id=None):
+    users = find_users_group_by_sex()
+    selected = find_user_by_id(id) if id else None
+
+    if not selected:
+        if users[USER_SEX_MALE]:
+            selected = users[USER_SEX_MALE][0]
+        elif users[USER_SEX_FEMALE]:
+            selected = users[USER_SEX_FEMALE][0]
+
+    return render_template('member.html', males=users[USER_SEX_MALE],
+                           females=users[USER_SEX_FEMALE],
+                           selected_user=selected)
 
 
 @app.route('/bbs')
