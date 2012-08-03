@@ -11,6 +11,7 @@ import datetime
 import itertools
 import json
 import os
+import random
 import sqlite3
 import time
 try:
@@ -76,7 +77,19 @@ def find_users_group_by_sex():
     bysex = {}
     for sex, us in itertools.groupby(users, lambda u: u['sex']):
         bysex[sex] = list(us)
-    return bysex
+    return bysex.get(USER_SEX_MALE, []), bysex.get(USER_SEX_FEMALE, [])
+
+
+def insert_user(name, password, sex):
+    g.db.execute('''
+        INSERT INTO User (name, password, sex)
+        VALUES (?, ?, ?)''', (name, password, sex))
+    g.db.commit()
+
+
+def delete_user_by_id(id):
+    g.db.execute('DELETE FROM User WHERE id = ?', (id, ))
+    g.db.commit()
 
 
 def find_schedules(type):
@@ -317,6 +330,21 @@ def make_event_body(name, loc, deadline, price, description):
     return json.dumps(e)
 
 
+def make_user_obj(form):
+    return {'name': form['name'],
+            'sex': sex_atoi(form['sex'])}
+
+
+def sex_atoi(sex):
+    return USER_SEX_MALE if sex == u'男性' else USER_SEX_FEMALE
+
+
+def generate_uniq_password():
+    p = random.randint(100000, 999999)
+    while find_user_by_password(p):
+        p = random.randint(100000, 999999)
+    return p
+
 #############
 # VALIDATIONS
 #############
@@ -367,6 +395,14 @@ def check_required(s):
     return s
 
 
+def check_in(*options):
+    def checker(s):
+        if s not in options:
+            raise ValueError('不正な値です')
+        return s
+    return checker
+
+
 def validate_practice():
     validations = OrderedDict()
     validations['date'] = [check_required, check_date]
@@ -402,6 +438,13 @@ def validate_event():
     do_validate(request.form, validations)
 
 
+def validate_member():
+    validations = OrderedDict()
+    validations['name'] = [check_required]
+    validations['sex'] = [check_in(u'男性', u'女性')]
+    do_validate(request.form, validations)
+
+
 #############
 # VIEWS
 #############
@@ -434,17 +477,16 @@ def entry(sid):
 @app.route('/member')
 @app.route('/member/<int:id>')
 def member(id=None):
-    users = find_users_group_by_sex()
+    males, females = find_users_group_by_sex()
     selected = find_user_by_id(id) if id else None
 
     if not selected:
-        if users[USER_SEX_MALE]:
-            selected = users[USER_SEX_MALE][0]
-        elif users[USER_SEX_FEMALE]:
-            selected = users[USER_SEX_FEMALE][0]
+        if males:
+            selected = males[0]
+        elif females:
+            selected = females[0]
 
-    return render_template('member.html', males=users[USER_SEX_MALE],
-                           females=users[USER_SEX_FEMALE],
+    return render_template('member.html', males=males, females=females,
                            selected_user=selected)
 
 
@@ -488,7 +530,36 @@ def admin_event():
 
 @app.route('/admin/member')
 def admin_member():
-    return show_admin()
+    males, females = find_users_group_by_sex()
+    return render_template('admin_member.html', users=longzip(males, females))
+
+
+@app.route('/admin/member/new', methods=['GET', 'POST'])
+def new_member():
+    if request.method == 'GET':
+        return render_template('admin_edit_member.html')
+    else:
+        try:
+            validate_member()
+        except ValueError:
+            return redirect(url_for('admin_member'))
+
+        u = make_user_obj(request.form)
+        password = generate_uniq_password()
+        insert_user(u['name'], str(password), u['sex'])
+        return redirect(url_for('admin_member'))
+
+
+@app.route('/admin/member/delete/<int:id>', methods=['GET', 'POST'])
+def delete_member(id):
+    if request.method == 'GET':
+        user = find_user_by_id(id)
+        return render_template('admin_delete_member.html', user=user)
+    else:
+        action = request.form['action']
+        if action == u'はい':
+            delete_user_by_id(id)
+        return redirect(url_for('admin_member'))
 
 
 @app.route('/admin/practice/new', methods=['GET', 'POST'])
@@ -650,6 +721,22 @@ def gallery():
 @app.route('/join')
 def join():
     return redirect(url_for('index'))
+
+
+#############
+# UTILITIES
+#############
+
+def longzip(l1, l2):
+    ret = []
+    len1 = len(l1)
+    len2 = len(l2)
+    length = max(len1, len2)
+    for i in xrange(length):
+        pair = (l1[i] if i < len1 else None,
+                l2[i] if i < len2 else None)
+        ret.append(pair)
+    return ret
 
 
 #############
