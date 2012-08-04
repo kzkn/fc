@@ -8,41 +8,15 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 import datetime
-import sqlite3
 import time
 try:
     from collections import OrderedDict
 except ImportError:
     from ordereddict import OrderedDict
-from contextlib import closing
 
+import fcsite.database as database
 import fcsite.models.users as users
 import fcsite.models.schedules as scheds
-
-#############
-# DATABASE ACCESS
-#############
-
-
-def connect_db():
-    uri = app.config['DATABASE_URI']
-    db = sqlite3.connect(uri, detect_types=sqlite3.PARSE_DECLTYPES)
-    db.row_factory = sqlite3.Row
-    return db
-
-
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-
-def insert_test_data():
-    with closing(connect_db()) as db:
-        with app.open_resource('testdata.sql') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
 
 
 #############
@@ -51,7 +25,7 @@ def insert_test_data():
 
 @app.before_request
 def before_request():
-    g.db = connect_db()
+    g.db = database.connect_db()
     if is_logged_in():
         g.user = users.find_by_id(session.get('user_id'))
 
