@@ -5,7 +5,7 @@ from flask import Flask, g, render_template, session, request, \
     redirect, url_for, flash
 
 app = Flask(__name__)
-app.secret_key = 'foo_bar-baz'
+app.config.from_object('config')
 
 import datetime
 import itertools
@@ -25,12 +25,10 @@ from contextlib import closing
 # DATABASE ACCESS
 #############
 
-DATABASE_URI = os.path.join(
-    os.path.abspath(os.path.dirname(__file__)), 'fc.db')
-
 
 def connect_db():
-    db = sqlite3.connect(DATABASE_URI, detect_types=sqlite3.PARSE_DECLTYPES)
+    uri = app.config['DATABASE_URI']
+    db = sqlite3.connect(uri, detect_types=sqlite3.PARSE_DECLTYPES)
     db.row_factory = sqlite3.Row
     return db
 
@@ -737,13 +735,3 @@ def longzip(l1, l2):
                 l2[i] if i < len2 else None)
         ret.append(pair)
     return ret
-
-
-#############
-# DEVELOPMENT MAIN
-#############
-
-if __name__ == '__main__':
-    init_db()
-    insert_test_data()
-    app.run('0.0.0.0', debug=True)
