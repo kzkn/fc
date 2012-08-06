@@ -157,7 +157,7 @@ def message():
 
 def show_admin(errors=[]):
     ps = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_PRACTICE)]
-    return render_template('admin/admin_practice.html', practices=ps)
+    return render_template('admin/practice.html', practices=ps)
 
 
 @app.route('/admin')
@@ -168,32 +168,32 @@ def admin():
 @app.route('/admin/practice')
 def admin_practice():
     ps = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_PRACTICE)]
-    return render_template('admin/admin_practice.html', practices=ps)
+    return render_template('admin/practice.html', practices=ps)
 
 
 @app.route('/admin/game')
 def admin_game():
     gs = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_GAME)]
-    return render_template('admin/admin_game.html', games=gs)
+    return render_template('admin/game.html', games=gs)
 
 
 @app.route('/admin/event')
 def admin_event():
     es = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_EVENT)]
-    return render_template('admin/admin_event.html', events=es)
+    return render_template('admin/event.html', events=es)
 
 
 @app.route('/admin/member')
 def admin_member():
     males, females = users.find_group_by_sex()
-    return render_template('admin/admin_member.html',
+    return render_template('admin/member.html',
                            users=longzip(males, females))
 
 
 @app.route('/admin/member/new', methods=['GET', 'POST'])
 def new_member():
     if request.method == 'GET':
-        return render_template('admin/admin_edit_member.html')
+        return render_template('admin/edit_member.html')
     else:
         try:
             validate_member()
@@ -210,7 +210,7 @@ def new_member():
 def delete_member(id):
     if request.method == 'GET':
         user = users.find_by_id(id)
-        return render_template('admin/admin_delete_member.html', user=user)
+        return render_template('admin/delete_member.html', user=user)
     else:
         action = request.form['action']
         if action == u'はい':
@@ -222,7 +222,7 @@ def delete_member(id):
 def new_practice():
     if request.method == 'GET':
         today = datetime.datetime.today()
-        return render_template('admin/admin_edit_practice.html', today=today)
+        return render_template('admin/edit_practice.html', today=today)
     else:
         try:
             validate_practice()
@@ -238,7 +238,7 @@ def new_practice():
 def edit_practice(id):
     if request.method == 'GET':
         p = scheds.from_row(scheds.find_by_id(id, with_entry=False))
-        return render_template('admin/admin_edit_practice.html', practice=p)
+        return render_template('admin/edit_practice.html', practice=p)
     else:
         try:
             validate_practice()
@@ -254,7 +254,7 @@ def edit_practice(id):
 def delete_practice(id):
     if request.method == 'GET':
         p = scheds.from_row(scheds.find_by_id(id))
-        return render_template('admin/admin_delete_practice.html', practice=p)
+        return render_template('admin/delete_practice.html', practice=p)
     else:
         action = request.form['action']
         if action == u'はい':
@@ -266,7 +266,7 @@ def delete_practice(id):
 def new_game():
     if request.method == 'GET':
         today = datetime.datetime.today()
-        return render_template('admin/admin_edit_game.html', today=today)
+        return render_template('admin/edit_game.html', today=today)
     else:
         try:
             validate_game()
@@ -282,7 +282,7 @@ def new_game():
 def edit_game(id):
     if request.method == 'GET':
         p = scheds.from_row(scheds.find_by_id(id, with_entry=False))
-        return render_template('admin/admin_edit_game.html', game=p)
+        return render_template('admin/edit_game.html', game=p)
     else:
         try:
             validate_game()
@@ -298,7 +298,7 @@ def edit_game(id):
 def delete_game(id):
     if request.method == 'GET':
         ga = scheds.from_row(scheds.find_by_id(id))
-        return render_template('admin/admin_delete_game.html', game=ga)
+        return render_template('admin/delete_game.html', game=ga)
     else:
         action = request.form['action']
         if action == u'はい':
@@ -310,7 +310,7 @@ def delete_game(id):
 def new_event():
     if request.method == 'GET':
         today = datetime.datetime.today()
-        return render_template('admin/admin_edit_event.html', today=today)
+        return render_template('admin/edit_event.html', today=today)
     else:
         try:
             validate_event()
@@ -326,7 +326,7 @@ def new_event():
 def edit_event(id):
     if request.method == 'GET':
         e = scheds.from_row(scheds.find_by_id(id, with_entry=False))
-        return render_template('admin/admin_edit_event.html', event=e)
+        return render_template('admin/edit_event.html', event=e)
     else:
         try:
             validate_event()
@@ -342,7 +342,7 @@ def edit_event(id):
 def delete_event(id):
     if request.method == 'GET':
         ga = scheds.from_row(scheds.find_by_id(id))
-        return render_template('admin/admin_delete_event.html', event=ga)
+        return render_template('admin/delete_event.html', event=ga)
     else:
         action = request.form['action']
         if action == u'はい':
