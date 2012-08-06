@@ -52,9 +52,11 @@
               {% endfor %}
             </ul>
             <ul class="nav pull-right">
+              {% if g.user %}
               <li{% if active_page == 'admin' %} class="active"{% endif %}>
                 <a href="{{ url_for('admin') }}">管理</a>
               </li>
+              {% endif %}
               <li class="dropdown">
                 <a class="dropdown-toggle" href="#" data-toggle="dropdown">
                 {% if g.user %}
