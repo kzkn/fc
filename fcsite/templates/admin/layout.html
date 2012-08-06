@@ -34,3 +34,19 @@
         </div>
       </div>
 {% endblock %}
+
+{% block script %}
+      <script>
+        $(function() {
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+            $('.timepicker').timepicker({
+                minuteStep: 30,
+                showInputs: false,
+                disableFocus: true,
+                showMeridian: false
+            });
+        });
+      </script>
+{% endblock %}
