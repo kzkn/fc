@@ -1,99 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-  <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+{% extends 'layout.html' %}
+{% set active_page = 'index' %}
 
-	<title></title>
-	<meta name="description" content="">
-	<meta name="author" content="">
-
-	<meta name="viewport" content="width=device-width">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-	<style>
-	  body {
-	  padding-top: 60px;
-	  padding-bottom: 40px;
-	  }
-	</style>
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-	<script src="{{ url_for('static', filename='js/libs/modernizr-2.5.3-respond-1.1.0.min.js') }}"></script>
-  </head>
-  <body>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="{{ url_for('index') }}">Fight Club</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li class="active"><a href="{{ url_for('index') }}"><i class="icon-home icon-white"></i> ホーム</a></li>
-              <li><a href="{{ url_for('schedule') }}"><i class="icon-calendar icon-white"></i> 活動予定</a></li>
-              <li><a href="{{ url_for('member') }}"><i class="icon-user icon-white"></i> メンバー</a></li>
-              <li><a href="{{ url_for('bbs') }}"><i class="icon-list-alt icon-white"></i> 掲示板</a></li>
-              <li><a href="{{ url_for('message') }}"><i class="icon-envelope icon-white"></i> 私書箱</a></li>
-            </ul>
-            <ul class="nav pull-right">
-              <li><a href="{{ url_for('admin') }}">管理</a></li>
-              <li class="dropdown">
-                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                {% if g.user %}
-                {{ g.user['name'] }}
-                {% else %}
-                ログイン
-                {% endif %}
-                <strong class="caret"></strong></a>
-                {% if g.user %}
-                <ul class="dropdown-menu">
-                  <li><a href="{{ url_for('logout') }}">ログアウト</a></li>
-                </ul>
-                {% else %}
-                <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0;">
-                  <form action="{{ url_for('login') }}" method="post">
-                    <input id="user_password" style="margin-bottom: 15px;" type="password" name="password" size="30" placeholder="パスワード"></input>
-                    <label class="checkbox">
-                      <input id="user_remember_me" style="float left; margin-right: 10px;" type="checkbox" name="remember_me" value="1"></input>
-                      記憶する
-                    </label>
-                    <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px;" type="submit" name="commit" value="ログイン"></input>
-                  </form>
-                </div>
-                {% endif %}
-              </li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid">
-
-      {% with msgs = get_flashed_messages() %}
-      {% if msgs %}
-      {% for msg in msgs %}
-      {% if msg[0:2] == 'E:' %}
-      <div class="alert alert-error">
-      {% elif msg[0:2] == 'I:' %}
-      <div class="alert alert-info">
-      {% endif %}
-        <a class="close" data-dismiss="alert" href="#">&times;</a>
-        <h4 class="alert-heading">エラー!</h4>
-        {{ msg[2:] }}
-      </div>
-      {% endfor %}
-      {% endif %}
-      {% endwith %}
-
+{% block maincontent %}
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
         <div class="row-fluid">
@@ -130,19 +38,4 @@
           <p><a class="btn" href="{{ url_for('join') }}">詳しく &raquo;</a></p>
         </div>
       </div>
-
-      <hr>
-
-      <footer>
-        <p>困ったことがあれば Y.K までご連絡を。すぐにかけつけます。</p>
-      </footer>
-
-    </div> <!-- /container -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/libs/jquery-1.7.2.min.js') }}"><\/script>')</script>
-
-      <script src="{{ url_for('static', filename='js/libs/bootstrap/bootstrap.min.js') }}"></script>
-
-      <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-  </body>
-</html>
+{% endblock %}

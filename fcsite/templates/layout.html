@@ -52,7 +52,7 @@
               {% endfor %}
             </ul>
             <ul class="nav pull-right">
-              <li{% if active_page = 'admin' %} class="active"{% endfor %}>
+              <li{% if active_page == 'admin' %} class="active"{% endif %}>
                 <a href="{{ url_for('admin') }}">管理</a>
               </li>
               <li class="dropdown">
