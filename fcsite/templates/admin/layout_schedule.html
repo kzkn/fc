@@ -1,0 +1,22 @@
+{% extends 'admin/layout.html' %}
+{% set active_admin_page = 'admin_practice' %}
+{% set active_tab = active_tab | default('') %}
+
+{% block admincontent %}
+          <h2>予定管理</h2>
+          <ul class="nav nav-tabs">
+            {% set admin_schedules_navs = [
+                   ('admin_practice', '練習'),
+                   ('admin_game', '試合'),
+                   ('admin_event', 'イベント')
+               ]
+            %}
+            {% for id, caption in admin_schedules_navs %}
+            <li{% if active_tab == id %} class="active"{% endif %}>
+              <a href="{{ url_for(id) }}"> {{ caption }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% block tabcontent %}
+          {% endblock %}
+{% endblock %}
