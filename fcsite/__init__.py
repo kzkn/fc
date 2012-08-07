@@ -98,26 +98,6 @@ def validate_member():
 #############
 
 
-@app.route('/schedule')
-def schedule():
-    ps = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_PRACTICE)]
-    gs = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_GAME)]
-    es = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_EVENT)]
-    return render_template('schedule.html',
-                           practices=ps, games=gs, events=es)
-
-
-@app.route('/entry/<int:sid>', methods=["POST"])
-def entry(sid):
-    action = request.form['action']
-    comment = request.form['comment']
-    if action == u'参加する':
-        scheds.do_entry(sid, comment, entry=True)
-    elif action == u'参加しない':
-        scheds.do_entry(sid, comment, entry=False)
-    return redirect(url_for('schedule'))
-
-
 @app.route('/bbs')
 def bbs():
     return redirect(url_for('general.index'))
@@ -325,5 +305,7 @@ def delete_event(id):
 
 from fcsite.views import general
 from fcsite.views import member
+from fcsite.views import schedule
 app.register_blueprint(general.mod)
 app.register_blueprint(member.mod)
+app.register_blueprint(schedule.mod)

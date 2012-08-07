@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, session, redirect, request, \
     flash, url_for
-from fcsite import users
+from fcsite.models import users
 
 mod = Blueprint('general', __name__)
 
