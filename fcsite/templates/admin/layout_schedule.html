@@ -1,14 +1,14 @@
 {% extends 'admin/layout.html' %}
-{% set active_admin_page = 'admin_practice' %}
+{% set active_admin_page = 'practice' %}
 {% set active_tab = active_tab | default('') %}
 
 {% block admincontent %}
           <h2>予定管理</h2>
           <ul class="nav nav-tabs">
             {% set admin_schedules_navs = [
-                   ('admin.admin_practice', 'admin_practice', '練習'),
-                   ('admin.admin_game', 'admin_game', '試合'),
-                   ('admin.admin_event', 'admin_event', 'イベント')
+                   ('admin.practice', 'practice', '練習'),
+                   ('admin.game', 'game', '試合'),
+                   ('admin.event', 'event', 'イベント')
                ]
             %}
             {% for view, id, caption in admin_schedules_navs %}

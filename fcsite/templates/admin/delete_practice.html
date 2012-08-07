@@ -1,5 +1,5 @@
 {% extends 'admin/layout_schedule.html' %}
-{% set active_tab = 'admin_practice' %}
+{% set active_tab = 'practice' %}
 
 {% block tabcontent %}
           <form action="{{ url_for('admin.delete_practice', id=practice['id']) }}" method="post" class="well">

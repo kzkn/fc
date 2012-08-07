@@ -63,25 +63,25 @@ def validate_member():
 
 @mod.route('/')
 @mod.route('/practice')
-def admin_practice():
+def practice():
     ps = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_PRACTICE)]
     return render_template('admin/practice.html', practices=ps)
 
 
 @mod.route('/game')
-def admin_game():
+def game():
     gs = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_GAME)]
     return render_template('admin/game.html', games=gs)
 
 
 @mod.route('/event')
-def admin_event():
+def event():
     es = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_EVENT)]
     return render_template('admin/event.html', events=es)
 
 
 @mod.route('/member')
-def admin_member():
+def member():
     males, females = users.find_group_by_sex()
     return render_template('admin/member.html',
                            users=longzip(males, females))
@@ -100,7 +100,7 @@ def new_practice():
 
         p = scheds.make_practice_obj(request.form)
         scheds.insert(scheds.TYPE_PRACTICE, p['when'], p['body'])
-        return redirect(url_for('admin.admin_practice'))
+        return redirect(url_for('admin.practice'))
 
 
 @mod.route('/practice/edit/<int:id>', methods=['GET', 'POST'])
@@ -116,7 +116,7 @@ def edit_practice(id):
 
         p = scheds.make_practice_obj(request.form)
         scheds.update(id, p['when'], p['body'])
-        return redirect(url_for('admin.admin_practice'))
+        return redirect(url_for('admin.practice'))
 
 
 @mod.route('/practice/delete/<int:id>', methods=['GET', 'POST'])
@@ -128,7 +128,7 @@ def delete_practice(id):
         action = request.form['action']
         if action == u'はい':
             scheds.delete_by_id(id)
-        return redirect(url_for('admin.admin_practice'))
+        return redirect(url_for('admin.practice'))
 
 
 @mod.route('/game/new', methods=['GET', 'POST'])
@@ -144,7 +144,7 @@ def new_game():
 
         ga = scheds.make_game_obj(request.form)
         scheds.insert(scheds.TYPE_GAME, ga['when'], ga['body'])
-        return redirect(url_for('admin.admin_game'))
+        return redirect(url_for('admin.game'))
 
 
 @mod.route('/game/edit/<int:id>', methods=['GET', 'POST'])
@@ -160,7 +160,7 @@ def edit_game(id):
 
         ga = scheds.make_game_obj(request.form)
         scheds.update(id, ga['when'], ga['body'])
-        return redirect(url_for('admin.admin_game'))
+        return redirect(url_for('admin.game'))
 
 
 @mod.route('/game/delete/<int:id>', methods=['GET', 'POST'])
@@ -172,7 +172,7 @@ def delete_game(id):
         action = request.form['action']
         if action == u'はい':
             scheds.delete_by_id(id)
-        return redirect(url_for('admin.admin_game'))
+        return redirect(url_for('admin.game'))
 
 
 @mod.route('/event/new', methods=['GET', 'POST'])
@@ -189,7 +189,7 @@ def new_event():
 
         e = scheds.make_event_obj(request.form)
         scheds.insert(scheds.TYPE_EVENT, e['when'], e['body'])
-        return redirect(url_for('admin.admin_event'))
+        return redirect(url_for('admin.event'))
 
 
 @mod.route('/event/edit/<int:id>', methods=['GET', 'POST'])
@@ -205,7 +205,7 @@ def edit_event(id):
 
         e = scheds.make_event_obj(request.form)
         scheds.update(id, e['when'], e['body'])
-        return redirect(url_for('admin.admin_event'))
+        return redirect(url_for('admin.event'))
 
 
 @mod.route('/event/delete/<int:id>', methods=['GET', 'POST'])
@@ -217,7 +217,7 @@ def delete_event(id):
         action = request.form['action']
         if action == u'はい':
             scheds.delete_by_id(id)
-        return redirect(url_for('admin.admin_event'))
+        return redirect(url_for('admin.event'))
 
 
 @mod.route('/member/new', methods=['GET', 'POST'])
@@ -228,12 +228,12 @@ def new_member():
         try:
             validate_member()
         except ValueError:
-            return redirect(url_for('admin.admin_member'))
+            return redirect(url_for('admin.member'))
 
         u = users.make_obj(request.form)
         password = users.generate_uniq_password()
         users.insert(u['name'], str(password), u['sex'])
-        return redirect(url_for('admin.admin_member'))
+        return redirect(url_for('admin.member'))
 
 
 @mod.route('/member/delete/<int:id>', methods=['GET', 'POST'])
@@ -245,4 +245,4 @@ def delete_member(id):
         action = request.form['action']
         if action == u'はい':
             users.delete_by_id(id)
-        return redirect(url_for('admin.admin_member'))
+        return redirect(url_for('admin.member'))

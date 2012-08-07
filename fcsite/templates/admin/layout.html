@@ -16,8 +16,8 @@
             <ul class="nav nav-list">
               <li class="nav-header">管理メニュー</li>
               {% set admin_navigations = [
-                     ('admin.admin_practice', 'admin_practice', 'icon-calendar', '活動予定'),
-                     ('admin.admin_member', 'admin_member', 'icon-user', 'メンバー')
+                     ('admin.practice', 'practice', 'icon-calendar', '活動予定'),
+                     ('admin.member', 'member', 'icon-user', 'メンバー')
                  ]
               %}
               {% for view, id, icon, caption in admin_navigations %}

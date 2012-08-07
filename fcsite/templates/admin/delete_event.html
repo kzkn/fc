@@ -1,5 +1,5 @@
 {% extends 'admin/layout_schedule.html' %}
-{% set active_tab = 'admin_event' %}
+{% set active_tab = 'event' %}
 
 {% block tabcontent %}
           <form action="{{ url_for('admin.delete_event', id=event['id']) }}" method="post" class="well">
