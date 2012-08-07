@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, redirect, url_for
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
@@ -87,20 +87,30 @@ def member():
                            users=longzip(males, females))
 
 
-@mod.route('/practice/new', methods=['GET', 'POST'])
-def new_practice():
+def new_schedule(template, new, index, validate, make_obj, type):
     if request.method == 'GET':
         today = datetime.today()
-        return render_template('admin/edit_practice.html', today=today)
+        return render_template(template, today=today)
     else:
         try:
-            validate_practice()
+            validate()
         except ValueError:
-            return redirect(url_for('admin.new_practice'))
+            return redirect(url_for(new))
 
-        p = scheds.make_practice_obj(request.form)
-        scheds.insert(scheds.TYPE_PRACTICE, p['when'], p['body'])
-        return redirect(url_for('admin.practice'))
+        obj = make_obj(request.form)
+        scheds.insert(type, obj['when'], obj['body'])
+        return redirect(url_for(index))
+
+
+@mod.route('/practice/new', methods=['GET', 'POST'])
+def new_practice():
+    return new_schedule(
+        template='admin/edit_practice.html',
+        new='admin.new_practice',
+        index='admin.practice',
+        validate=validate_practice,
+        make_obj=scheds.make_practice_obj,
+        type=scheds.TYPE_PRACTICE)
 
 
 @mod.route('/practice/edit/<int:id>', methods=['GET', 'POST'])
@@ -133,18 +143,13 @@ def delete_practice(id):
 
 @mod.route('/game/new', methods=['GET', 'POST'])
 def new_game():
-    if request.method == 'GET':
-        today = datetime.today()
-        return render_template('admin/edit_game.html', today=today)
-    else:
-        try:
-            validate_game()
-        except ValueError:
-            return redirect(url_for('admin.new_game'))
-
-        ga = scheds.make_game_obj(request.form)
-        scheds.insert(scheds.TYPE_GAME, ga['when'], ga['body'])
-        return redirect(url_for('admin.game'))
+    return new_schedule(
+        template='admin/edit_game.html',
+        new='admin.new_game',
+        index='admin.game',
+        validate=validate_game,
+        make_obj=scheds.make_game_obj,
+        type=scheds.TYPE_GAME)
 
 
 @mod.route('/game/edit/<int:id>', methods=['GET', 'POST'])
@@ -177,19 +182,13 @@ def delete_game(id):
 
 @mod.route('/event/new', methods=['GET', 'POST'])
 def new_event():
-    if request.method == 'GET':
-        today = datetime.today()
-        return render_template('admin/edit_event.html', today=today)
-    else:
-        try:
-            validate_event()
-        except ValueError, e:
-            flash('E:%s' % e.errors)
-            return redirect(url_for('admin.new_event'))
-
-        e = scheds.make_event_obj(request.form)
-        scheds.insert(scheds.TYPE_EVENT, e['when'], e['body'])
-        return redirect(url_for('admin.event'))
+    return new_schedule(
+        template='admin/edit_event.html',
+        new='admin.new_event',
+        index='admin.event',
+        validate=validate_event,
+        make_obj=scheds.make_event_obj,
+        type=scheds.TYPE_EVENT)
 
 
 @mod.route('/event/edit/<int:id>', methods=['GET', 'POST'])
