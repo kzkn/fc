@@ -3,11 +3,11 @@
 from flask import Blueprint, render_template
 from fcsite import users
 
-mod = Blueprint('member', __name__)
+mod = Blueprint('member', __name__, url_prefix='/member')
 
 
-@mod.route('/member')
-@mod.route('/member/<int:id>')
+@mod.route('/')
+@mod.route('/<int:id>')
 def member(id=None):
     males, females = users.find_group_by_sex()
     selected = users.find_by_id(id) if id else None
