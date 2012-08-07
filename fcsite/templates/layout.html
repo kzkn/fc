@@ -36,21 +36,21 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="{{ url_for('index') }}">Fight Club</a>
+          <a class="brand" href="{{ url_for('general.index') }}">Fight Club</a>
           <div class="nav-collapse">
             <ul class="nav">
               {% set navigations = [
-                     ('index', 'icon-home', 'ホーム', False),
-                     ('schedule', 'icon-calendar', '活動予定', True),
-                     ('member', 'icon-user', 'メンバー', False),
-                     ('bbs', 'icon-list-alt', '掲示板', True),
-                     ('message', 'icon-envelope', '私書箱', True),
+                     ('general.index', 'index', 'icon-home', 'ホーム', False),
+                     ('schedule', 'schedule', 'icon-calendar', '活動予定', True),
+                     ('member', 'member', 'icon-user', 'メンバー', False),
+                     ('bbs', 'bbs', 'icon-list-alt', '掲示板', True),
+                     ('message', 'message', 'icon-envelope', '私書箱', True),
                  ]
               %}
-              {% for id, icon, caption, require_login in navigations %}
+              {% for view, id, icon, caption, require_login in navigations %}
               {% if not require_login or (require_login and g.user) %}
               <li{% if active_page == id %} class="active"{% endif %}>
-                <a href="{{ url_for(id) }}">
+                <a href="{{ url_for(view) }}">
                   <i class="{{ icon }} icon-white"></i> {{ caption }}
                 </a>
               </li>
@@ -73,11 +73,11 @@
                 <strong class="caret"></strong></a>
                 {% if g.user %}
                 <ul class="dropdown-menu">
-                  <li><a href="{{ url_for('logout') }}">ログアウト</a></li>
+                  <li><a href="{{ url_for('general.logout') }}">ログアウト</a></li>
                 </ul>
                 {% else %}
                 <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0;">
-                  <form action="{{ url_for('login') }}" method="post">
+                  <form action="{{ url_for('general.login') }}" method="post">
                     <input id="user_password" style="margin-bottom: 15px;" type="password" name="password" size="30" placeholder="パスワード"></input>
                     <label class="checkbox">
                       <input id="user_remember_me" style="float left; margin-right: 10px;" type="checkbox" name="remember_me" value="1"></input>

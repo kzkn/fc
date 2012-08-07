@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, g, render_template, session, request, \
-    redirect, url_for, flash
+    redirect, url_for
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -44,13 +44,6 @@ def teardown_request(exception):
 
 def is_logged_in():
     return 'user_id' in session
-
-
-def do_login(password):
-    user = users.find_by_password(password)
-    if user:
-        session['user_id'] = user['id']
-    return True if user else False
 
 
 #############
@@ -104,10 +97,6 @@ def validate_member():
 # VIEWS
 #############
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 
 @app.route('/schedule')
 def schedule():
@@ -147,12 +136,12 @@ def member(id=None):
 
 @app.route('/bbs')
 def bbs():
-    return redirect(url_for('index'))
+    return redirect(url_for('general.index'))
 
 
 @app.route('/message')
 def message():
-    return redirect(url_for('index'))
+    return redirect(url_for('general.index'))
 
 
 def show_admin(errors=[]):
@@ -350,30 +339,5 @@ def delete_event(id):
         return redirect(url_for('admin_event'))
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    passwd = request.form['password']
-    if not do_login(passwd):
-        flash(u'E:ログインできません。パスワードが間違っています。')
-    return redirect(url_for('index'))
-
-
-@app.route('/logout')
-def logout():
-    session.pop('user_id')
-    return redirect(url_for('index'))
-
-
-@app.route('/report')
-def report():
-    return redirect(url_for('index'))
-
-
-@app.route('/gallery')
-def gallery():
-    return redirect(url_for('index'))
-
-
-@app.route('/join')
-def join():
-    return redirect(url_for('index'))
+from fcsite.views import general
+app.register_blueprint(general.mod)
