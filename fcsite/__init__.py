@@ -106,7 +106,7 @@ def validate_member():
 
 @app.route('/')
 def index():
-    return render_template('general/index.html')
+    return render_template('index.html')
 
 
 @app.route('/schedule')
@@ -114,7 +114,7 @@ def schedule():
     ps = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_PRACTICE)]
     gs = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_GAME)]
     es = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_EVENT)]
-    return render_template('general/schedule.html',
+    return render_template('schedule.html',
                            practices=ps, games=gs, events=es)
 
 
@@ -141,7 +141,7 @@ def member(id=None):
         elif females:
             selected = females[0]
 
-    return render_template('general/member.html', males=males, females=females,
+    return render_template('member.html', males=males, females=females,
                            selected_user=selected)
 
 
