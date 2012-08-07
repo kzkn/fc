@@ -23,7 +23,7 @@
                 <td>
                   <dl>
                     <dt>日程</dt>
-                    <dd>{{ schedule['when_'].strftime('%m/%d(%a) %H:%M') }}-{{ schedule['end'] }}</dd>
+                    <dd>{{ schedule['when_'] | datetimeformat }}-{{ schedule['end'] }}</dd>
                     <dt>場所</dt>
                     <dd>{{ schedule['loc'] }}</dd>
                     <dt>コート</dt>

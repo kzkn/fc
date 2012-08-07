@@ -7,7 +7,7 @@
             <label>日付</label>
             <input type="text" name="date" class="datepicker" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"></input>
             <label>開始時刻</label>
-            <input type="text" name="begintime" class="timepicker" value="{{ schedule['when_'].strftime('%H:%M') }}"></input>
+            <input type="text" name="begintime" class="timepicker" value="{{ schedule['when_'] | timeformat }}"></input>
             <label>終了時刻</label>
             <input type="text" name="endtime" class="timepicker" value="{{ schedule['end'] }}"></input>
             <label>場所</label>

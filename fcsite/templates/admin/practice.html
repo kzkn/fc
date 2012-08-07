@@ -10,7 +10,7 @@
               {% for p in practices %}
               <tr>
                 <td>
-                  {{ p['when_'].strftime('%m/%d(%a) %H:%M') }}-{{ p['end'] }} @{{ p['loc'] }}
+                  {{ p['when_'] | datetimeformat }}-{{ p['end'] }} @{{ p['loc'] }}
                 </td>
                 <td>
                   <a class="btn" href="{{ url_for('admin.edit_practice', id=p['id']) }}"><i class="icon-pencil"></i> 編集</a>

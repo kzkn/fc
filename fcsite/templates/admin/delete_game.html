@@ -27,7 +27,7 @@
                     <dt>場所</dt>
                     <dd>{{ schedule['loc'] }}</dd>
                     <dt>開催日</dt>
-                    <dd>{{ schedule['when_'].strftime('%m-%d(%a)') }}</dd>
+                    <dd>{{ schedule['when_'] | dateformat }}</dd>
                     <dt>ジャンル</dt>
                     <dd>{{ schedule['genre'] }}</dd>
                     <dt>締め切り</dt>

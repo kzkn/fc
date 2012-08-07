@@ -79,3 +79,19 @@ def longzip(l1, l2):
                 l2[i] if i < len2 else None)
         ret.append(pair)
     return ret
+
+
+#############
+# FILTERS
+#############
+
+def format_datetime(dt):
+    return dt.strftime('%m-%d(%a) %H:%M').decode('utf8')
+
+
+def format_date(dt):
+    return dt.strftime('%m-%d(%a)').decode('utf8')
+
+
+def format_time(dt):
+    return dt.strftime('%H:%M').decode('utf8')

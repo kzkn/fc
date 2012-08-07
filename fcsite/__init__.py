@@ -58,3 +58,11 @@ app.register_blueprint(general.mod)
 app.register_blueprint(member.mod)
 app.register_blueprint(schedule.mod)
 app.register_blueprint(admin.mod)
+
+from fcsite import utils
+app.jinja_env.filters['datetimeformat'] = utils.format_datetime
+app.jinja_env.filters['dateformat'] = utils.format_date
+app.jinja_env.filters['timeformat'] = utils.format_time
+
+import locale
+locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')
