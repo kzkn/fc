@@ -3,7 +3,7 @@
 
 {% block tabcontent %}
           <p style="text-align: center;">
-            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('new_event') }}">新規登録</a>
+            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('admin.new_event') }}">新規登録</a>
           </p>
           <table class="table table-bordered" style="margin-top: 12px;">
             <tbody>
@@ -13,8 +13,8 @@
                   {{ e['name'] }} @{{ e['loc'] }}
                 </td>
                 <td>
-                  <a class="btn" href="{{ url_for('edit_event', id=e['id']) }}"><i class="icon-pencil"></i> 編集</a>
-                  <a class="btn btn-danger" href="{{ url_for('delete_event', id=e['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn" href="{{ url_for('admin.edit_event', id=e['id']) }}"><i class="icon-pencil"></i> 編集</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_event', id=e['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
                 </td>
               </tr>
               {% endfor %}

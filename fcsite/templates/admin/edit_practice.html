@@ -3,7 +3,7 @@
 
 {% block tabcontent %}
           {% if practice is defined %}
-          <form action="{{ url_for('edit_practice', id=practice['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.edit_practice', id=practice['id']) }}" method="post" class="well">
             <label>日付</label>
             <input type="text" name="date" class="datepicker" value="{{ practice['when_'].strftime('%Y-%m-%d') }}"></input>
             <label>開始時刻</label>
@@ -24,7 +24,7 @@
             <button type="submit" class="btn">登録</button>
           </form>
           {% else %}
-          <form action="{{ url_for('new_practice') }}" method="post" class="well">
+          <form action="{{ url_for('admin.new_practice') }}" method="post" class="well">
             <label>日付</label>
             <input type="text" name="date" class="datepicker" value="{{ today.strftime('%Y-%m-%d') }}"></input>
             <label>開始時刻</label>

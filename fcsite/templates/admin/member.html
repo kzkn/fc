@@ -4,7 +4,7 @@
 {% block admincontent %}
           <h2>メンバー管理</h2>
           <p style="text-align: center;">
-            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('new_member') }}">新規登録</a>
+            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('admin.new_member') }}">新規登録</a>
           </p>
           <table class="table table-bordered" style="margin-top: 12px;">
             <thead>
@@ -20,12 +20,12 @@
               <tr>
                 <td>
                   {% if male %}
-                  <a href="{{ url_for('delete_member', id=male['id']) }}">{{ male['name'] }}</a>
+                  <a href="{{ url_for('admin.delete_member', id=male['id']) }}">{{ male['name'] }}</a>
                   {% endif %}
                 </td>
                 <td>
                   {% if female %}
-                  <a href="{{ url_for('delete_member', id=female['id']) }}">{{ female['name'] }}</a>
+                  <a href="{{ url_for('admin.delete_member', id=female['id']) }}">{{ female['name'] }}</a>
                   {% endif %}
                 </td>
               </tr>

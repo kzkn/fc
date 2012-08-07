@@ -6,14 +6,14 @@
           <h2>予定管理</h2>
           <ul class="nav nav-tabs">
             {% set admin_schedules_navs = [
-                   ('admin_practice', '練習'),
-                   ('admin_game', '試合'),
-                   ('admin_event', 'イベント')
+                   ('admin.admin_practice', 'admin_practice', '練習'),
+                   ('admin.admin_game', 'admin_game', '試合'),
+                   ('admin.admin_event', 'admin_event', 'イベント')
                ]
             %}
-            {% for id, caption in admin_schedules_navs %}
+            {% for view, id, caption in admin_schedules_navs %}
             <li{% if active_tab == id %} class="active"{% endif %}>
-              <a href="{{ url_for(id) }}"> {{ caption }}</a>
+              <a href="{{ url_for(view) }}"> {{ caption }}</a>
             </li>
             {% endfor %}
           </ul>

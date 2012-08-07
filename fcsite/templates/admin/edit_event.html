@@ -3,7 +3,7 @@
 
 {% block tabcontent %}
           {% if event is defined %}
-          <form action="{{ url_for('edit_event', id=event['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.edit_event', id=event['id']) }}" method="post" class="well">
             <label>イベント名</label>
             <input type="text" name="name" value="{{ event['name'] }}"></input>
             <label>開催日</label>
@@ -20,7 +20,7 @@
             <button type="submit" class="btn">登録</button>
           </form>
           {% else %}
-          <form action="{{ url_for('new_event') }}" method="post" class="well">
+          <form action="{{ url_for('admin.new_event') }}" method="post" class="well">
             <label>イベント名</label>
             <input type="text" name="name"></input>
             <label>開催日</label>

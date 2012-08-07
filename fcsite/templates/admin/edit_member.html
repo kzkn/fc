@@ -3,7 +3,7 @@
 
 {% block admincontent %}
           <h2>メンバー管理</h2>
-          <form action="{{ url_for('new_member') }}" method="post" class="well">
+          <form action="{{ url_for('admin.new_member') }}" method="post" class="well">
             <label>名前</label>
             <input type="text" name="name"></input>
             <label>性別</label>

@@ -3,7 +3,7 @@
 
 {% block tabcontent %}
           {% if game is defined %}
-          <form action="{{ url_for('edit_game', id=game['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.edit_game', id=game['id']) }}" method="post" class="well">
             <label>試合名</label>
             <input type="text" name="name" value="{{ game['name'] }}"></input>
             <label>開催日</label>
@@ -26,7 +26,7 @@
             <button type="submit" class="btn">登録</button>
           </form>
           {% else %}
-          <form action="{{ url_for('new_game') }}" method="post" class="well">
+          <form action="{{ url_for('admin.new_game') }}" method="post" class="well">
             <label>試合名</label>
             <input type="text" name="name"></input>
             <label>開催日</label>

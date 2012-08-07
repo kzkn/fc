@@ -2,7 +2,7 @@
 {% set active_tab = 'admin_game' %}
 
 {% block tabcontent %}
-          <form action="{{ url_for('delete_game', id=game['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.delete_game', id=game['id']) }}" method="post" class="well">
             <p>
               本当に削除しますか？
               <input type="submit" name="action" class="btn btn-danger" value="はい"></input>
