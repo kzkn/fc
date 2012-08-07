@@ -118,22 +118,6 @@ def entry(sid):
     return redirect(url_for('schedule'))
 
 
-@app.route('/member')
-@app.route('/member/<int:id>')
-def member(id=None):
-    males, females = users.find_group_by_sex()
-    selected = users.find_by_id(id) if id else None
-
-    if not selected:
-        if males:
-            selected = males[0]
-        elif females:
-            selected = females[0]
-
-    return render_template('member.html', males=males, females=females,
-                           selected_user=selected)
-
-
 @app.route('/bbs')
 def bbs():
     return redirect(url_for('general.index'))
@@ -340,4 +324,6 @@ def delete_event(id):
 
 
 from fcsite.views import general
+from fcsite.views import member
 app.register_blueprint(general.mod)
+app.register_blueprint(member.mod)

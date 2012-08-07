@@ -15,11 +15,11 @@
             <ul class="nav nav-list">
               <li class="nav-header">男性</li>
               {% for u in males %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member', id=u['id']) }}">{{ u['name'] }}</a></li>
+              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
               {% endfor %}
               <li class="nav-header">女性</li>
               {% for u in females %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member', id=u['id']) }}">{{ u['name'] }}</a></li>
+              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
               {% endfor %}
             </ul>
           </div>
@@ -38,11 +38,11 @@
             <ul class="nav nav-list">
               <li class="nav-header">男性</li>
               {% for u in males %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member', id=u['id']) }}">{{ u['name'] }}</a></li>
+              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
               {% endfor %}
               <li class="nav-header">女性</li>
               {% for u in females %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member', id=u['id']) }}">{{ u['name'] }}</a></li>
+              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
               {% endfor %}
             </ul>
           </div>
