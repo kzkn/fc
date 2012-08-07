@@ -87,136 +87,127 @@ def member():
                            users=longzip(males, females))
 
 
-def new_schedule(template, new, index, validate, make_obj, type):
+def is_yes(name='action'):
+    return request.form[name] == u'はい'
+
+
+modify_practice = dict(
+    edit_template='admin/edit_practice.html',
+    delete_template='admin/delete_practice.html',
+    new='admin.new_practice',
+    edit='admin.edit_practice',
+    delete='admin.delete_practice',
+    index='admin.practice',
+    validate=validate_practice,
+    make_obj=scheds.make_practice_obj,
+    type=scheds.TYPE_PRACTICE)
+
+modify_game = dict(
+    edit_template='admin/edit_game.html',
+    delete_template='admin/delete_game.html',
+    new='admin.new_game',
+    edit='admin.edit_game',
+    delete='admin.delete_game',
+    index='admin.game',
+    validate=validate_game,
+    make_obj=scheds.make_game_obj,
+    type=scheds.TYPE_GAME)
+
+modify_event = dict(
+    edit_template='admin/edit_event.html',
+    delete_template='admin/delete_event.html',
+    new='admin.new_event',
+    edit='admin.edit_event',
+    delete='admin.delete_event',
+    index='admin.event',
+    validate=validate_event,
+    make_obj=scheds.make_event_obj,
+    type=scheds.TYPE_EVENT)
+
+
+def new_schedule(module):
     if request.method == 'GET':
         today = datetime.today()
-        return render_template(template, today=today)
+        return render_template(module['edit_template'], today=today)
     else:
         try:
-            validate()
+            module['validate']()
         except ValueError:
-            return redirect(url_for(new))
+            return redirect(url_for(module['new']))
 
-        obj = make_obj(request.form)
-        scheds.insert(type, obj['when'], obj['body'])
-        return redirect(url_for(index))
+        obj = module['make_obj'](request.form)
+        scheds.insert(module['type'], obj['when'], obj['body'])
+        return redirect(url_for(module['index']))
+
+
+def edit_schedule(id, module):
+    if request.method == 'GET':
+        s = scheds.from_row(scheds.find_by_id(id, with_entry=False))
+        return render_template(module['edit_template'], schedule=s)
+    else:
+        try:
+            module['validate']()
+        except ValueError:
+            return redirect(url_for(module['edit'], id=id))
+
+        obj = module['make_obj'](request.form)
+        scheds.update(id, obj['when'], obj['body'])
+        return redirect(url_for(module['index']))
+
+
+def delete_schedule(id, module):
+    if request.method == 'GET':
+        s = scheds.from_row(scheds.find_by_id(id))
+        return render_template(module['delete_template'], schedule=s)
+    else:
+        if is_yes():
+            scheds.delete_by_id(id)
+        return redirect(url_for(module['index']))
 
 
 @mod.route('/practice/new', methods=['GET', 'POST'])
 def new_practice():
-    return new_schedule(
-        template='admin/edit_practice.html',
-        new='admin.new_practice',
-        index='admin.practice',
-        validate=validate_practice,
-        make_obj=scheds.make_practice_obj,
-        type=scheds.TYPE_PRACTICE)
+    return new_schedule(modify_practice)
 
 
 @mod.route('/practice/edit/<int:id>', methods=['GET', 'POST'])
 def edit_practice(id):
-    if request.method == 'GET':
-        p = scheds.from_row(scheds.find_by_id(id, with_entry=False))
-        return render_template('admin/edit_practice.html', practice=p)
-    else:
-        try:
-            validate_practice()
-        except ValueError:
-            return redirect(url_for('admin.edit_practice', id=id))
-
-        p = scheds.make_practice_obj(request.form)
-        scheds.update(id, p['when'], p['body'])
-        return redirect(url_for('admin.practice'))
+    return edit_schedule(id, modify_practice)
 
 
 @mod.route('/practice/delete/<int:id>', methods=['GET', 'POST'])
 def delete_practice(id):
-    if request.method == 'GET':
-        p = scheds.from_row(scheds.find_by_id(id))
-        return render_template('admin/delete_practice.html', practice=p)
-    else:
-        action = request.form['action']
-        if action == u'はい':
-            scheds.delete_by_id(id)
-        return redirect(url_for('admin.practice'))
+    return delete_schedule(id, modify_practice)
 
 
 @mod.route('/game/new', methods=['GET', 'POST'])
 def new_game():
-    return new_schedule(
-        template='admin/edit_game.html',
-        new='admin.new_game',
-        index='admin.game',
-        validate=validate_game,
-        make_obj=scheds.make_game_obj,
-        type=scheds.TYPE_GAME)
+    return new_schedule(modify_game)
 
 
 @mod.route('/game/edit/<int:id>', methods=['GET', 'POST'])
 def edit_game(id):
-    if request.method == 'GET':
-        p = scheds.from_row(scheds.find_by_id(id, with_entry=False))
-        return render_template('admin/edit_game.html', game=p)
-    else:
-        try:
-            validate_game()
-        except ValueError:
-            return redirect(url_for('admin.edit_game', id=id))
-
-        ga = scheds.make_game_obj(request.form)
-        scheds.update(id, ga['when'], ga['body'])
-        return redirect(url_for('admin.game'))
+    return edit_schedule(id, modify_game)
 
 
 @mod.route('/game/delete/<int:id>', methods=['GET', 'POST'])
 def delete_game(id):
-    if request.method == 'GET':
-        ga = scheds.from_row(scheds.find_by_id(id))
-        return render_template('admin/delete_game.html', game=ga)
-    else:
-        action = request.form['action']
-        if action == u'はい':
-            scheds.delete_by_id(id)
-        return redirect(url_for('admin.game'))
+    return delete_schedule(id, modify_game)
 
 
 @mod.route('/event/new', methods=['GET', 'POST'])
 def new_event():
-    return new_schedule(
-        template='admin/edit_event.html',
-        new='admin.new_event',
-        index='admin.event',
-        validate=validate_event,
-        make_obj=scheds.make_event_obj,
-        type=scheds.TYPE_EVENT)
+    return new_schedule(modify_event)
 
 
 @mod.route('/event/edit/<int:id>', methods=['GET', 'POST'])
 def edit_event(id):
-    if request.method == 'GET':
-        e = scheds.from_row(scheds.find_by_id(id, with_entry=False))
-        return render_template('admin/edit_event.html', event=e)
-    else:
-        try:
-            validate_event()
-        except ValueError:
-            return redirect(url_for('admin.edit_event', id=id))
-
-        e = scheds.make_event_obj(request.form)
-        scheds.update(id, e['when'], e['body'])
-        return redirect(url_for('admin.event'))
+    return edit_schedule(id, modify_event)
 
 
 @mod.route('/event/delete/<int:id>', methods=['GET', 'POST'])
 def delete_event(id):
-    if request.method == 'GET':
-        ga = scheds.from_row(scheds.find_by_id(id))
-        return render_template('admin/delete_event.html', event=ga)
-    else:
-        action = request.form['action']
-        if action == u'はい':
-            scheds.delete_by_id(id)
-        return redirect(url_for('admin.event'))
+    return delete_schedule(id, modify_event)
 
 
 @mod.route('/member/new', methods=['GET', 'POST'])
@@ -241,7 +232,6 @@ def delete_member(id):
         user = users.find_by_id(id)
         return render_template('admin/delete_member.html', user=user)
     else:
-        action = request.form['action']
-        if action == u'はい':
+        if is_yes():
             users.delete_by_id(id)
         return redirect(url_for('admin.member'))

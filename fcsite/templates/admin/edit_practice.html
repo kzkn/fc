@@ -2,24 +2,24 @@
 {% set active_tab = 'practice' %}
 
 {% block tabcontent %}
-          {% if practice is defined %}
-          <form action="{{ url_for('admin.edit_practice', id=practice['id']) }}" method="post" class="well">
+          {% if schedule is defined %}
+          <form action="{{ url_for('admin.edit_practice', id=schedule['id']) }}" method="post" class="well">
             <label>日付</label>
-            <input type="text" name="date" class="datepicker" value="{{ practice['when_'].strftime('%Y-%m-%d') }}"></input>
+            <input type="text" name="date" class="datepicker" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"></input>
             <label>開始時刻</label>
-            <input type="text" name="begintime" class="timepicker" value="{{ practice['when_'].strftime('%H:%M') }}"></input>
+            <input type="text" name="begintime" class="timepicker" value="{{ schedule['when_'].strftime('%H:%M') }}"></input>
             <label>終了時刻</label>
-            <input type="text" name="endtime" class="timepicker" value="{{ practice['end'] }}"></input>
+            <input type="text" name="endtime" class="timepicker" value="{{ schedule['end'] }}"></input>
             <label>場所</label>
-            <input type="text" name="loc" value="{{ practice['loc'] }}"></input>
+            <input type="text" name="loc" value="{{ schedule['loc'] }}"></input>
             <label>コート</label>
-            <input type="text" name="court" value="{{ practice['court'] }}"></input>
+            <input type="text" name="court" value="{{ schedule['court'] }}"></input>
             <label>予約番号</label>
-            <input type="text" name="no" value="{{ practice['no'] }}"></input>
+            <input type="text" name="no" value="{{ schedule['no'] }}"></input>
             <label>コート代</label>
-            <input type="text" name="price" value="{{ practice['price'] }}"></input>
+            <input type="text" name="price" value="{{ schedule['price'] }}"></input>
             <label>備考</label>
-            <textarea name="note" style="width: 80%; height: 100px;">{{ practice['note'] }}</textarea>
+            <textarea name="note" style="width: 80%; height: 100px;">{{ schedule['note'] }}</textarea>
             <br>
             <button type="submit" class="btn">登録</button>
           </form>

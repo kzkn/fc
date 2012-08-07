@@ -2,7 +2,7 @@
 {% set active_tab = 'game' %}
 
 {% block tabcontent %}
-          <form action="{{ url_for('admin.delete_game', id=game['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.delete_game', id=schedule['id']) }}" method="post" class="well">
             <p>
               本当に削除しますか？
               <input type="submit" name="action" class="btn btn-danger" value="はい"></input>
@@ -23,28 +23,28 @@
                 <td>
                   <dl>
                     <dt>試合名</dt>
-                    <dd>{{ game['name'] }}</dd>
+                    <dd>{{ schedule['name'] }}</dd>
                     <dt>場所</dt>
-                    <dd>{{ game['loc'] }}</dd>
+                    <dd>{{ schedule['loc'] }}</dd>
                     <dt>開催日</dt>
-                    <dd>{{ game['when_'].strftime('%m-%d(%a)') }}</dd>
+                    <dd>{{ schedule['when_'].strftime('%m-%d(%a)') }}</dd>
                     <dt>ジャンル</dt>
-                    <dd>{{ game['genre'] }}</dd>
+                    <dd>{{ schedule['genre'] }}</dd>
                     <dt>締め切り</dt>
-                    <dd>{{ game['deadline'] }}</dd>
+                    <dd>{{ schedule['deadline'] }}</dd>
                     <dt>試合代</dt>
-                    <dd>{{ game['price'] }}円</dd>
+                    <dd>{{ schedule['price'] }}円</dd>
                     <dt>受付開始</dt>
-                    <dd>{{ game['begin_acceptance'] }}</dd>
+                    <dd>{{ schedule['begin_acceptance'] }}</dd>
                     <dt>試合開始</dt>
-                    <dd>{{ game['begin_game'] }}</dd>
+                    <dd>{{ schedule['begin_game'] }}</dd>
                     <dt>備考</dt>
-                    <dd>{{ game['note'] }}</dd>
+                    <dd>{{ schedule['note'] }}</dd>
                   </dl>
                 </td>
                 <td>
                   <dl>
-                    {% for e in game['entries'] %}
+                    {% for e in schedule['entries'] %}
                     <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
                     <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
                     {% endfor %}

@@ -2,7 +2,7 @@
 {% set active_tab = 'event' %}
 
 {% block tabcontent %}
-          <form action="{{ url_for('admin.delete_event', id=event['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.delete_event', id=schedule['id']) }}" method="post" class="well">
             <p>
               本当に削除しますか？
               <input type="submit" name="action" class="btn btn-danger" value="はい"></input>
@@ -23,22 +23,22 @@
                 <td>
                   <dl>
                     <dt>イベント名</dt>
-                    <dd>{{ event['name'] }}</dd>
+                    <dd>{{ schedule['name'] }}</dd>
                     <dt>場所</dt>
-                    <dd>{{ event['loc'] }}</dd>
+                    <dd>{{ schedule['loc'] }}</dd>
                     <dt>開催日</dt>
-                    <dd>{{ event['when_'].strftime('%m-%d(%a)') }}</dd>
+                    <dd>{{ schedule['when_'].strftime('%m-%d(%a)') }}</dd>
                     <dt>締め切り</dt>
-                    <dd>{{ event['deadline'] }}</dd>
+                    <dd>{{ schedule['deadline'] }}</dd>
                     <dt>費用</dt>
-                    <dd>{{ event['price'] }}円</dd>
+                    <dd>{{ schedule['price'] }}円</dd>
                     <dt>内容</dt>
-                    <dd>{{ event['description'] }}</dd>
+                    <dd>{{ schedule['description'] }}</dd>
                   </dl>
                 </td>
                 <td>
                   <dl>
-                    {% for e in event['entries'] %}
+                    {% for e in schedule['entries'] %}
                     <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
                     <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
                     {% endfor %}

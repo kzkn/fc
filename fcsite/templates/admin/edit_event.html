@@ -2,20 +2,20 @@
 {% set active_tab = 'event' %}
 
 {% block tabcontent %}
-          {% if event is defined %}
-          <form action="{{ url_for('admin.edit_event', id=event['id']) }}" method="post" class="well">
+          {% if schedule is defined %}
+          <form action="{{ url_for('admin.edit_event', id=schedule['id']) }}" method="post" class="well">
             <label>イベント名</label>
-            <input type="text" name="name" value="{{ event['name'] }}"></input>
+            <input type="text" name="name" value="{{ schedule['name'] }}"></input>
             <label>開催日</label>
-            <input type="text" name="date" class="datepicker" value="{{ event['when_'].strftime('%Y-%m-%d') }}"></input>
+            <input type="text" name="date" class="datepicker" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"></input>
             <label>場所</label>
-            <input type="text" name="loc" value="{{ event['loc'] }}"></input>
+            <input type="text" name="loc" value="{{ schedule['loc'] }}"></input>
             <label>締め切り</label>
-            <input type="text" name="deadline" class="datepicker" value="{{ event['deadline'] }}"></input>
+            <input type="text" name="deadline" class="datepicker" value="{{ schedule['deadline'] }}"></input>
             <label>費用</label>
-            <input type="text" name="price" value="{{ event['price'] }}"></input>
+            <input type="text" name="price" value="{{ schedule['price'] }}"></input>
             <label>内容</label>
-            <textarea name="description" style="width: 80%; height: 100px;">{{ event['description'] }}</textarea>
+            <textarea name="description" style="width: 80%; height: 100px;">{{ schedule['description'] }}</textarea>
             <br>
             <button type="submit" class="btn">登録</button>
           </form>
