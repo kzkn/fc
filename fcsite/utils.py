@@ -24,6 +24,8 @@ def do_validate(form, validations):
 
 
 def check_date(s):
+    if not s:
+        return s
     try:
         time.strptime(s, '%Y-%m-%d')
     except ValueError:
@@ -32,6 +34,8 @@ def check_date(s):
 
 
 def check_time(s):
+    if not s:
+        return s
     try:
         time.strptime(s, '%H:%M')
     except ValueError:
@@ -40,7 +44,7 @@ def check_time(s):
 
 
 def check_number(s):
-    if len(s) == 0:
+    if not s:
         return s
     if not s.isdigit():
         raise ValueError('数値にしてください')
