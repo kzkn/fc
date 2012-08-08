@@ -2,6 +2,11 @@
 {% set active_page = 'admin' %}
 {% set active_admin_page = active_admin_page | default('') %}
 
+{% block css %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/datepicker.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/timepicker.css') }}">
+{% endblock %}
+
 {% block maincontent %}
       <div class="subhead visible-desktop">
         <h1>管理</h1>
@@ -36,6 +41,8 @@
 {% endblock %}
 
 {% block script %}
+      <script src="{{ url_for('static', filename='js/libs/bootstrap/datepicker.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/libs/bootstrap/timepicker.js') }}"></script>
       <script>
         $(function() {
             $('.datepicker').datepicker({
