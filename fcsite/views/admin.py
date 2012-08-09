@@ -98,7 +98,7 @@ def event():
 def member():
     males, females = users.find_group_by_sex()
     return render_template('admin/member.html',
-                           users=longzip(males, females))
+                           males=males, females=females)
 
 
 def is_yes(name='action'):
@@ -242,12 +242,37 @@ def new_member():
         try:
             validate_member()
         except ValueError:
-            return redirect(url_for('admin.member'))
+            return redirect(url_for('admin.new_member'))
 
         u = users.make_obj(request.form)
-        password = users.generate_uniq_password()
-        users.insert(u['name'], str(password), u['sex'], u['permission'])
+        users.insert(u['name'], u['password'], u['sex'], u['permission'])
         return redirect(url_for('admin.member'))
+
+
+@mod.route('/member/edit/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_MEMBER)
+def edit_member(id):
+    if request.method == 'GET':
+        user = users.find_by_id(id)
+        return render_template('admin/edit_member.html', user=user)
+    else:
+        try:
+            validate_member()
+        except ValueError:
+            return redirect(url_for('admin.edit_member'))
+
+        u = users.make_obj(request.form)
+        users.update(id, u['password'], u['sex'], u['permission'])
+
+        if id != g.user['id']:
+            return redirect(url_for('admin.member'))
+        else:
+            if users.is_member_admin(u):
+                return redirect(url_for('admin.member'))
+            elif users.is_admin(u):
+                return redirect(url_for('admin.index'))
+            else:
+                return redirect(url_for('general.index'))
 
 
 @mod.route('/member/delete/<int:id>', methods=['GET', 'POST'])

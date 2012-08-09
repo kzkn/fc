@@ -39,6 +39,16 @@ def insert(name, password, sex, permission):
     g.db.commit()
 
 
+def update(id, password, sex, permission):
+    g.db.execute('''
+        UPDATE User
+           SET password = ?,
+               sex = ?,
+               permission = ?
+         WHERE id = ?''', (password, sex, permission, id))
+    g.db.commit()
+
+
 def delete_by_id(id):
     g.db.execute('DELETE FROM User WHERE id = ?', (id, ))
     g.db.commit()
@@ -46,8 +56,14 @@ def delete_by_id(id):
 
 def make_obj(form):
     return {'name': form['name'],
+            'password': get_or_gen_password(form),
             'sex': sex_atoi(form['sex']),
             'permission': permission_atoi(form)}
+
+
+def get_or_gen_password(form):
+    p = form['password']
+    return p if p else generate_uniq_password()
 
 
 def sex_atoi(sex):
@@ -72,7 +88,6 @@ def generate_uniq_password():
 
 
 def has_permission(user, permission):
-    p = user['permission']
     return (user['permission'] & permission) == permission
 
 
@@ -86,3 +101,11 @@ def is_schedule_admin(user):
 
 def is_member_admin(user):
     return has_permission(user, PERM_ADMIN_MEMBER)
+
+
+def is_male(user):
+    return user['sex'] == SEX_MALE
+
+
+def is_female(user):
+    return user['sex'] == SEX_FEMALE

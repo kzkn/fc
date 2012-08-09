@@ -64,6 +64,12 @@ app.jinja_env.globals['is_schedule_admin'] = \
     lambda: g.user and users.is_schedule_admin(g.user)
 app.jinja_env.globals['is_member_admin'] = \
     lambda: g.user and users.is_member_admin(g.user)
+app.jinja_env.globals['is_schedule_admin_user'] = \
+    lambda u: users.is_schedule_admin(u)
+app.jinja_env.globals['is_member_admin_user'] = \
+    lambda u: users.is_member_admin(u)
+app.jinja_env.globals['is_male'] = users.is_male
+app.jinja_env.globals['is_female'] = users.is_female
 app.jinja_env.globals['admin_navigation_list'] = \
     lambda: admin.get_navigation_list(g.user)
 

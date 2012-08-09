@@ -6,27 +6,33 @@
           <p style="text-align: center;">
             <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('admin.new_member') }}">新規登録</a>
           </p>
+          <h3>男性</h3>
           <table class="table table-bordered" style="margin-top: 12px;">
-            <thead>
-              <tr>
-                <th>男性</th>
-                <th>女性</th>
-              </tr>
-            </thead>
             <tbody>
-              {% for pair in users %}
-              {% set male = pair[0] %}
-              {% set female = pair[1] %}
+              {% for u in males %}
               <tr>
                 <td>
-                  {% if male %}
-                  <a href="{{ url_for('admin.delete_member', id=male['id']) }}">{{ male['name'] }}</a>
-                  {% endif %}
+                  {{ u['name'] }}
                 </td>
                 <td>
-                  {% if female %}
-                  <a href="{{ url_for('admin.delete_member', id=female['id']) }}">{{ female['name'] }}</a>
-                  {% endif %}
+                  <a class="btn" href="{{ url_for('admin.edit_member', id=u['id']) }}"><i class="icon-pencil"></i> 編集</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <h3>女性</h3>
+          <table class="table table-bordered" style="margin-top: 12px;">
+            <tbody>
+              {% for u in females %}
+              <tr>
+                <td>
+                  {{ u['name'] }}
+                </td>
+                <td>
+                  <a class="btn" href="{{ url_for('admin.edit_member', id=u['id']) }}"><i class="icon-pencil"></i> 編集</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
                 </td>
               </tr>
               {% endfor %}
