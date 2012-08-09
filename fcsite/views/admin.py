@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, g, \
+    abort
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
-    check_required, check_in, longzip
+    check_required, check_in, longzip, requires_permission, requires_admin
 
 from datetime import datetime
 try:
@@ -62,25 +63,38 @@ def validate_member():
 
 
 @mod.route('/')
+@requires_admin
+def index():
+    if users.is_schedule_admin(g.user):
+        return practice()
+    if users.is_member_admin(g.user):
+        return member()
+    abort(403)
+
+
 @mod.route('/practice')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def practice():
     ps = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_PRACTICE)]
     return render_template('admin/practice.html', practices=ps)
 
 
 @mod.route('/game')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def game():
     gs = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_GAME)]
     return render_template('admin/game.html', games=gs)
 
 
 @mod.route('/event')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def event():
     es = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_EVENT)]
     return render_template('admin/event.html', events=es)
 
 
 @mod.route('/member')
+@requires_permission(users.PERM_ADMIN_MEMBER)
 def member():
     males, females = users.find_group_by_sex()
     return render_template('admin/member.html',
@@ -166,51 +180,61 @@ def delete_schedule(id, module):
 
 
 @mod.route('/practice/new', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def new_practice():
     return new_schedule(modify_practice)
 
 
 @mod.route('/practice/edit/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def edit_practice(id):
     return edit_schedule(id, modify_practice)
 
 
 @mod.route('/practice/delete/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def delete_practice(id):
     return delete_schedule(id, modify_practice)
 
 
 @mod.route('/game/new', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def new_game():
     return new_schedule(modify_game)
 
 
 @mod.route('/game/edit/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def edit_game(id):
     return edit_schedule(id, modify_game)
 
 
 @mod.route('/game/delete/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def delete_game(id):
     return delete_schedule(id, modify_game)
 
 
 @mod.route('/event/new', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def new_event():
     return new_schedule(modify_event)
 
 
 @mod.route('/event/edit/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def edit_event(id):
     return edit_schedule(id, modify_event)
 
 
 @mod.route('/event/delete/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
 def delete_event(id):
     return delete_schedule(id, modify_event)
 
 
 @mod.route('/member/new', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_MEMBER)
 def new_member():
     if request.method == 'GET':
         return render_template('admin/edit_member.html')
@@ -222,11 +246,12 @@ def new_member():
 
         u = users.make_obj(request.form)
         password = users.generate_uniq_password()
-        users.insert(u['name'], str(password), u['sex'])
+        users.insert(u['name'], str(password), u['sex'], u['permission'])
         return redirect(url_for('admin.member'))
 
 
 @mod.route('/member/delete/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_MEMBER)
 def delete_member(id):
     if request.method == 'GET':
         user = users.find_by_id(id)
@@ -235,3 +260,16 @@ def delete_member(id):
         if is_yes():
             users.delete_by_id(id)
         return redirect(url_for('admin.member'))
+
+
+#############
+# UTILITIES
+#############
+
+def get_navigation_list(user):
+    navs = []
+    if users.is_schedule_admin(user):
+        navs.append(('admin.practice', 'practice', 'icon-calendar', u'活動予定'))
+    if users.is_member_admin(user):
+        navs.append(('admin.member', 'member', 'icon-user', u'メンバー'))
+    return navs

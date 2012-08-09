@@ -20,12 +20,7 @@
           <div class="well" style="padding: 8px;">
             <ul class="nav nav-list">
               <li class="nav-header">管理メニュー</li>
-              {% set admin_navigations = [
-                     ('admin.practice', 'practice', 'icon-calendar', '活動予定'),
-                     ('admin.member', 'member', 'icon-user', 'メンバー')
-                 ]
-              %}
-              {% for view, id, icon, caption in admin_navigations %}
+              {% for view, id, icon, caption in admin_navigation_list() %}
               <li{% if active_admin_page == id %} class="active"{% endif %}>
                 <a href="{{ url_for(view) }}"><i class="icon"></i> {{ caption }}</a>
               </li>

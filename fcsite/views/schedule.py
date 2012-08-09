@@ -2,11 +2,13 @@
 
 from flask import Blueprint, render_template, redirect, url_for, request
 from fcsite.models import schedules as scheds
+from fcsite.utils import requires_login
 
 mod = Blueprint('schedule', __name__, url_prefix='/schedule')
 
 
 @mod.route('/')
+@requires_login
 def schedule():
     ps = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_PRACTICE)]
     gs = [scheds.from_row(s) for s in scheds.find(scheds.TYPE_GAME)]
@@ -16,6 +18,7 @@ def schedule():
 
 
 @mod.route('/<int:sid>/entry', methods=["POST"])
+@requires_login
 def entry(sid):
     action = request.form['action']
     comment = request.form['comment']

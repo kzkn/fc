@@ -17,22 +17,16 @@ from fcsite.models import users
 @app.before_request
 def before_request():
     g.db = database.connect_db()
-    if is_logged_in():
+    if 'user_id' in session:
         g.user = users.find_by_id(session.get('user_id'))
+    else:
+        g.user = None
 
 
 @app.teardown_request
 def teardown_request(exception):
     if hasattr(g, 'db'):
         g.db.close()
-
-
-#############
-# DOMAIN LAYER LOGIC
-#############
-
-def is_logged_in():
-    return 'user_id' in session
 
 
 #############
@@ -63,6 +57,15 @@ from fcsite import utils
 app.jinja_env.filters['datetimeformat'] = utils.format_datetime
 app.jinja_env.filters['dateformat'] = utils.format_date
 app.jinja_env.filters['timeformat'] = utils.format_time
+
+app.jinja_env.globals['is_admin'] = \
+    lambda: g.user and users.is_admin(g.user)
+app.jinja_env.globals['is_schedule_admin'] = \
+    lambda: g.user and users.is_schedule_admin(g.user)
+app.jinja_env.globals['is_member_admin'] = \
+    lambda: g.user and users.is_member_admin(g.user)
+app.jinja_env.globals['admin_navigation_list'] = \
+    lambda: admin.get_navigation_list(g.user)
 
 import locale
 locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')

@@ -7,6 +7,7 @@ CREATE TABLE User (
   name VARCHAR(20) UNIQUE NOT NULL,
   password VARCHAR(10) UNIQUE NOT NULL,
   sex INTEGER NOT NULL,
+  permission INTEGER NOT NULL DEFAULT 0,
   profile CLOB NOT NULL DEFAULT '{}', /* JSON */
   CHECK (sex in (1, 2)) /* 1: male, 2: female */
 );

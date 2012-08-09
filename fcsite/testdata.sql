@@ -1,5 +1,7 @@
-INSERT INTO User (name, password, sex) VALUES ('foo', '123456', 1);
-INSERT INTO User (name, password, sex) VALUES ('bar', '123457', 2);
+INSERT INTO User (name, password, sex, permission) VALUES ('foo', '123456', 1, 7);
+INSERT INTO User (name, password, sex, permission) VALUES ('bar', '123457', 2, 0);
+INSERT INTO User (name, password, sex, permission) VALUES ('baz', '123458', 2, 3);
+INSERT INTO User (name, password, sex, permission) VALUES ('qux', '123459', 2, 5);
 
 INSERT INTO Schedule (type, when_, body) VALUES (
   1, '2013-07-29 01:00:00',

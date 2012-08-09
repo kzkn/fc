@@ -1,6 +1,42 @@
 # -*- coding: utf-8 -*-
 
+from flask import g, flash, redirect, url_for, abort
+from fcsite.models import users
+from functools import wraps
 import time
+
+
+#############
+# DECORATORS
+#############
+
+def requires_login(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if g.user is None:
+            abort(401)
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def requires_admin(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not users.is_admin(g.user):
+            abort(403)
+        return f(*args, **kwargs)
+    return requires_login(decorated_function)
+
+
+def requires_permission(permission):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not users.has_permission(g.user, permission):
+                abort(403)
+            return f(*args, **kwargs)
+        return requires_login(decorated_function)
+    return decorator
 
 
 #############
