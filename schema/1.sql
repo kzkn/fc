@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS User;
-DROP TABLE IF EXISTS Schedule;
-DROP TABLE IF EXISTS Entry;
+# -- !Ups
 
 CREATE TABLE User (
   id INTEGER PRIMARY KEY,
@@ -27,3 +25,10 @@ CREATE TABLE Entry (
   comment VARCHAR(512) NOT NULL,
   PRIMARY KEY (user_id, schedule_id)
 );
+
+
+# -- !Downs
+
+DROP TABLE User;
+DROP TABLE Schedule;
+DROP TABLE Entry;
