@@ -5,7 +5,7 @@ from flask import Blueprint, request, render_template, redirect, url_for, g, \
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
-    check_required, check_in, longzip, requires_permission, requires_admin
+    check_required, check_in, requires_permission, requires_admin
 
 from datetime import datetime
 try:

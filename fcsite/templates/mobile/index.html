@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#fff" text="#000">
+    <center><font color="#f00">Fight Club</font></center>
+    <hr>
+    <center>[{{ user['name'] }}]</center>
+    <hr>
+    □予定<br>
+    【<a href="{{ url_for('mobile.practices') + ('?uid=%d' % user['id']) }}">練習情報[{{ practice_count }}]</a>】<br>
+    【<a href="{{ url_for('mobile.games') + ('?uid=%d' % user['id']) }}">試合情報[{{ game_count }}]</a>】<br>
+    【<a href="{{ url_for('mobile.events') + ('?uid=%d' % user['id']) }}">イベント情報[{{ event_count }}]</a>】<br>
+    {#
+    □コミュニケーション<br>
+    【<a href="{{ url_for('mobile.member') }}">メンバー</a>】<br>
+    【<a href="{{ url_for('mobile.bbs') }}">掲示板</a>】<br>
+    □私書箱<br>
+    【受信トレイ：<a href="{{ url_for('mobile.inbox') }}">{{ unread_count }}/{{ read_count }}</a>】<br>
+    【投稿履歴：<a href="{{ url_for('mobile.sent') }}">{{ sent_count }}</a>】<br>
+    【<a href="{{ url_for('mobile.send') }}">投稿</a>】<br><br>
+    #}
+  </body>
+</html>

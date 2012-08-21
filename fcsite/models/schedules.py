@@ -12,9 +12,17 @@ TYPE_EVENT = 3
 
 def find(type):
     cur = g.db.execute("""
-        SELECT *
+        SELECT Schedule.id,
+               Schedule.type,
+               Schedule.when_,
+               Schedule.body,
+               (SELECT COUNT(*)
+                  FROM Entry
+                 WHERE schedule_id = Schedule.id
+                   AND is_entry) AS entry_count
           FROM Schedule
-         WHERE type = ? AND when_ >= datetime('now', 'localtime')
+         WHERE type = ?
+           AND when_ >= datetime('now', 'localtime')
       ORDER BY when_""", (type, ))
 
     # Row -> dict for `entries'
@@ -119,6 +127,15 @@ def find_practice_locations():
         "SELECT body FROM Schedule WHERE type = ?", (TYPE_PRACTICE, ))
     bodies = cur.fetchall()
     return list(set([json.loads(body[0])['loc'] for body in bodies]))
+
+
+def count_schedules(type):
+    cur = g.db.execute("""
+        SELECT COUNT(*)
+          FROM Schedule
+         WHERE type = ?
+           AND when_ >= datetime('now', 'localtime')""", (type, ))
+    return cur.fetchone()[0]
 
 
 def from_row(row):

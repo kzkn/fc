@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#fff" text="#000">
+    <center><font color="#f00">Fight Club</font></center>
+    <br>
+    <br>
+    <center><a href="{{ url_for('mobile.index') + ('?uid=%d' % user['id']) }}">メニュー</a></center>
+    <hr>
+    {% for p in practices %}
+    <strong><a href="{{ url_for('mobile.practice', sid=p['id']) + ('?uid=%d' % user['id']) }}">状況【{{ p['entry_count'] }}人】</a></strong><br>
+    場所：{{ p['loc'] }}<br>
+    コート：{{ p['court'] }}<br>
+    日時：{{ p['when_'] | datetimeformat }}-{{ p['end'] }}<br>
+    予約番号：{{ p['no'] }}<br>
+    金額：{{ p['price'] }}円<br>
+    備考：{{ p['note'] }}
+    <hr>
+    {% endfor %}
+  </body>
+</html>

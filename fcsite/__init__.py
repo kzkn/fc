@@ -48,10 +48,12 @@ from fcsite.views import general
 from fcsite.views import member
 from fcsite.views import schedule
 from fcsite.views import admin
+from fcsite.views import mobile
 app.register_blueprint(general.mod)
 app.register_blueprint(member.mod)
 app.register_blueprint(schedule.mod)
 app.register_blueprint(admin.mod)
+app.register_blueprint(mobile.mod)
 
 from fcsite import utils
 app.jinja_env.filters['datetimeformat'] = utils.format_datetime
