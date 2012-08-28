@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import g, flash, redirect, url_for, abort
+from flask import g, abort, request, session
 from fcsite.models import users
 from functools import wraps
+import re
 import time
 
 
@@ -115,6 +116,22 @@ def longzip(l1, l2):
                 l2[i] if i < len2 else None)
         ret.append(pair)
     return ret
+
+
+def do_login(password):
+    user = users.find_by_password(password)
+    if user:
+        session['user_id'] = user['id']
+    return True if user else False
+
+
+def request_from_featurephone():
+    ua = request.user_agent.string
+    return re.match(r'(DoCoMo|UP\.Browser|J-PHONE|Vodafone|SoftBank)', ua)
+
+
+def request_for_mobile_page():
+    return re.match(r'^/mobile', request.path)
 
 
 #############

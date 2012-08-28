@@ -1,0 +1,10 @@
+{% extends 'mobile/layout_schedule.html' %}
+
+{% block description %}
+    場所：{{ schedule['loc'] }}<br>
+    コート：{{ schedule['court'] }}<br>
+    日時：{{ schedule['when_'] | datetimeformat }}-{{ schedule['end'] }}<br>
+    予約番号：{{ schedule['no'] }}<br>
+    金額：{{ schedule['price'] }}円<br>
+    備考：{{ schedule['note'] }}
+{% endblock %}

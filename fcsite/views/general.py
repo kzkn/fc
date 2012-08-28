@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, session, redirect, request, \
     flash, url_for
-from fcsite.models import users
+from fcsite.utils import do_login
 
 mod = Blueprint('general', __name__)
 
@@ -10,13 +10,6 @@ mod = Blueprint('general', __name__)
 @mod.route('/')
 def index():
     return render_template('index.html')
-
-
-def do_login(password):
-    user = users.find_by_password(password)
-    if user:
-        session['user_id'] = user['id']
-    return True if user else False
 
 
 @mod.route('/login', methods=['POST'])

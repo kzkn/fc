@@ -1,0 +1,10 @@
+{% extends 'mobile/layout_schedule.html' %}
+
+{% block description %}
+    お題目：{{ schedule['name'] }}<br>
+    場所：{{ schedule['loc'] }}<br>
+    開催日：{{ schedule['when_'] | dateformat }}<br>
+    〆切：{{ schedule['deadline'] }}<br>
+    費用：{{ schedule['price'] }}円<br>
+    内容：{{ schedule['description'] }}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'mobile/layout_schedules.html' %}
+
+{% block content %}
+    {% for e in events %}
+    <strong><a href="{{ url_for('mobile.event', sid=e['id']) + ('?uid=%d' % user['id']) }}">状況【{{ e['entry_count'] }}人】</a></strong><br>
+    お題目：{{ e['name'] }}<br>
+    場所：{{ e['loc'] }}<br>
+    開催日：{{ e['when_'] | dateformat }}<br>
+    〆切：{{ e['deadline'] }}<br>
+    費用：{{ e['price'] }}円<br>
+    内容：{{ e['description'] }}
+    <hr>
+    {% endfor %}
+{% endblock %}

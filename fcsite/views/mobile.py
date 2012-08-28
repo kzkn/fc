@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, abort, redirect, url_for
+from flask import Blueprint, request, render_template, abort, redirect, g, \
+        session, url_for
 from fcsite.models import users
 from fcsite.models import schedules as scheds
+from fcsite.utils import do_login
 from functools import wraps
 
 mod = Blueprint('mobile', __name__, url_prefix='/mobile')
 
 
 def get_userid():
-    return request.args.get('uid', '')
+    return g.user and g.user['id']
 
 
 def requires_userid(f):
@@ -17,14 +19,14 @@ def requires_userid(f):
     def decorated_function(*args, **kwargs):
         uid = get_userid()
         if not uid:
-            print 'abort 1'
             abort(401)
         return f(*args, **kwargs)
     return decorated_function
 
 
-def append_userid(url):
-    return '%s?uid=%s' % (url, get_userid())
+def append_userid(url, **kwargs):
+    uid = kwargs.get('uid', get_userid())
+    return '%s?uid=%s' % (url, uid)
 
 
 def find_user_and_schedule(sid):
@@ -37,12 +39,21 @@ def find_user_and_schedule(sid):
     return (user, scheds.from_row(s))
 
 
+@mod.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        password = request.form['password']
+        if do_login(password):
+            uid = session['user_id']
+            return redirect(append_userid(url_for('mobile.index'), uid=uid))
+    return render_template('mobile/login.html')
+
+
 @mod.route('/')
 @requires_userid
 def index():
     user = users.find_by_id(get_userid())
     if not user:
-        print 'abort 2'
         abort(401)
     practice_count = scheds.count_schedules(scheds.TYPE_PRACTICE)
     game_count = scheds.count_schedules(scheds.TYPE_GAME)
@@ -68,7 +79,7 @@ def practices():
 @requires_userid
 def practice(sid):
     (user, p) = find_user_and_schedule(sid)
-    return render_template('mobile/practice.html', user=user, practice=p)
+    return render_template('mobile/practice.html', user=user, schedule=p)
 
 
 @mod.route('/game')
@@ -85,7 +96,7 @@ def games():
 @requires_userid
 def game(sid):
     (user, ga) = find_user_and_schedule(sid)
-    return render_template('mobile/game.html', user=user, game=ga)
+    return render_template('mobile/game.html', user=user, schedule=ga)
 
 
 @mod.route('/event')
@@ -102,10 +113,16 @@ def events():
 @requires_userid
 def event(sid):
     (user, e) = find_user_and_schedule(sid)
-    return render_template('mobile/event.html', user=user, event=e)
+    return render_template('mobile/event.html', user=user, schedule=e)
 
 
 @mod.route('/entry/<int:sid>', methods=['POST'])
 @requires_userid
 def entry(sid):
-    return redirect(append_userid(url_for('mobile.index')))
+    action = request.form['action']
+    comment = request.form['comment']
+    if action == u'参加':
+        scheds.do_entry(sid, comment, entry=True)
+    elif action == u'不参加':
+        scheds.do_entry(sid, comment, entry=False)
+    return redirect(request.form['come_from'])

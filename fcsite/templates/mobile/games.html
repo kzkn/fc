@@ -1,0 +1,16 @@
+{% extends 'mobile/layout_schedules.html' %}
+
+{% block content %}
+    {% for ga in games %}
+    <strong><a href="{{ url_for('mobile.game', sid=ga['id']) + ('?uid=%d' % user['id']) }}">状況【{{ ga['entry_count'] }}人】</a></strong><br>
+    大会名：{{ ga['name'] }}<br>
+    場所：{{ ga['loc'] }}<br>
+    〆切(Fight Club)：{{ ga['deadline'] }}<br>
+    試合日：{{ ga['when_'] | dateformat }}<br>
+    受付開始：{{ ga['begin_acceptance'] }}<br>
+    試合開始：{{ ga['begin_game'] }}<br>
+    金額：{{ ga['price'] }}円<br>
+    備考：{{ ga['note'] }}
+    <hr>
+    {% endfor %}
+{% endblock %}

@@ -1,26 +1,53 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, g, session, redirect, url_for
+from flask import Flask, g, session, redirect, url_for, request
 
 app = Flask(__name__)
 app.config.from_object('config')
 
 from fcsite import database
 from fcsite.models import users
+from fcsite.utils import request_from_featurephone, request_for_mobile_page
 
 
 #############
 # REQUEST HOOKS
 #############
 
+@app.errorhandler(401)
+def handle_unauthorized(e):
+    if request_for_mobile_page():
+        return redirect(url_for('mobile.login'))
+    else:
+        return redirect(url_for('general.index'))
+
+
 @app.before_request
 def before_request():
     g.db = database.connect_db()
     if 'user_id' in session:
         g.user = users.find_by_id(session.get('user_id'))
+    elif 'uid' in request.args:
+        g.user = users.find_by_id(request.args.get('uid'))
     else:
         g.user = None
+
+    if request_from_featurephone() and not request_for_mobile_page():
+        return redirect(
+                url_for('mobile.index') +
+                (('?uid=%d' % g.user['id']) if g.user else ''))
+
+    if request_for_mobile_page():
+        request.charset = 'Shift_JIS'
+
+
+@app.after_request
+def after_request(response):
+    if request_for_mobile_page():
+        response.headers.add('Content-Type', 'text/html; charset=Shift_JIS')
+        response.data = response.data.decode('utf8').encode('sjis')
+    return response
 
 
 @app.teardown_request

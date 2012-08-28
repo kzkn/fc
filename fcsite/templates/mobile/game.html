@@ -1,0 +1,12 @@
+{% extends 'mobile/layout_schedule.html' %}
+
+{% block description %}
+    大会名：{{ schedule['name'] }}<br>
+    場所：{{ schedule['loc'] }}<br>
+    〆切(Fight Club)：{{ schedule['deadline'] }}<br>
+    試合日：{{ schedule['when_'] | dateformat }}<br>
+    受付開始：{{ schedule['begin_acceptance'] }}<br>
+    試合開始：{{ schedule['begin_game'] }}<br>
+    金額：{{ schedule['price'] }}円<br>
+    備考：{{ schedule['note'] }}
+{% endblock %}
