@@ -46,7 +46,8 @@ def before_request():
 def after_request(response):
     if request_for_mobile_page():
         response.headers.add('Content-Type', 'text/html; charset=Shift_JIS')
-        response.data = response.data.decode('utf8').encode('sjis')
+        response.data = response.data.decode('utf8') \
+                                     .encode('sjis', 'xmlcharrefreplace')
     return response
 
 
