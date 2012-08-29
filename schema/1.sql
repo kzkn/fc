@@ -18,12 +18,16 @@ CREATE TABLE Schedule (
   CHECK (type IN (1, 2, 3, 9)) /* 1:renshu, 2:shiai, 3:event, 9:other */
 );
 
+CREATE INDEX Schedule_when_index ON Schedule(when_);
+
 CREATE TABLE Entry (
   user_id INTEGER,
   schedule_id INTEGER,
   is_entry BOOLEAN NOT NULL,
   comment VARCHAR(512) NOT NULL,
-  PRIMARY KEY (user_id, schedule_id)
+  PRIMARY KEY (user_id, schedule_id),
+  FOREIGN KEY (user_id) REFERENCES User(id),
+  FOREIGN KEY (schedule_id) REFERENCES Schedule(id)
 );
 
 
@@ -32,3 +36,4 @@ CREATE TABLE Entry (
 DROP TABLE User;
 DROP TABLE Schedule;
 DROP TABLE Entry;
+DROP INDEX Schedule_when_index;
