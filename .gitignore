@@ -1,5 +1,5 @@
 *.db
-
+*.swp
 *.py[co]
 
 # Packages
