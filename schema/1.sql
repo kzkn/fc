@@ -30,10 +30,21 @@ CREATE TABLE Entry (
   FOREIGN KEY (schedule_id) REFERENCES Schedule(id)
 );
 
+CREATE TABLE BBS (
+  id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  when_ TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  body CLOB NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES User(id)
+);
+
+CREATE INDEX BBS_when_index ON BBS(when_);
 
 # -- !Downs
 
 DROP TABLE User;
 DROP TABLE Schedule;
 DROP TABLE Entry;
+DROP TABLE BBS;
 DROP INDEX Schedule_when_index;
+DROP INDEX BBS_when_index;

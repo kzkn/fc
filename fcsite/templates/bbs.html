@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% set active_page = 'bbs' %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>掲示板</h1>
+        <p class="lead">
+          「ハッキング」から「今晩のおかず」まで手広くカバー。
+        </p>
+      </div>
+
+      <div class="accordion" id="post">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">書き込む</a>
+          </div>
+          <div id="post-form" class="accordion-body collapse">
+            <div class="accordion-inner">
+              <form action="{{ url_for('bbs.post') }}" method="post">
+                <textarea name="body" style="width: 100%; height: 100px;"></textarea><br>
+                <span class="help-block">タグも使えるよ ... と思ったら使えないよ</span>
+                <input type="submit" name="submit" value="投稿"></input>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% for post in posts %}
+      <hr>
+      <div class="row">
+        <div class="span12">
+          <p>
+            <strong>{{ post['user_name'] }}</strong>
+            <small>@{{ post['when_'] | datetimeformat }}</small>
+          </p>
+          <p>
+            {{ post['body'] }}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
+      <div class="pagination pagination-centered">
+        <ul>
+          <li {% if page == 1 %}class="disabled"{% endif %}>
+            <a href="{{ '#' if page == 1 else url_for('bbs.index', page=page-1) }}">&laquo;</a>
+          </li>
+          {% for i in range(1, pages + 1) %}
+          <li {% if i == page %}class="active"{% endif %}>
+            <a href="{{ '#' if i == page else url_for('bbs.index', page=i) }}">{{ i }}</a>
+          </li>
+          {% endfor %}
+          <li {% if page == pages %}class="disabled"{% endif %}>
+            <a href="{{ '#' if page == pages else url_for('bbs.index', page=page+1) }}">&raquo;</a>
+          </li>
+        </ul>
+      </div>
+{% endblock %}

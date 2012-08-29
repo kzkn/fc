@@ -4,6 +4,7 @@ from flask import Blueprint, request, render_template, abort, redirect, g, \
         session, url_for
 from fcsite.models import users
 from fcsite.models import schedules as scheds
+from fcsite.models import bbs as bbsmodel
 from fcsite.utils import do_login
 from functools import wraps
 
@@ -126,3 +127,25 @@ def entry(sid):
     elif action == u'不参加':
         scheds.do_entry(sid, comment, entry=False)
     return redirect(request.form['come_from'])
+
+
+@mod.route('/bbs')
+@mod.route('/bbs/<int:page>')
+@requires_userid
+def bbs(page=1):
+    user = users.find_by_id(get_userid())
+    if not user:
+        abort(401)
+    modelpage = max(0, page - 1)
+    posts = bbsmodel.find_posts_on_page(modelpage)
+    pages = bbsmodel.count_pages()
+    return render_template('mobile/bbs.html',
+            user=user, page=page, pages=pages, posts=posts)
+
+
+@mod.route('/bbs/post', methods=['POST'])
+@requires_userid
+def bbs_post():
+    body = request.form['body']
+    bbsmodel.post(body)
+    return redirect(append_userid(url_for('mobile.bbs')))

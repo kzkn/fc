@@ -61,11 +61,6 @@ def teardown_request(exception):
 #############
 
 
-@app.route('/bbs')
-def bbs():
-    return redirect(url_for('general.index'))
-
-
 @app.route('/message')
 def message():
     return redirect(url_for('general.index'))
@@ -74,11 +69,13 @@ def message():
 from fcsite.views import general
 from fcsite.views import member
 from fcsite.views import schedule
+from fcsite.views import bbs
 from fcsite.views import admin
 from fcsite.views import mobile
 app.register_blueprint(general.mod)
 app.register_blueprint(member.mod)
 app.register_blueprint(schedule.mod)
+app.register_blueprint(bbs.mod)
 app.register_blueprint(admin.mod)
 app.register_blueprint(mobile.mod)
 

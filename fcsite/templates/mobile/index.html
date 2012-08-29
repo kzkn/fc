@@ -12,10 +12,11 @@
     【<a href="{{ url_for('mobile.practices') + ('?uid=%d' % user['id']) }}">練習情報[{{ practice_count }}]</a>】<br>
     【<a href="{{ url_for('mobile.games') + ('?uid=%d' % user['id']) }}">試合情報[{{ game_count }}]</a>】<br>
     【<a href="{{ url_for('mobile.events') + ('?uid=%d' % user['id']) }}">イベント情報[{{ event_count }}]</a>】<br>
-    {#
+    <br>
     □コミュニケーション<br>
-    【<a href="{{ url_for('mobile.member') }}">メンバー</a>】<br>
     【<a href="{{ url_for('mobile.bbs') }}">掲示板</a>】<br>
+    {#
+    【<a href="{{ url_for('mobile.member') }}">メンバー</a>】<br>
     □私書箱<br>
     【受信トレイ：<a href="{{ url_for('mobile.inbox') }}">{{ unread_count }}/{{ read_count }}</a>】<br>
     【投稿履歴：<a href="{{ url_for('mobile.sent') }}">{{ sent_count }}</a>】<br>

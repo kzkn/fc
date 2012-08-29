@@ -25,3 +25,11 @@ INSERT INTO Schedule (type, when_, body) VALUES (
   '{"name": "はなきん", "loc": "飲み屋", "description": "飲むぜぇー",
     "deadline": "2012-07-28", "price": "2500"}');
 
+INSERT INTO BBS (user_id, body) VALUES (1, 'hello, hello');
+INSERT INTO BBS (user_id, body) VALUES (2, 'hello, world');
+INSERT INTO BBS (user_id, body) VALUES (3, 'world, hello');
+INSERT INTO BBS (user_id, body) VALUES (4, 'world, world');
+INSERT INTO BBS (user_id, body) VALUES (4, 'hello, hello');
+INSERT INTO BBS (user_id, body) VALUES (3, 'hello, world');
+INSERT INTO BBS (user_id, body) VALUES (2, 'world, hello');
+INSERT INTO BBS (user_id, body) VALUES (1, 'hello, world');

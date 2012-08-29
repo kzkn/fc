@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#fff" text="#000">
+    <center><font color="#f00">Fight Club</font></center>
+    <br>
+    <br>
+    <center><a href="{{ url_for('mobile.index') + ('?uid=%d' % user['id']) }}">メニュー</a></center>
+    <br>
+    <form action="{{ url_for('mobile.bbs_post') + ('?uid=%d' % user['id']) }}" method="post">
+      <textarea name="body" cols="17" rows="3" istyle="1"></textarea><br>
+      <input type="submit" name="submit" value="投稿"></input>
+    </form>
+    {% for post in posts %}
+    <hr>
+    {{ post['user_name'] }} @{{ post['when_'] | datetimeformat }}<br>
+    {{ post['body'] }}
+    {% endfor %}
+    <hr>
+    <center>
+      {% if page > 1 %}
+        <a href="{{ url_for('mobile.bbs', page=page-1) + ('?uid=%d' % user['id']) }}">←</a>
+      {% endif %}
+
+      {% for i in range(1, pages + 1) %}
+        {% if page == i %}
+        <strong>
+        {% else %}
+        <a href="{{ url_for('mobile.bbs', page=i) + ('?uid=%d' % user['id']) }}">
+        {% endif %}
+
+        {{ i }}
+
+        {% if page == i %}
+        </strong>
+        {% else %}
+        </a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page < pages %}
+        <a href="{{ url_for('mobile.bbs', page=page+1) + ('?uid=%d' % user['id']) }}">→</a>
+      {% endif %}
+    </center>
+  </body>
+</html>
