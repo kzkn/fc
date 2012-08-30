@@ -16,7 +16,7 @@
     {% for post in posts %}
     <hr>
     {{ post['user_name'] }} @{{ post['when_'] | datetimeformat }}<br>
-    {{ post['body'] }}
+    {{ post['body'] | safe }}
     {% endfor %}
     <hr>
     <center>
