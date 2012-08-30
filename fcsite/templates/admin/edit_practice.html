@@ -6,13 +6,13 @@
           {% if schedule is defined %}
           <form action="{{ url_for('admin.edit_practice', id=schedule['id']) }}" method="post" class="well">
             <label>日付</label>
-            <input type="text" name="date" class="datepicker" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"></input>
+            <input type="date" name="date" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}" placeholder="年-月-日" required></input>
             <label>開始時刻</label>
-            <input type="text" name="begintime" class="timepicker" value="{{ schedule['when_'] | timeformat }}"></input>
+            <input type="time" name="begintime" value="{{ schedule['when_'] | timeformat }}" placeholder="時:分" reuqired></input>
             <label>終了時刻</label>
-            <input type="text" name="endtime" class="timepicker" value="{{ schedule['end'] }}"></input>
+            <input type="time" name="endtime" value="{{ schedule['end'] }}" placeholder="時:分" required></input>
             <label>場所</label>
-            <input type="text" name="loc" value="{{ schedule['loc'] }}"></input>
+            <input type="text" name="loc" value="{{ schedule['loc'] }}" required></input>
             <label>コート</label>
             <input type="text" name="court" value="{{ schedule['court'] }}"></input>
             <label>予約番号</label>
@@ -28,13 +28,13 @@
           {% else %}
           <form action="{{ url_for('admin.new_practice') }}" method="post" class="well">
             <label>日付</label>
-            <input type="text" name="date" class="datepicker" value="{{ today.strftime('%Y-%m-%d') }}"></input>
+            <input type="date" name="date" value="{{ today.strftime('%Y-%m-%d') }}" placeholder="年-月-日" required></input>
             <label>開始時刻</label>
-            <input type="text" name="begintime" class="timepicker"></input>
+            <input type="time" name="begintime" placeholder="時:分" required></input>
             <label>終了時刻</label>
-            <input type="text" name="endtime" class="timepicker"></input>
+            <input type="time" name="endtime" placeholder="時:分" required></input>
             <label>場所</label>
-            <input type="text" name="loc"></input>
+            <input type="text" name="loc" required></input>
             <label>コート</label>
             <input type="text" name="court"></input>
             <label>予約番号</label>

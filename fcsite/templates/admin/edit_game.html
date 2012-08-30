@@ -6,21 +6,21 @@
           {% if schedule is defined %}
           <form action="{{ url_for('admin.edit_game', id=schedule['id']) }}" method="post" class="well">
             <label>試合名</label>
-            <input type="text" name="name" value="{{ schedule['name'] }}"></input>
+            <input type="text" name="name" value="{{ schedule['name'] }}" required></input>
             <label>開催日</label>
-            <input type="text" name="date" class="datepicker" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"></input>
+            <input type="date" name="date" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}" placeholder="年-月-日" required></input>
             <label>場所</label>
-            <input type="text" name="loc" value="{{ schedule['loc'] }}"></input>
+            <input type="text" name="loc" value="{{ schedule['loc'] }}" required></input>
             <label>ジャンル</label>
-            <input type="text" name="genre" value="{{ schedule['genre'] }}"></input>
+            <input type="text" name="genre" value="{{ schedule['genre'] }}" required></input>
             <label>締め切り</label>
-            <input type="text" name="deadline" class="datepicker" value="{{ schedule['deadline'] }}"></input>
+            <input type="date" name="deadline" value="{{ schedule['deadline'] }}" placeholder="年-月-日"></input>
             <label>試合代</label>
             <input type="text" name="price" value="{{ schedule['price'] }}"></input>
             <label>受付開始</label>
-            <input type="text" name="begin_acceptance" class="timepicker" value="{{ schedule['begin_acceptance'] }}"></input>
+            <input type="time" name="begin_acceptance" value="{{ schedule['begin_acceptance'] }}" placeholder="時:分"></input>
             <label>試合開始</label>
-            <input type="text" name="begin_game" class="timepicker" value="{{ schedule['begin_game'] }}"></input>
+            <input type="time" name="begin_game" value="{{ schedule['begin_game'] }}" placeholder="時:分"></input>
             <label>備考</label>
             {{ you_can_use_tags() }}
             <textarea name="note" style="width: 80%; height: 100px;">{{ schedule['note'] | safe }}</textarea>
@@ -30,21 +30,21 @@
           {% else %}
           <form action="{{ url_for('admin.new_game') }}" method="post" class="well">
             <label>試合名</label>
-            <input type="text" name="name"></input>
+            <input type="text" name="name" required></input>
             <label>開催日</label>
-            <input type="text" name="date" class="datepicker" value="{{ today.strftime('%Y-%m-%d') }}"></input>
+            <input type="date" name="date" value="{{ today.strftime('%Y-%m-%d') }}" placeholder="年-月-日" required></input>
             <label>場所</label>
-            <input type="text" name="loc"></input>
+            <input type="text" name="loc" required></input>
             <label>ジャンル</label>
-            <input type="text" name="genre"></input>
+            <input type="text" name="genre" required></input>
             <label>締め切り</label>
-            <input type="text" name="deadline" class="datepicker" value="{{ today.strftime('%Y-%m-%d')}}"></input>
+            <input type="date" name="deadline" value="{{ today.strftime('%Y-%m-%d')}}" placeholder="年-月-日"></input>
             <label>試合代</label>
             <input type="text" name="price"></input>
             <label>受付開始</label>
-            <input type="text" name="begin_acceptance" class="timepicker"></input>
+            <input type="time" name="begin_acceptance" placeholder="時:分"></input>
             <label>試合開始</label>
-            <input type="text" name="begin_game" class="timepicker"></input>
+            <input type="time" name="begin_game" placeholder="時:分"></input>
             <label>備考</label>
             {{ you_can_use_tags() }}
             <textarea name="note" style="width: 80%; height: 100px;"></textarea>
