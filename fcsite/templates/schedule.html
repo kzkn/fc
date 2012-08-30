@@ -48,7 +48,7 @@
                             <dt>コート代</dt>
                             <dd>{{ p['price'] }}円</dd>
                             <dt>備考</dt>
-                            <dd>{{ p['note'] }}</dd>
+                            <dd>{{ p['note'] | safe }}</dd>
                           </dl>
                         </td>
                         <td>
@@ -111,7 +111,7 @@
                             <dt>試合開始</dt>
                             <dd>{{ ga['begin_game'] }}</dd>
                             <dt>備考</dt>
-                            <dd>{{ ga['note'] }}</dd>
+                            <dd>{{ ga['note'] | safe }}</dd>
                           </dl>
                         </td>
                         <td>
@@ -168,7 +168,7 @@
                             <dt>費用</dt>
                             <dd>{{ e['price'] }}円</dd>
                             <dt>内容</dt>
-                            <dd>{{ e['description'] }}</dd>
+                            <dd>{{ e['description'] | safe }}</dd>
                           </dl>
                         </td>
                         <td>

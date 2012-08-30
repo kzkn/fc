@@ -33,7 +33,7 @@
                     <dt>コート代</dt>
                     <dd>{{ schedule['price'] }}円</dd>
                     <dt>備考</dt>
-                    <dd>{{ schedule['note'] }}</dd>
+                    <dd>{{ schedule['note'] | safe }}</dd>
                   </dl>
                 </td>
                 <td>

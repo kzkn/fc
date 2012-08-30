@@ -1,3 +1,4 @@
+{% from 'macros.html' import you_can_use_tags %}
 {% extends 'admin/layout_schedule.html' %}
 {% set active_tab = 'event' %}
 
@@ -15,7 +16,8 @@
             <label>費用</label>
             <input type="text" name="price" value="{{ schedule['price'] }}"></input>
             <label>内容</label>
-            <textarea name="description" style="width: 80%; height: 100px;">{{ schedule['description'] }}</textarea>
+            {{ you_can_use_tags() }}
+            <textarea name="description" style="width: 80%; height: 100px;">{{ schedule['description'] | safe }}</textarea>
             <br>
             <button type="submit" class="btn">登録</button>
           </form>
@@ -32,6 +34,7 @@
             <label>費用</label>
             <input type="text" name="price"></input>
             <label>内容</label>
+            {{ you_can_use_tags() }}
             <textarea name="description" style="width: 80%; height: 100px;"></textarea>
             <br>
             <button type="submit" class="btn">登録</button>

@@ -1,3 +1,4 @@
+{% from 'macros.html' import you_can_use_tags %}
 {% extends 'admin/layout_schedule.html' %}
 {% set active_tab = 'game' %}
 
@@ -21,7 +22,8 @@
             <label>試合開始</label>
             <input type="text" name="begin_game" class="timepicker" value="{{ schedule['begin_game'] }}"></input>
             <label>備考</label>
-            <textarea name="note" style="width: 80%; height: 100px;">{{ schedule['note'] }}</textarea>
+            {{ you_can_use_tags() }}
+            <textarea name="note" style="width: 80%; height: 100px;">{{ schedule['note'] | safe }}</textarea>
             <br>
             <button type="submit" class="btn">登録</button>
           </form>
@@ -44,6 +46,7 @@
             <label>試合開始</label>
             <input type="text" name="begin_game" class="timepicker"></input>
             <label>備考</label>
+            {{ you_can_use_tags() }}
             <textarea name="note" style="width: 80%; height: 100px;"></textarea>
             <br>
             <button type="submit" class="btn">登録</button>

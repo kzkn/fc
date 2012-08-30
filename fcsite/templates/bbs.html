@@ -1,3 +1,4 @@
+{% from 'macros.html' import you_can_use_tags %}
 {% extends 'layout.html' %}
 {% set active_page = 'bbs' %}
 
@@ -18,7 +19,7 @@
             <div class="accordion-inner">
               <form action="{{ url_for('bbs.post') }}" method="post">
                 <textarea name="body" style="width: 100%; height: 100px;"></textarea><br>
-                <span class="help-block">タグも使えるよ ... と思ったら使えないよ</span>
+                {{ you_can_use_tags() }}
                 <input type="submit" name="submit" value="投稿"></input>
               </form>
             </div>
@@ -35,7 +36,7 @@
             <small>@{{ post['when_'] | datetimeformat }}</small>
           </p>
           <p>
-            {{ post['body'] }}
+            {{ post['body'] | safe }}
           </p>
         </div>
       </div>

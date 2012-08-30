@@ -3,6 +3,7 @@
 from flask import g
 from datetime import datetime
 from fcsite import app
+from fcsite.utils import htmlize_textarea_body, sanitize_html
 
 
 def find_posts(begin, end):
@@ -22,8 +23,10 @@ def count_posts():
 
 def post(body):
     g.db.execute("""
-        INSERT INTO BBS (user_id, when_, body) VALUES (?, ?, ?)""",
-        (g.user['id'], datetime.now(), body))
+        INSERT INTO BBS (user_id, when_, body) VALUES (?, ?, ?)""", (
+            g.user['id'],
+            datetime.now(),
+            sanitize_html(htmlize_textarea_body(body))))
     g.db.commit()
 
 

@@ -3,6 +3,7 @@
 from flask import g, abort, request, session
 from fcsite.models import users
 from functools import wraps
+from BeautifulSoup import BeautifulSoup, Comment
 import re
 import time
 
@@ -132,6 +133,48 @@ def request_from_featurephone():
 
 def request_for_mobile_page():
     return re.match(r'^/mobile', request.path)
+
+
+def htmlize_textarea_body(body):
+    return body.replace('\n', '<br>')
+
+
+#############
+# HTML SANITIZER
+#############
+
+# http://stackoverflow.com/posts/5246109/revisions
+
+VALID_TAGS = {'strong': [],
+              'em': [],
+              'p': [],
+              'ol': [],
+              'ul': [],
+              'li': [],
+              'br': [],
+              'a': ['href', 'title']}
+
+
+def sanitize_html(value, valid_tags=VALID_TAGS):
+    soup = BeautifulSoup(value)
+    comments = soup.findAll(text=lambda text: isinstance(text, Comment))
+    [comment.extract() for comment in comments]
+    # Some markup can be crafted to slip through BeautifulSoup's parser, so
+    # we run this repeatedly until it generates the same output twice.
+    newoutput = soup.renderContents()
+    while 1:
+        oldoutput = newoutput
+        soup = BeautifulSoup(newoutput)
+        for tag in soup.findAll(True):
+            if tag.name not in valid_tags:
+                tag.hidden = True
+            else:
+                tag.attrs = [(attr, value) for attr, value in tag.attrs
+                        if attr in valid_tags[tag.name]]
+        newoutput = soup.renderContents()
+        if oldoutput == newoutput:
+            break
+    return newoutput
 
 
 #############

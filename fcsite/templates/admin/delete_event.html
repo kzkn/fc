@@ -33,7 +33,7 @@
                     <dt>費用</dt>
                     <dd>{{ schedule['price'] }}円</dd>
                     <dt>内容</dt>
-                    <dd>{{ schedule['description'] }}</dd>
+                    <dd>{{ schedule['description'] | safe }}</dd>
                   </dl>
                 </td>
                 <td>

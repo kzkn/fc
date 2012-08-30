@@ -8,7 +8,7 @@
     開催日：{{ e['when_'] | dateformat }}<br>
     〆切：{{ e['deadline'] }}<br>
     費用：{{ e['price'] }}円<br>
-    内容：{{ e['description'] }}
+    内容：{{ e['description'] | safe }}
     <hr>
     {% endfor %}
 {% endblock %}
