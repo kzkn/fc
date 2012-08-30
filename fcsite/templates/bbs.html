@@ -33,7 +33,7 @@
         <div class="span12">
           <p>
             <strong>{{ post['user_name'] }}</strong>
-            <small>@{{ post['when_'] | datetimeformat }}</small>
+            <small>{{ post['when_'] | datetimeformat }}</small>
           </p>
           <p>
             {{ post['body'] | safe }}

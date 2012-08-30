@@ -14,7 +14,7 @@
     【<a href="{{ url_for('mobile.events') + ('?uid=%d' % user['id']) }}">イベント情報[{{ event_count }}]</a>】<br>
     <br>
     □コミュニケーション<br>
-    【<a href="{{ url_for('mobile.bbs') }}">掲示板</a>】<br>
+    【<a href="{{ url_for('mobile.bbs') + ('?uid=%d' % user['id'])}}">掲示板</a>】<br>
     {#
     【<a href="{{ url_for('mobile.member') }}">メンバー</a>】<br>
     □私書箱<br>
