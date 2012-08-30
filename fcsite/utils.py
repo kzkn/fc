@@ -174,7 +174,7 @@ def sanitize_html(value, valid_tags=VALID_TAGS):
         newoutput = soup.renderContents()
         if oldoutput == newoutput:
             break
-    return newoutput
+    return newoutput.decode('utf8')
 
 
 #############
