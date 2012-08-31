@@ -6,7 +6,8 @@ from fcsite import app
 from fcsite.utils import htmlize_textarea_body, sanitize_html
 
 
-def find_posts(begin, end):
+def find_posts(begin):
+    records = app.config['BBS_PER_PAGE']
     return g.db.execute("""
         SELECT User.name AS user_name,
                BBS.when_,
@@ -14,7 +15,7 @@ def find_posts(begin, end):
           FROM User, BBS
          WHERE BBS.user_id = User.id
       ORDER BY BBS.when_ DESC
-         LIMIT ?, ?""", (begin, end))
+         LIMIT ?, ?""", (begin, records))
 
 
 def count_posts():
@@ -32,9 +33,7 @@ def post(body):
 
 def find_posts_on_page(page):
     perpage = app.config['BBS_PER_PAGE']
-    begin = page * perpage
-    end = begin + perpage
-    return find_posts(begin, end)
+    return find_posts(page * perpage)
 
 
 def count_pages():
