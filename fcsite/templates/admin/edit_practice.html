@@ -9,7 +9,7 @@
   <input type="date" name="date" {% if schedule %}value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"{% endif %} placeholder="年-月-日" required></input>
   <label>開始時刻</label>
   {{ error_message('begintime', errors) }}
-  <input type="time" name="begintime" {% if schedule %}value="{{ schedule['when_'] | timeformat }}"{% endif %} placeholder="時:分" reuqired></input>
+  <input type="time" name="begintime" {% if schedule %}value="{{ schedule['when_'] | timeformat }}"{% endif %} placeholder="時:分" required></input>
   <label>終了時刻</label>
   {{ error_message('endtime', errors) }}
   <input type="time" name="endtime" {% if schedule %}value="{{ schedule['end'] }}"{% endif %} placeholder="時:分" required></input>
