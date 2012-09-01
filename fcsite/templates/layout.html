@@ -1,5 +1,19 @@
 {% set active_page = active_page | default('') %}
 
+{% macro show_notice_messages(class) %}
+  {% with msgs = get_flashed_messages(category_filter=[class]) %}
+    {% if msgs %}
+      {% for msg in msgs %}
+<div class="alert alert-{{ class }}">
+  <a class="close" data-dismiss="alert" href="#">&times;</a>
+  <h4 class="alert-heading">{{ msg.split(':', 1)[0] }}</h4>
+  {{ msg.split(':', 1)[1] }}
+</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+{% endmacro %}
+
 <!doctype html>
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
@@ -97,21 +111,8 @@
     </div>
 
     <div class="container-fluid">
-      {% with msgs = get_flashed_messages() %}
-        {% if msgs %}
-          {% for msg in msgs %}
-            {% if msg[0:2] == 'E:' %}
-            <div class="alert alert-error">
-            {% elif msg[0:2] == 'I:' %}
-            <div class="alert alert-info">
-            {% endif %}
-              <a class="close" data-dismiss="alert" href="#">&times;</a>
-              <h4 class="alert-heading">エラー!</h4>
-              {{ msg[2:] }}
-            </div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+      {{ show_notice_messages('error') }}
+      {{ show_notice_messages('info') }}
 
       {% block maincontent %}
       {% endblock %}

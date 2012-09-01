@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import g, abort, request, session
+from flask import g, abort, request, session, flash, get_flashed_messages
 from fcsite.models import users
 from functools import wraps
 from BeautifulSoup import BeautifulSoup, Comment
@@ -192,3 +192,22 @@ def format_date(dt):
 
 def format_time(dt):
     return dt.strftime('%H:%M').decode('utf8')
+
+
+#############
+# MESSAGES
+#############
+
+def error_message(message, title=u'エラー!'):
+    flash_message('error', title, message)
+
+
+def info_message(message, title=u'通知'):
+    flash_message('info', title, message)
+
+
+def flash_message(category, title, message):
+    msg = title + ':' + message
+    msgs = get_flashed_messages(category_filter=[category])
+    if msg not in msgs:
+        flash(msg, category)
