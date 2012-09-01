@@ -67,7 +67,7 @@ def check_date(s):
     try:
         time.strptime(s, '%Y-%m-%d')
     except ValueError:
-        raise ValueError('日付形式ではありません')
+        raise ValueError(u'日付形式ではありません。')
     return s
 
 
@@ -77,7 +77,7 @@ def check_time(s):
     try:
         time.strptime(s, '%H:%M')
     except ValueError:
-        raise ValueError('時刻形式ではありません')
+        raise ValueError(u'時刻形式ではありません。')
     return s
 
 
@@ -85,20 +85,20 @@ def check_number(s):
     if not s:
         return s
     if not s.isdigit():
-        raise ValueError('数値にしてください')
+        raise ValueError(u'数値にしてください。')
     return s
 
 
 def check_required(s):
     if not s:
-        raise ValueError('入力してください')
+        raise ValueError(u'入力必須です。')
     return s
 
 
 def check_in(*options):
     def checker(s):
         if s not in options:
-            raise ValueError('不正な値です')
+            raise ValueError(u'不正な値です。 (%s)' % ','.join(options))
         return s
     return checker
 

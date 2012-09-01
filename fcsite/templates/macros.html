@@ -1,3 +1,12 @@
 {% macro you_can_use_tags() %}
 <span class="help-block">タグも使えるよ (strong, em, p, ol, ul, li, br, a)</span>
 {% endmacro %}
+
+{% macro error_message(name, errors) %}
+  {% if errors and name in errors %}
+<span class="help-block">
+  <span class="label label-important">エラー</span>
+  {{ errors[name] }}
+</span>
+  {% endif %}
+{% endmacro %}

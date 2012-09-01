@@ -146,8 +146,10 @@ def new_schedule(module):
     else:
         try:
             module['validate']()
-        except ValueError:
-            return redirect(url_for(module['new']))
+        except ValueError, e:
+            today = datetime.today()
+            return render_template(module['edit_template'], today=today,
+                    errors=e.errors)
 
         obj = module['make_obj'](request.form)
         scheds.insert(module['type'], obj['when'], obj['body'])
@@ -161,8 +163,10 @@ def edit_schedule(id, module):
     else:
         try:
             module['validate']()
-        except ValueError:
-            return redirect(url_for(module['edit'], id=id))
+        except ValueError, e:
+            s = scheds.from_row(scheds.find_by_id(id, with_entry=False))
+            return render_template(module['edit_template'], schedule=s,
+                    errors=e.errors)
 
         obj = module['make_obj'](request.form)
         scheds.update(id, obj['when'], obj['body'])
@@ -241,8 +245,8 @@ def new_member():
     else:
         try:
             validate_member()
-        except ValueError:
-            return redirect(url_for('admin.new_member'))
+        except ValueError, e:
+            return render_template('admin/edit_member.html', errors=e.errors)
 
         u = users.make_obj(request.form)
         users.insert(u['name'], u['password'], u['sex'], u['permission'])
@@ -258,8 +262,10 @@ def edit_member(id):
     else:
         try:
             validate_member()
-        except ValueError:
-            return redirect(url_for('admin.edit_member'))
+        except ValueError, e:
+            user = users.find_by_id(id)
+            return render_template('admin/edit_member.html', user=user,
+                    errors=e.errors)
 
         u = users.make_obj(request.form)
         users.update(id, u['password'], u['sex'], u['permission'])

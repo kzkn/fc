@@ -1,3 +1,4 @@
+{% from 'macros.html' import error_message %}
 {% extends 'admin/layout.html' %}
 {% set active_admin_page = 'member' %}
 
@@ -5,16 +6,20 @@
           <h2>メンバー管理</h2>
           <form action="{% if user %}{{ url_for('admin.edit_member', id=user['id']) }}{% else %}{{ url_for('admin.new_member') }}{% endif %}" method="post" class="well">
             <label>名前</label>
-            <input type="text" name="name"{% if user %} value="{{ user['name'] }}" readonly{% endif %}></input>
+            {{ error_message('name', errors) }}
+            <input type="text" name="name" {% if user %}value="{{ user['name'] }}" readonly{% else %}required{% endif %}></input>
             <label>パスワード</label>
+            {{ error_message('password', errors) }}
             <input type="text" name="password"{% if user %} value="{{ user['password'] }}"{% endif %}></input>
             <span class="help-block"><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</span>
             <label>性別</label>
+            {{ error_message('sex', errors) }}
             <select name="sex">
               <option{% if user and is_male(user) %} selected{% endif %}>男性</option>
               <option{% if user and is_female(user) %} selected{% endif %}>女性</option>
             </select>
             <label>権限</label>
+            {{ error_message('permissions', errors) }}
             <label class="checkbox">
               <input type="checkbox" name="permissions" value="schedule"{% if user and is_schedule_admin_user(user) %} checked{% endif %}>
               予定

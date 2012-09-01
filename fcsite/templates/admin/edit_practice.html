@@ -1,51 +1,43 @@
-{% from 'macros.html' import you_can_use_tags %}
+{% from 'macros.html' import you_can_use_tags, error_message %}
 {% extends 'admin/layout_schedule.html' %}
 {% set active_tab = 'practice' %}
 
+{% macro input_forms(url) %}
+<form action="{{ url }}" method="post" class="well">
+  <label>日付</label>
+  {{ error_message('date', errors) }}
+  <input type="date" name="date" {% if schedule %}value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"{% endif %} placeholder="年-月-日" required></input>
+  <label>開始時刻</label>
+  {{ error_message('begintime', errors) }}
+  <input type="time" name="begintime" {% if schedule %}value="{{ schedule['when_'] | timeformat }}"{% endif %} placeholder="時:分" reuqired></input>
+  <label>終了時刻</label>
+  {{ error_message('endtime', errors) }}
+  <input type="time" name="endtime" {% if schedule %}value="{{ schedule['end'] }}"{% endif %} placeholder="時:分" required></input>
+  <label>場所</label>
+  {{ error_message('loc', errors) }}
+  <input type="text" name="loc" {% if schedule %}value="{{ schedule['loc'] }}"{% endif %} required></input>
+  <label>コート</label>
+  {{ error_message('court', errors) }}
+  <input type="text" name="court" {% if schedule %}value="{{ schedule['court'] }}"{% endif %}></input>
+  <label>予約番号</label>
+  {{ error_message('no', errors) }}
+  <input type="text" name="no" {% if schedule %}value="{{ schedule['no'] }}"{% endif %}></input>
+  <label>コート代</label>
+  {{ error_message('price', errors) }}
+  <input type="text" name="price" {% if schedule %}value="{{ schedule['price'] }}"{% endif %}></input>
+  <label>備考</label>
+  {{ you_can_use_tags() }}
+  {{ error_message('note', errors) }}
+  <textarea name="note" style="width: 80%; height: 100px;">{% if schedule %}{{ schedule['note'] | safe }}{% endif %}</textarea>
+  <br>
+  <button type="submit" class="btn">登録</button>
+</form>
+{% endmacro %}
+
 {% block tabcontent %}
           {% if schedule is defined %}
-          <form action="{{ url_for('admin.edit_practice', id=schedule['id']) }}" method="post" class="well">
-            <label>日付</label>
-            <input type="date" name="date" value="{{ schedule['when_'].strftime('%Y-%m-%d') }}" placeholder="年-月-日" required></input>
-            <label>開始時刻</label>
-            <input type="time" name="begintime" value="{{ schedule['when_'] | timeformat }}" placeholder="時:分" reuqired></input>
-            <label>終了時刻</label>
-            <input type="time" name="endtime" value="{{ schedule['end'] }}" placeholder="時:分" required></input>
-            <label>場所</label>
-            <input type="text" name="loc" value="{{ schedule['loc'] }}" required></input>
-            <label>コート</label>
-            <input type="text" name="court" value="{{ schedule['court'] }}"></input>
-            <label>予約番号</label>
-            <input type="text" name="no" value="{{ schedule['no'] }}"></input>
-            <label>コート代</label>
-            <input type="text" name="price" value="{{ schedule['price'] }}"></input>
-            <label>備考</label>
-            {{ you_can_use_tags() }}
-            <textarea name="note" style="width: 80%; height: 100px;">{{ schedule['note'] | safe }}</textarea>
-            <br>
-            <button type="submit" class="btn">登録</button>
-          </form>
+          {{ input_forms(url_for('admin.edit_practice', id=schedule['id'])) }}
           {% else %}
-          <form action="{{ url_for('admin.new_practice') }}" method="post" class="well">
-            <label>日付</label>
-            <input type="date" name="date" value="{{ today.strftime('%Y-%m-%d') }}" placeholder="年-月-日" required></input>
-            <label>開始時刻</label>
-            <input type="time" name="begintime" placeholder="時:分" required></input>
-            <label>終了時刻</label>
-            <input type="time" name="endtime" placeholder="時:分" required></input>
-            <label>場所</label>
-            <input type="text" name="loc" required></input>
-            <label>コート</label>
-            <input type="text" name="court"></input>
-            <label>予約番号</label>
-            <input type="text" name="no"></input>
-            <label>コート代</label>
-            <input type="text" name="price"></input>
-            <label>備考</label>
-            {{ you_can_use_tags() }}
-            <textarea name="note" style="width: 80%; height: 100px;"></textarea>
-            <br>
-            <button type="submit" class="btn">登録</button>
-          </form>
+          {{ input_forms(url_for('admin.new_practice')) }}
           {% endif %}
 {% endblock %}
