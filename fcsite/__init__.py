@@ -8,7 +8,8 @@ app.config.from_object('config')
 
 from fcsite import database
 from fcsite.models import users
-from fcsite.utils import request_from_featurephone, request_for_mobile_page
+from fcsite.utils import request_from_featurephone, request_for_mobile_page, \
+        error_message
 
 
 #############
@@ -20,6 +21,16 @@ def handle_unauthorized(e):
     if request_for_mobile_page():
         return redirect(url_for('mobile.login'))
     else:
+        error_message(u'ログインしてください。')
+        return redirect(url_for('general.index'))
+
+
+@app.errorhandler(403)
+def handle_forbidden(e):
+    if request_for_mobile_page():
+        return redirect(url_for('mobile.login'))
+    else:
+        error_message(u'権限がありません。')
         return redirect(url_for('general.index'))
 
 
