@@ -9,6 +9,10 @@
     <br>
     <center><a href="{{ url_for('mobile.index') + ('?uid=%d' % user['id']) }}">メニュー</a></center>
     <hr>
+    {% if info_msg is defined %}
+    <center><strong><font color="#FF0000">{{ info_msg }}</font></strong></center>
+    <hr>
+    {% endif %}
     {% block content %}
     {% endblock %}
   </body>

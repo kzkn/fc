@@ -84,6 +84,44 @@ def find_my_entry(sid):
     return cur.fetchone()[0] > 0
 
 
+def find_non_registered(uid, type):
+    cur = g.db.execute("""
+        SELECT Schedule.id,
+               Schedule.type,
+               Schedule.when_,
+               Schedule.body,
+               (SELECT COUNT(*)
+                  FROM Entry
+                 WHERE schedule_id = Schedule.id
+                   AND is_entry) AS entry_count
+          FROM Schedule
+               LEFT OUTER JOIN (SELECT *
+                                  FROM Entry
+                                 WHERE user_id = ?) AS Entry ON
+                 Schedule.id = Entry.schedule_id
+         WHERE Schedule.when_ >= datetime('now', 'localtime')
+           AND Schedule.type = ?
+      GROUP BY Schedule.id
+        HAVING COUNT(Entry.user_id) = 0
+      ORDER BY Schedule.when_""", (uid, type))
+    return cur.fetchall()
+
+
+def has_non_registered_practice(uid):
+    cur = g.db.execute("""
+        SELECT Schedule.id
+          FROM Schedule
+               LEFT OUTER JOIN (SELECT *
+                                  FROM Entry
+                                 WHERE user_id = ?) AS Entry ON
+                 Schedule.id = Entry.schedule_id
+         WHERE Schedule.when_ >= datetime('now', 'localtime')
+           AND Schedule.type = ?
+      GROUP BY Schedule.id
+        HAVING COUNT(Entry.user_id) = 0""", (uid, TYPE_PRACTICE))
+    return cur.fetchone() is not None
+
+
 def update_entry(sid, comment, entry):
     g.db.execute("""
         UPDATE Entry

@@ -56,6 +56,9 @@ def index():
     user = users.find_by_id(get_userid())
     if not user:
         abort(401)
+    if scheds.has_non_registered_practice(user['id']):
+        return redirect(url_for('mobile.non_registered_practices') +
+                ('?uid=%d' % user['id']))
     practice_count = scheds.count_schedules(scheds.TYPE_PRACTICE)
     game_count = scheds.count_schedules(scheds.TYPE_GAME)
     event_count = scheds.count_schedules(scheds.TYPE_EVENT)
@@ -64,6 +67,18 @@ def index():
                            practice_count=practice_count,
                            game_count=game_count,
                            event_count=event_count)
+
+
+@mod.route('/non_registered_practices')
+@requires_userid
+def non_registered_practices():
+    user = users.find_by_id(get_userid())
+    if not user:
+        abort(401)
+    ps = [scheds.from_row(s) for s in scheds.find_non_registered(user['id'],
+        scheds.TYPE_PRACTICE)]
+    return render_template('mobile/practices.html', user=user, practices=ps,
+            info_msg=u'未登録の練習があります。')
 
 
 @mod.route('/practice')

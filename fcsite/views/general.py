@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, session, redirect, request, \
-    flash, url_for
+    flash, url_for, g, abort
+from fcsite.models import schedules as scheds
 from fcsite.utils import do_login
 
 mod = Blueprint('general', __name__)
@@ -9,7 +10,11 @@ mod = Blueprint('general', __name__)
 
 @mod.route('/')
 def index():
-    return render_template('index.html')
+    info_msgs = []
+    if g.user and scheds.has_non_registered_practice(g.user['id']):
+        info_msgs.append(u'通知:未登録の練習があります。登録は' +
+                u'<a href="%s">コチラから</a>。' % url_for('schedule.schedule'))
+    return render_template('index.html', info_msgs=info_msgs)
 
 
 @mod.route('/login', methods=['POST'])
