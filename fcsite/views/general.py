@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Blueprint, render_template, session, redirect, request, \
-    flash, url_for, g, abort
+    url_for, g
 from fcsite.models import schedules as scheds
 from fcsite.utils import do_login
 
@@ -20,9 +20,10 @@ def index():
 @mod.route('/login', methods=['POST'])
 def login():
     passwd = request.form['password']
+    error_msgs = []
     if not do_login(passwd):
-        flash(u'E:ログインできません。パスワードが間違っています。')
-    return redirect(url_for('general.index'))
+        error_msgs.append(u'エラー!:ログインできません。パスワードが間違っています。')
+    return render_template('index.html', error_msgs=error_msgs)
 
 
 @mod.route('/logout')
