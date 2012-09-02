@@ -86,10 +86,10 @@ def find_my_entry(sid):
 
 def find_non_registered(uid, type):
     cur = g.db.execute("""
-        SELECT Schedule.id,
-               Schedule.type,
-               Schedule.when_,
-               Schedule.body,
+        SELECT Schedule.id AS id,
+               Schedule.type AS type,
+               Schedule.when_ AS when_,
+               Schedule.body AS body,
                (SELECT COUNT(*)
                   FROM Entry
                  WHERE schedule_id = Schedule.id
