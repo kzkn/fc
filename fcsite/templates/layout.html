@@ -1,7 +1,7 @@
 {% set active_page = active_page | default('') %}
 
-{% macro show_notice_messages(class, direct_msgs) %}
-  {% with msgs = get_flashed_messages(category_filter=[class]) %}
+{% macro show_notice_messages(category, class, direct_msgs) %}
+  {% with msgs = get_flashed_messages(category_filter=[category]) %}
     {% if direct_msgs or msgs %}
       {% for msg in (direct_msgs + msgs) %}
 <div class="alert alert-{{ class }}">
@@ -111,8 +111,8 @@
     </div>
 
     <div class="container-fluid">
-      {{ show_notice_messages('error', error_msgs if error_msgs is defined else []) }}
-      {{ show_notice_messages('info', info_msgs if info_msgs is defined else []) }}
+      {{ show_notice_messages('error', 'error', error_msgs if error_msgs is defined else []) }}
+      {{ show_notice_messages('info', 'success', info_msgs if info_msgs is defined else []) }}
 
       {% block maincontent %}
       {% endblock %}
