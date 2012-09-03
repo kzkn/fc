@@ -2,6 +2,8 @@
 
 import json
 from itertools import groupby
+from time import strptime
+from datetime import datetime
 from flask import g
 from fcsite.utils import htmlize_textarea_body, sanitize_html
 
@@ -172,11 +174,36 @@ def find_practice_locations():
 
 def is_registered(uid, sid):
     cur = g.db.execute("""
-        SELECT user_id
-          FROM Entry
-         WHERE user_id = ?
-           AND schedule_id = ?""", (uid, sid))
-    return cur.fetchone() is not None
+        SELECT Schedule.id,
+               Schedule.type,
+               Schedule.body,
+               Entry.user_id
+          FROM Schedule
+               LEFT OUTER JOIN (SELECT schedule_id,
+                                       user_id
+                                  FROM Entry
+                                 WHERE user_id = ?) Entry ON
+                 Schedule.id = Entry.schedule_id
+         WHERE Schedule.id = ?""", (uid, sid))
+    s = cur.fetchone()
+    if not s:  # スケジュールが存在しない
+        return False
+    if s['user_id']:  # 登録済み
+        return True
+    if s['type'] == TYPE_PRACTICE:  # 練習 未登録
+        return False
+
+    # 試合、イベント 未登録 締め切り確認
+    body = json.loads(s['body'])
+    return is_deadline_overred(body)
+
+
+def is_deadline_overred(schedule_body):
+    if not schedule_body.get('deadline', None):  # 締め切りなし
+        return False
+    tm = strptime(schedule_body['deadline'], '%Y-%m-%d')
+    deadline = datetime(tm.tm_year, tm.tm_mon, tm.tm_mday)
+    return deadline < datetime.now()
 
 
 def is_entered(uid, sid):
@@ -203,6 +230,7 @@ def from_row(row):
     schedule.update(row)
     body = json.loads(row['body'])
     schedule.update(body)
+    schedule['deadline_overred'] = is_deadline_overred(body)
     return schedule
 
 

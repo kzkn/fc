@@ -18,7 +18,7 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#practices" href="#practice{{ p['id'] }}">
-                  {{ p['when_'] | datetimeformat }}-{{ p['end'] }} @{{ p['loc'] }}
+                  {{ p['when_'] | datetimeformat }}-{{ p['end'] }} @{{ p['loc'] }} ({{ p['entry_count'] }}人) {% if not is_registered(g.user, p) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
               <div id="practice{{ p['id'] }}" class="accordion-body collapse">
@@ -75,12 +75,12 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#games" href="#game{{ ga['id'] }}">
-                  {{ ga['name'] }} @{{ ga['loc'] }}
+                  {{ ga['name'] }} @{{ ga['loc'] }} ({{ ga['entry_count'] }}人) {% if not is_registered(g.user, ga) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
               <div id="game{{ ga['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {% if g.user %}
+                  {% if g.user and not ga['deadline_overred'] %}
                   <form action="{{ url_for('schedule.entry', sid=ga['id']) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
@@ -138,12 +138,12 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#events" href="#event{{ e['id'] }}">
-                  {{ e['name'] }} @{{ e['loc'] }}
+                  {{ e['name'] }} @{{ e['loc'] }} ({{ e['entry_count'] }}人) {% if not is_registered(g.user, e) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
               <div id="event{{ e['id'] }}" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {% if g.user %}
+                  {% if g.user and not e['deadline_overred'] %}
                   <form action="{{ url_for('schedule.entry', sid=e['id']) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
