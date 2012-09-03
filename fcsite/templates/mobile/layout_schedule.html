@@ -15,9 +15,17 @@
     <form action="{{ mobile_url_for('mobile.entry', schid=schedule['id']) }}" method="post">
       <input type="hidden" name="come_from" value="{{ request.url }}"></input>
       <input type="text" name="comment"></input>
+      <select name="action">
+        {% if not is_registered(user, schedule) or is_entered(user, schedule) %}
+        <option selected>参加</option>
+        <option>不参加</option>
+        {% else %}
+        <option>参加</option>
+        <option selected>不参加</option>
+        {% endif %}
+      </select>
       <br>
-      <input type="submit" name="action" value="参加"></input>
-      <input type="submit" name="action" value="不参加"></input>
+      <input type="submit" name="submit" value="登録"></input>
     </form>
     <ol>
     {% for e in schedule['entries'] %}

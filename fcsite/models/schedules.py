@@ -168,6 +168,25 @@ def find_practice_locations():
     return list(set([json.loads(body[0])['loc'] for body in bodies]))
 
 
+def is_registered(uid, sid):
+    cur = g.db.execute("""
+        SELECT user_id
+          FROM Entry
+         WHERE user_id = ?
+           AND schedule_id = ?""", (uid, sid))
+    return cur.fetchone() is not None
+
+
+def is_entered(uid, sid):
+    cur = g.db.execute("""
+        SELECT user_id
+          FROM Entry
+         WHERE user_id = ?
+           AND schedule_id = ?
+           AND is_entry = 1""", (uid, sid))
+    return cur.fetchone() is not None
+
+
 def count_schedules(type):
     cur = g.db.execute("""
         SELECT COUNT(*)

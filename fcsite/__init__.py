@@ -8,6 +8,7 @@ app.config.from_object('config')
 
 from fcsite import database
 from fcsite.models import users
+from fcsite.models import schedules as scheds
 from fcsite.utils import request_from_featurephone, request_for_mobile_page, \
         error_message
 
@@ -112,6 +113,10 @@ app.jinja_env.globals['admin_navigation_list'] = \
     lambda: admin.get_navigation_list(g.user)
 app.jinja_env.globals['mobile_url_for'] = \
     utils.mobile_url_for
+app.jinja_env.globals['is_registered'] = \
+    lambda u, s: scheds.is_registered(u['id'], s['id'])
+app.jinja_env.globals['is_entered'] = \
+    lambda u, s: scheds.is_entered(u['id'], s['id'])
 
 import locale
 locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')
