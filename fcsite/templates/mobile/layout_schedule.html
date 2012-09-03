@@ -15,6 +15,7 @@
     <form action="{{ mobile_url_for('mobile.entry', schid=schedule['id']) }}" method="post">
       <input type="hidden" name="come_from" value="{{ request.url }}"></input>
       <input type="text" name="comment"></input>
+      <br>
       <input type="submit" name="action" value="参加"></input>
       <input type="submit" name="action" value="不参加"></input>
     </form>
