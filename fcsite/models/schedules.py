@@ -36,7 +36,7 @@ def find(type):
           FROM Entry, User
          WHERE User.id = Entry.user_id
            AND Entry.schedule_id IN %s
-      ORDER BY Entry.schedule_id, User.name""" % sids)
+      ORDER BY Entry.schedule_id, Entry.when_ DESC""" % sids)
 
     entries = cur.fetchall()
 
@@ -69,7 +69,7 @@ def find_by_id(sid, with_entry=True):
               FROM Entry, User
              WHERE User.id = Entry.user_id
                AND Entry.schedule_id = ?
-          ORDER BY User.name""", (sid, ))
+          ORDER BY Entry.when_ DESC""", (sid, ))
 
         entries = cur.fetchall()
         schedule['entries'] = entries
@@ -125,9 +125,11 @@ def has_non_registered_practice(uid):
 def update_entry(sid, comment, entry):
     g.db.execute("""
         UPDATE Entry
-        SET is_entry = ?, comment = ?
-        WHERE user_id = ? AND schedule_id = ?
-        """, (entry, comment, g.user['id'], sid))
+           SET is_entry = ?,
+               comment = ?,
+               when_ = CURRENT_TIMESTAMP
+         WHERE user_id = ?
+           AND schedule_id = ?""", (entry, comment, g.user['id'], sid))
     g.db.commit()
 
 
