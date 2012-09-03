@@ -2,6 +2,8 @@
 
 from random import randint
 from itertools import groupby
+from sqlite3 import IntegrityError
+from hashlib import sha1
 from flask import g
 
 SEX_MALE = 1
@@ -30,6 +32,43 @@ def find_group_by_sex():
     for sex, us in groupby(users, lambda u: u['sex']):
         bysex[sex] = list(us)
     return bysex.get(SEX_MALE, []), bysex.get(SEX_FEMALE, [])
+
+
+def is_valid_session_id(uid, sid):
+    cur = g.db.execute("""
+        SELECT user_id
+          FROM MobileSession
+         WHERE user_id = ?
+           AND session_id = ?
+           AND expire > CURRENT_TIMESTAMP""", (uid, sid))
+    return cur.fetchone() is not None
+
+
+def issue_new_session_id(uid):
+    for sid in generate_session_id(6):
+        try:
+            with g.db:
+                do_issue_new_session_id(uid, sid)
+                return sid
+        except IntegrityError:
+            pass  # not unique
+
+
+def generate_session_id(length):
+    while True:
+        random_value = str(randint(100000, 999999))
+        hashcode = sha1(random_value).hexdigest()
+        for i in xrange(0, len(hashcode) - length):
+            yield hashcode[i:i + length]
+
+
+def do_issue_new_session_id(uid, sid):
+    g.db.execute("""
+        DELETE FROM MobileSession
+              WHERE user_id = ?""", (uid, ))
+    g.db.execute("""
+        INSERT INTO MobileSession (user_id, session_id, expire)
+             VALUES (?, ?, datetime('now', '+1 month'))""", (uid, sid))
 
 
 def insert(name, password, sex, permission):

@@ -7,12 +7,12 @@
     <center><font color="#FF0000">Fight Club</font></center>
     <br>
     <br>
-    <center><a href="{{ url_for('mobile.index') + ('?uid=%d' % user['id']) }}">メニュー</a></center>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
     <hr>
     {% block description %}
     {% endblock %}
     <hr>
-    <form action="{{ url_for('mobile.entry', sid=schedule['id']) + ('?uid=%d' % user['id']) }}" method="post">
+    <form action="{{ mobile_url_for('mobile.entry', schid=schedule['id']) }}" method="post">
       <input type="hidden" name="come_from" value="{{ request.url }}"></input>
       <input type="text" name="comment"></input>
       <input type="submit" name="action" value="参加"></input>

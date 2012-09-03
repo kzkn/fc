@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import g, abort, request, session, flash, get_flashed_messages
+from flask import g, abort, request, session, flash, get_flashed_messages, \
+        url_for
 from fcsite.models import users
 from functools import wraps
 from BeautifulSoup import BeautifulSoup, Comment
@@ -126,6 +127,13 @@ def do_login(password):
     return True if user else False
 
 
+def do_mobile_login(password):
+    user = users.find_by_password(password)
+    if user:
+        sid = users.issue_new_session_id(user['id'])
+    return (user['id'], sid) if user else (None, None)
+
+
 def request_from_featurephone():
     ua = request.user_agent.string
     return re.match(r'(DoCoMo|UP\.Browser|J-PHONE|Vodafone|SoftBank)', ua)
@@ -192,6 +200,16 @@ def format_date(dt):
 
 def format_time(dt):
     return dt.strftime('%H:%M').decode('utf8')
+
+
+def mobile_url_for(view, **kwargs):
+    user_id = kwargs.pop('uid', request.args.get('uid', None))
+    session_id = kwargs.pop('sid', request.args.get('sid', None))
+    path = url_for(view, **kwargs)
+    if user_id and session_id:
+        return path + ('?uid=%s&sid=%s' % (user_id, session_id))
+    else:
+        return path
 
 
 #############

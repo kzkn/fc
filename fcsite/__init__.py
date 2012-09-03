@@ -110,6 +110,8 @@ app.jinja_env.globals['is_male'] = users.is_male
 app.jinja_env.globals['is_female'] = users.is_female
 app.jinja_env.globals['admin_navigation_list'] = \
     lambda: admin.get_navigation_list(g.user)
+app.jinja_env.globals['mobile_url_for'] = \
+    utils.mobile_url_for
 
 import locale
 locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')

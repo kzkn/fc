@@ -7,7 +7,7 @@
     <center><font color="#FF0000">Fight Club</font></center>
     <br>
     <br>
-    <center><a href="{{ url_for('mobile.index') + ('?uid=%d' % user['id']) }}">メニュー</a></center>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
     <hr>
     {% if info_msg is defined %}
     <center><strong><font color="#FF0000">{{ info_msg }}</font></strong></center>

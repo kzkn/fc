@@ -2,7 +2,7 @@
 
 {% block content %}
     {% for e in events %}
-    <strong><a href="{{ url_for('mobile.event', sid=e['id']) + ('?uid=%d' % user['id']) }}">状況【{{ e['entry_count'] }}人】</a></strong><br>
+    <strong><a href="{{ mobile_url_for('mobile.event', schid=e['id']) }}">状況【{{ e['entry_count'] }}人】</a></strong><br>
     お題目：{{ e['name'] }}<br>
     場所：{{ e['loc'] }}<br>
     開催日：{{ e['when_'] | dateformat }}<br>

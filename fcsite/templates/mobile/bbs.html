@@ -7,9 +7,9 @@
     <center><font color="#FF0000">Fight Club</font></center>
     <br>
     <br>
-    <center><a href="{{ url_for('mobile.index') + ('?uid=%d' % user['id']) }}">メニュー</a></center>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
     <br>
-    <form action="{{ url_for('mobile.bbs_post') + ('?uid=%d' % user['id']) }}" method="post">
+    <form action="{{ mobile_url_for('mobile.bbs_post') }}" method="post">
       <textarea name="body" cols="17" rows="3" istyle="1"></textarea><br>
       <input type="submit" name="submit" value="投稿"></input>
     </form>
@@ -23,14 +23,14 @@
     <hr>
     <center>
       {% if page > 1 %}
-        <a href="{{ url_for('mobile.bbs', page=page-1) + ('?uid=%d' % user['id']) }}">←</a>
+        <a href="{{ mobile_url_for('mobile.bbs', page=page-1) }}">←</a>
       {% endif %}
 
       {% for i in range(1, pages + 1) %}
         {% if page == i %}
         <strong>
         {% else %}
-        <a href="{{ url_for('mobile.bbs', page=i) + ('?uid=%d' % user['id']) }}">
+        <a href="{{ mobile_url_for('mobile.bbs', page=i) }}">
         {% endif %}
 
         {{ i }}
@@ -43,7 +43,7 @@
       {% endfor %}
 
       {% if page < pages %}
-        <a href="{{ url_for('mobile.bbs', page=page+1) + ('?uid=%d' % user['id']) }}">→</a>
+        <a href="{{ mobile_url_for('mobile.bbs', page=page+1) }}">→</a>
       {% endif %}
     </center>
   </body>

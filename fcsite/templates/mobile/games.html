@@ -2,7 +2,7 @@
 
 {% block content %}
     {% for ga in games %}
-    <strong><a href="{{ url_for('mobile.game', sid=ga['id']) + ('?uid=%d' % user['id']) }}">状況【{{ ga['entry_count'] }}人】</a></strong><br>
+    <strong><a href="{{ mobile_url_for('mobile.game', schid=ga['id']) }}">状況【{{ ga['entry_count'] }}人】</a></strong><br>
     大会名：{{ ga['name'] }}<br>
     場所：{{ ga['loc'] }}<br>
     〆切(Fight Club)：{{ ga['deadline'] }}<br>

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, abort, redirect, g, \
-        session, url_for
+from flask import Blueprint, request, render_template, abort, redirect, g
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
-from fcsite.utils import do_login
+from fcsite.utils import do_mobile_login, mobile_url_for
 from functools import wraps
 
 mod = Blueprint('mobile', __name__, url_prefix='/mobile')
@@ -15,19 +14,21 @@ def get_userid():
     return g.user and g.user['id']
 
 
+def get_sessionid():
+    return request.args.get('sid', None)
+
+
 def requires_userid(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         uid = get_userid()
         if not uid:
             abort(401)
+        sid = get_sessionid()
+        if not sid or not users.is_valid_session_id(uid, sid):
+            abort(401)
         return f(*args, **kwargs)
     return decorated_function
-
-
-def append_userid(url, **kwargs):
-    uid = kwargs.get('uid', get_userid())
-    return '%s?uid=%s' % (url, uid)
 
 
 def find_user_and_schedule(sid):
@@ -44,9 +45,9 @@ def find_user_and_schedule(sid):
 def login():
     if request.method == 'POST':
         password = request.form['password']
-        if do_login(password):
-            uid = session['user_id']
-            return redirect(append_userid(url_for('mobile.index'), uid=uid))
+        (uid, sid) = do_mobile_login(password)
+        if uid:
+            return redirect(mobile_url_for('mobile.index', uid=uid, sid=sid))
     return render_template('mobile/login.html')
 
 
@@ -57,8 +58,7 @@ def index():
     if not user:
         abort(401)
     if scheds.has_non_registered_practice(user['id']):
-        return redirect(url_for('mobile.non_registered_practices') +
-                ('?uid=%d' % user['id']))
+        return redirect(mobile_url_for('mobile.non_registered_practices'))
     practice_count = scheds.count_schedules(scheds.TYPE_PRACTICE)
     game_count = scheds.count_schedules(scheds.TYPE_GAME)
     event_count = scheds.count_schedules(scheds.TYPE_EVENT)
@@ -91,10 +91,10 @@ def practices():
     return render_template('mobile/practices.html', user=user, practices=ps)
 
 
-@mod.route('/practice/<int:sid>')
+@mod.route('/practice/<int:schid>')
 @requires_userid
-def practice(sid):
-    (user, p) = find_user_and_schedule(sid)
+def practice(schid):
+    (user, p) = find_user_and_schedule(schid)
     return render_template('mobile/practice.html', user=user, schedule=p)
 
 
@@ -108,10 +108,10 @@ def games():
     return render_template('mobile/games.html', user=user, games=gs)
 
 
-@mod.route('/game/<int:sid>')
+@mod.route('/game/<int:schid>')
 @requires_userid
-def game(sid):
-    (user, ga) = find_user_and_schedule(sid)
+def game(schid):
+    (user, ga) = find_user_and_schedule(schid)
     return render_template('mobile/game.html', user=user, schedule=ga)
 
 
@@ -125,22 +125,22 @@ def events():
     return render_template('mobile/events.html', user=user, events=es)
 
 
-@mod.route('/event/<int:sid>')
+@mod.route('/event/<int:schid>')
 @requires_userid
-def event(sid):
-    (user, e) = find_user_and_schedule(sid)
+def event(schid):
+    (user, e) = find_user_and_schedule(schid)
     return render_template('mobile/event.html', user=user, schedule=e)
 
 
-@mod.route('/entry/<int:sid>', methods=['POST'])
+@mod.route('/entry/<int:schid>', methods=['POST'])
 @requires_userid
-def entry(sid):
+def entry(schid):
     action = request.form['action']
     comment = request.form['comment']
     if action == u'参加':
-        scheds.do_entry(sid, comment, entry=True)
+        scheds.do_entry(schid, comment, entry=True)
     elif action == u'不参加':
-        scheds.do_entry(sid, comment, entry=False)
+        scheds.do_entry(schid, comment, entry=False)
     return redirect(request.form['come_from'])
 
 
@@ -163,4 +163,4 @@ def bbs(page=1):
 def bbs_post():
     body = request.form['body']
     bbsmodel.post(body)
-    return redirect(append_userid(url_for('mobile.bbs')))
+    return redirect(mobile_url_for('mobile.bbs'))
