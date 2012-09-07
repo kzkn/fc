@@ -51,7 +51,7 @@
             <dd>{{ selected_user['car'] }}</dd>
             {% endif %}
             <dt>一言</dt>
-            <dd>{{ selected_user['comment'] }}</dd>
+            <dd>{{ selected_user['comment'] | safe }}</dd>
           </dl>
           {% endif %}
         </div>

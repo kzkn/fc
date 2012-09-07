@@ -6,7 +6,7 @@ from itertools import groupby
 from sqlite3 import IntegrityError
 from hashlib import sha1
 from flask import g
-#from fcsite.utils import htmlize_textarea_body, sanitize_html
+from fcsite.utils import htmlize_textarea_body, sanitize_html
 
 SEX_MALE = 1
 SEX_FEMALE = 2
@@ -105,8 +105,7 @@ def update_profile(id, form):
     email = form['email']
     home = form['home']
     car = form['car']
-    #comment = sanitize_html(htmlize_textarea_body(form['comment']))
-    comment = form['comment']
+    comment = sanitize_html(htmlize_textarea_body(form['comment']))
     profile = dumps({
         'email': email,
         'home': home,
