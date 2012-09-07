@@ -1,0 +1,40 @@
+{% from 'macros.html' import you_can_use_tags %}
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <center><font color="#FF0000">Fight Club</font></center>
+    <br>
+    <br>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
+    <br>
+
+    <form action={{ mobile_url_for('mobile.profile') }} method="post">
+      <label>名前</label>
+      <div>{{ g.user['name'] }}</div><br>
+      <label>パスワード</label><br>
+      <input type="text" name="password" value="{{ g.user['password'] }}"></input><br>
+      <div><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</div><br>
+      <label>性別</label><br>
+      <select name="sex">
+        <option{% if g.user and is_male(g.user) %} selected{% endif %}>男性</option>
+        <option{% if g.user and is_female(g.user) %} selected{% endif %}>女性</option>
+      </select><br><br>
+      <label>メールアドレス</label><br>
+      <input type="text" name="email" value="{{ g.user['email'] }}"></input><br><br>
+      <label>住まい</label><br>
+      <input type="text" name="home" value="{{ g.user['home'] }}"></input><br><br>
+      <label>車</label><br>
+      <input type="text" name="car" value="{{ g.user['car'] }}"></input><br><br>
+      <label>一言</label><br>
+      {{ you_can_use_tags() }}
+      <textarea name="comment" cols="17" rows="3" istyle="1">{{ g.user['comment'] }}</textarea>
+      <div><strong>Note: </strong>一言と言わず、思いの丈をたくさんつづってください。</div>
+      <br>
+      <input type="submit" class="btn" value="登録"></input>
+    </form>
+  </body>
+</html>

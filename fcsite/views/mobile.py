@@ -180,3 +180,12 @@ def member(id=None):
         if not user:
             abort(404)
         return render_template('mobile/member.html', user=user)
+
+
+@mod.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if request.method == 'GET':
+        return render_template('mobile/profile.html')
+    id = get_userid()
+    users.update_profile(id, request.form)
+    return redirect(mobile_url_for('mobile.profile'))
