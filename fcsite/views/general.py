@@ -14,8 +14,9 @@ mod = Blueprint('general', __name__)
 def index():
     info_msgs = []
 
-    ns = notices.find_showing()
-    info_msgs = info_msgs + [notice_to_message(n) for n in ns]
+    if g.user:
+        ns = notices.find_showing()
+        info_msgs = info_msgs + [notice_to_message(n) for n in ns]
 
     if g.user and scheds.has_non_registered_practice(g.user['id']):
         info_msgs.append(u'通知:未登録の練習があります。登録は' +
