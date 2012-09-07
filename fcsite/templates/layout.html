@@ -75,7 +75,7 @@
             </ul>
             <ul class="nav pull-right">
               {% if g.user %}
-              <li{% if active_page == 'settings' %} class="active"{% endif %}>
+              <li{% if active_page == 'mysettings' %} class="active"{% endif %}>
                 <a href="{{ url_for('member.profile') }}">個人設定</a>
               </li>
               {% endif %}
