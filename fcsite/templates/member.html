@@ -16,6 +16,14 @@
 </div>
 {% endmacro %}
 
+{% block css %}
+{{ super() }}
+<style>
+  #profile dt {
+    margin-top: 8px;
+  }
+</style>
+{% endblock %}
 {% block maincontent %}
       <div class="subhead visible-desktop">
         <h1>メンバー</h1>
@@ -31,9 +39,19 @@
         <div class="span9">
           {% if selected_user %}
           <h2>{{ selected_user['name'] }}</h2>
-          <dl class="dl-horizontal">
+          <dl id="profile" class="dl">
             <dt>性別</dt>
             <dd>{{ '男性' if selected_user['sex'] == 1 else '女性' }}</dd>
+            {% if g.user %}
+            <dt>メールアドレス</dt>
+            <dd>{{ selected_user['email'] }}</dd>
+            <dt>住まい</dt>
+            <dd>{{ selected_user['home'] }}</dd>
+            <dt>車</dt>
+            <dd>{{ selected_user['car'] }}</dd>
+            {% endif %}
+            <dt>一言</dt>
+            <dd>{{ selected_user['comment'] }}</dd>
           </dl>
           {% endif %}
         </div>
