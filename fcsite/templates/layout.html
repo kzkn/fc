@@ -4,8 +4,8 @@
   {% with msgs = get_flashed_messages(category_filter=[category]) %}
     {% if direct_msgs or msgs %}
       {% for msg in (direct_msgs + msgs) %}
-<div class="alert alert-{{ class }}">
-  <a class="close" data-dismiss="alert" href="#">&times;</a>
+<div class="alert alert-block alert-{{ class }}">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
   <h4 class="alert-heading">{{ msg.split(':', 1)[0] }}</h4>
   {{ msg.split(':', 1)[1] | safe }}
 </div>
