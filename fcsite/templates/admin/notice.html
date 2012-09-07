@@ -1,0 +1,26 @@
+{% extends 'admin/layout.html' %}
+{% set active_admin_page = 'notice' %}
+
+{% block admincontent %}
+          <h2>告知管理</h2>
+          <p style="text-align: center;">
+            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('admin.new_notice') }}">新規登録</a>
+          </p>
+          <table class="table table-bordered" style="margin-top: 12px;">
+            <tbody>
+              {% for n in notices %}
+              <tr>
+                <td>
+                  <a href="{{ url_for('admin.edit_notice', id=n['id']) }}">
+                    {{ n['title'] }}
+                    {{ n['begin_show'] | dateformat }}..{{ n['end_show'] | dateformat }}
+                  </a>{% if n['is_showing'] %} <span class="label label-info">表示中</span>{% endif %}
+                </td>
+                <td>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_notice', id=n['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+{% endblock %}

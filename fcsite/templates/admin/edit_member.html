@@ -28,6 +28,10 @@
               <input type="checkbox" name="permissions" value="member"{% if user and is_member_admin_user(user) %} checked{% endif %}>
               メンバー
             </label>
+            <label class="checkbox">
+              <input type="checkbox" name="permissions" value="notice"{% if user and is_notice_admin_user(user) %} checked{% endif %}>
+              告知
+            </label>
             <br>
             <button type="submit" class="btn">登録</button>
           </form>

@@ -4,6 +4,7 @@ from flask import Blueprint, request, render_template, redirect, url_for, g, \
     abort
 from fcsite.models import users
 from fcsite.models import schedules as scheds
+from fcsite.models import notices
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
     check_required, check_in
 from fcsite.auth import requires_permission, requires_admin
@@ -63,6 +64,15 @@ def validate_member():
     do_validate(request.form, validations)
 
 
+def validate_notice():
+    validations = OrderedDict()
+    validations['title'] = [check_required]
+    validations['begin_show'] = [check_required, check_date]
+    validations['end_show'] = [check_required, check_date]
+    validations['body'] = [check_required]
+    do_validate(request.form, validations)
+
+
 @mod.route('/')
 @requires_admin
 def index():
@@ -70,6 +80,8 @@ def index():
         return practice()
     if users.is_member_admin(g.user):
         return member()
+    if users.is_notice_admin(g.user):
+        return notice()
     abort(403)
 
 
@@ -294,6 +306,61 @@ def delete_member(id):
         return redirect(url_for('admin.member'))
 
 
+@mod.route('/notice')
+@requires_permission(users.PERM_ADMIN_NOTICE)
+def notice():
+    ns = notices.find_scheduled()
+    return render_template('admin/notice.html', notices=ns)
+
+
+@mod.route('/notice/new', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_NOTICE)
+def new_notice():
+    if request.method == 'GET':
+        return render_template('admin/edit_notice.html')
+    else:
+        try:
+            validate_notice()
+        except ValueError, e:
+            return render_template('admin/edit_notice.html', errors=e.errors)
+
+        n = notices.make_obj(request.form)
+        notices.insert(n['title'], n['begin_show'], n['end_show'], n['body'])
+        return redirect(url_for('admin.notice'))
+
+
+@mod.route('/notice/edit/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_NOTICE)
+def edit_notice(id):
+    if request.method == 'GET':
+        notice = notices.find_by_id(id)
+        return render_template('admin/edit_notice.html', notice=notice)
+    else:
+        try:
+            validate_notice()
+        except ValueError, e:
+            notice = notices.find_by_id(id)
+            return render_template('admin/edit_notice.html', notice=notice,
+                    errors=e.errors)
+
+        n = notices.make_obj(request.form)
+        notices.update(id, n['title'], n['begin_show'], n['end_show'],
+                n['body'])
+        return redirect(url_for('admin.notice'))
+
+
+@mod.route('/notice/delete/<int:id>', methods=['GET', 'POST'])
+@requires_permission(users.PERM_ADMIN_NOTICE)
+def delete_notice(id):
+    if request.method == 'GET':
+        notice = notices.find_by_id(id)
+        return render_template('admin/delete_notice.html', notice=notice)
+    else:
+        if is_yes():
+            notices.delete_by_id(id)
+        return redirect(url_for('admin.notice'))
+
+
 #############
 # UTILITIES
 #############
@@ -304,4 +371,6 @@ def get_navigation_list(user):
         navs.append(('admin.practice', 'practice', 'icon-calendar', u'活動予定'))
     if users.is_member_admin(user):
         navs.append(('admin.member', 'member', 'icon-user', u'メンバー'))
+    if users.is_notice_admin(user):
+        navs.append(('admin.notice', 'notice', 'icon-info-sign', u'告知'))
     return navs

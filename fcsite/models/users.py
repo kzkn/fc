@@ -14,7 +14,8 @@ SEX_FEMALE = 2
 PERM_ADMIN = 1
 PERM_ADMIN_SCHEDULE = (1 << 1) | PERM_ADMIN
 PERM_ADMIN_MEMBER = (1 << 2) | PERM_ADMIN
-PERM_ADMIN_GOD = PERM_ADMIN_SCHEDULE | PERM_ADMIN_MEMBER
+PERM_ADMIN_NOTICE = (1 << 3) | PERM_ADMIN
+PERM_ADMIN_GOD = PERM_ADMIN_SCHEDULE | PERM_ADMIN_MEMBER | PERM_ADMIN_NOTICE
 
 
 def from_row(row):
@@ -151,6 +152,8 @@ def permission_atoi(form):
         permission |= PERM_ADMIN_SCHEDULE
     if 'member' in checks:
         permission |= PERM_ADMIN_MEMBER
+    if 'notice' in checks:
+        permission |= PERM_ADMIN_NOTICE
     return permission
 
 
@@ -175,6 +178,10 @@ def is_schedule_admin(user):
 
 def is_member_admin(user):
     return has_permission(user, PERM_ADMIN_MEMBER)
+
+
+def is_notice_admin(user):
+    return has_permission(user, PERM_ADMIN_NOTICE)
 
 
 def is_male(user):
