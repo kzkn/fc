@@ -227,6 +227,8 @@ def count_schedules(type):
 
 def from_row(row):
     schedule = {}
+    if not row:
+        return schedule
     schedule.update(row)
     body = json.loads(row['body'])
     schedule.update(body)

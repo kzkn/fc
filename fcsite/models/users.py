@@ -19,6 +19,8 @@ PERM_ADMIN_GOD = PERM_ADMIN_SCHEDULE | PERM_ADMIN_MEMBER
 
 def from_row(row):
     user = {}
+    if not row:
+        return user
     user.update(row)
     profile = loads(row['profile'])
     user.update(profile)
