@@ -97,6 +97,18 @@ def htmlize_textarea_body(body):
     return body.replace('\n', '<br>')
 
 
+def pagination(page, pages):
+    # pagination は最大 5 つまで
+    if page < 3:
+        begin = 1
+    elif page + 2 > pages:
+        begin = pages - 4
+    else:
+        begin = page - 2
+    end = begin + 5
+    return (begin, end)
+
+
 #############
 # HTML SANITIZER
 #############

@@ -5,7 +5,7 @@ from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
 from fcsite.models import notices
-from fcsite.utils import mobile_url_for
+from fcsite.utils import mobile_url_for, pagination
 from fcsite.auth import do_mobile_login
 from functools import wraps
 
@@ -156,8 +156,10 @@ def bbs(page=1):
     modelpage = max(0, page - 1)
     posts = bbsmodel.find_posts_on_page(modelpage)
     pages = bbsmodel.count_pages()
+    begin, end = pagination(page, pages)
     return render_template('mobile/bbs.html',
-            user=user, page=page, pages=pages, posts=posts)
+            user=user, page=page, pages=pages, posts=posts, begin=begin,
+            end=end)
 
 
 @mod.route('/bbs/post', methods=['POST'])
