@@ -14,7 +14,16 @@ def index(page=1):
     modelpage = max(0, page - 1)
     posts = bbs.find_posts_on_page(modelpage)
     pages = bbs.count_pages()
-    return render_template('bbs.html', page=page, pages=pages, posts=posts)
+    # pagination は最大 5 つまで
+    if page < 3:
+        begin = 1
+    elif page + 2 > pages:
+        begin = pages - 4
+    else:
+        begin = page - 2
+    end = begin + 5
+    return render_template('bbs.html', page=page, pages=pages, posts=posts,
+            begin=begin, end=end)
 
 
 @mod.route('/post', methods=['POST'])

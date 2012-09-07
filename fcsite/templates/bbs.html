@@ -46,7 +46,7 @@
           <li {% if page == 1 %}class="disabled"{% endif %}>
             <a href="{{ '#' if page == 1 else url_for('bbs.index', page=page-1) }}">&laquo;</a>
           </li>
-          {% for i in range(1, pages + 1) %}
+          {% for i in range(begin, end) %}
           <li {% if i == page %}class="active"{% endif %}>
             <a href="{{ '#' if i == page else url_for('bbs.index', page=i) }}">{{ i }}</a>
           </li>
