@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, redirect, url_for, request
 from fcsite.models import schedules as scheds
-from fcsite.utils import requires_login
+from fcsite.auth import requires_login
 
 mod = Blueprint('schedule', __name__, url_prefix='/schedule')
 

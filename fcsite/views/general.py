@@ -3,7 +3,8 @@
 from flask import Blueprint, render_template, session, redirect, request, \
     url_for, g
 from fcsite.models import schedules as scheds
-from fcsite.utils import do_login, error_message
+from fcsite.utils import error_message
+from fcsite.auth import do_login
 
 mod = Blueprint('general', __name__)
 

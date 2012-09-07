@@ -1,45 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import g, abort, request, session, flash, get_flashed_messages, \
-        url_for
-from fcsite.models import users
-from functools import wraps
+from flask import request, flash, get_flashed_messages, url_for
 from BeautifulSoup import BeautifulSoup, Comment
 import re
 import time
-
-
-#############
-# DECORATORS
-#############
-
-def requires_login(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if g.user is None:
-            abort(401)
-        return f(*args, **kwargs)
-    return decorated_function
-
-
-def requires_admin(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not users.is_admin(g.user):
-            abort(403)
-        return f(*args, **kwargs)
-    return requires_login(decorated_function)
-
-
-def requires_permission(permission):
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if not users.has_permission(g.user, permission):
-                abort(403)
-            return f(*args, **kwargs)
-        return requires_login(decorated_function)
-    return decorator
 
 
 #############
@@ -118,20 +82,6 @@ def longzip(l1, l2):
                 l2[i] if i < len2 else None)
         ret.append(pair)
     return ret
-
-
-def do_login(password):
-    user = users.find_by_password(password)
-    if user:
-        session['user_id'] = user['id']
-    return True if user else False
-
-
-def do_mobile_login(password):
-    user = users.find_by_password(password)
-    if user:
-        sid = users.issue_new_session_id(user['id'])
-    return (user['id'], sid) if user else (None, None)
 
 
 def request_from_featurephone():

@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for
 from fcsite.models import bbs
-from fcsite.utils import requires_login
+from fcsite.auth import requires_login
 
 mod = Blueprint('bbs', __name__, url_prefix='/bbs')
 

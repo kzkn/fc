@@ -4,7 +4,8 @@ from flask import Blueprint, request, render_template, abort, redirect, g
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
-from fcsite.utils import do_mobile_login, mobile_url_for
+from fcsite.utils import mobile_url_for
+from fcsite.auth import do_mobile_login
 from functools import wraps
 
 mod = Blueprint('mobile', __name__, url_prefix='/mobile')
