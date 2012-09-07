@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, request, render_template, abort, redirect, g
+from flask import Blueprint, request, render_template, abort, redirect
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
@@ -12,7 +12,7 @@ mod = Blueprint('mobile', __name__, url_prefix='/mobile')
 
 
 def get_userid():
-    return g.user and g.user['id']
+    return request.args.get('uid', None)
 
 
 def get_sessionid():
@@ -23,7 +23,7 @@ def requires_userid(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         uid = get_userid()
-        if not uid:
+        if not uid or not users.find_by_id(uid):
             abort(401)
         sid = get_sessionid()
         if not sid or not users.is_valid_session_id(uid, sid):
