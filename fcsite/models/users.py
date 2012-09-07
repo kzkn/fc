@@ -32,7 +32,7 @@ def find_by_id(uid):
 
 
 def find_by_password(password):
-    cur = g.db.execute('SELECT id, name FROM User WHERE password = ?',
+    cur = g.db.execute('SELECT * FROM User WHERE password = ?',
                        (password, ))
     return from_row(cur.fetchone())
 
