@@ -4,6 +4,7 @@ from flask import Blueprint, request, render_template, abort, redirect
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
+from fcsite.models import notices
 from fcsite.utils import mobile_url_for
 from fcsite.auth import do_mobile_login
 from functools import wraps
@@ -56,15 +57,15 @@ def login():
 @requires_userid
 def index():
     user = users.find_by_id(get_userid())
-    if not user:
-        abort(401)
     if scheds.has_non_registered_practice(user['id']):
         return redirect(mobile_url_for('mobile.non_registered_practices'))
+    ns = notices.find_showing()
     practice_count = scheds.count_schedules(scheds.TYPE_PRACTICE)
     game_count = scheds.count_schedules(scheds.TYPE_GAME)
     event_count = scheds.count_schedules(scheds.TYPE_EVENT)
     return render_template('mobile/index.html',
                            user=user,
+                           notices=ns,
                            practice_count=practice_count,
                            game_count=game_count,
                            event_count=event_count)
@@ -183,9 +184,16 @@ def member(id=None):
 
 
 @mod.route('/profile', methods=['GET', 'POST'])
+@requires_userid
 def profile():
     if request.method == 'GET':
         return render_template('mobile/profile.html')
     id = get_userid()
     users.update_profile(id, request.form)
     return redirect(mobile_url_for('mobile.profile'))
+
+
+@mod.route('/notice/<int:id>')
+def notice(id):
+    notice = notices.find_by_id(id)
+    return render_template('mobile/notice.html', notice=notice)

@@ -8,6 +8,13 @@
     <hr>
     <center>[{{ user['name'] }}]</center>
     <hr>
+    {% if notices %}
+    □告知<br>
+    {% for n in notices %}
+    <a href="{{ mobile_url_for('mobile.notice', id=n['id']) }}">{{ n['title'] }}</a><br>
+    {% endfor %}
+    <br>
+    {% endif %}
     □予定<br>
     【<a href="{{ mobile_url_for('mobile.practices') }}">練習情報[{{ practice_count }}]</a>】<br>
     【<a href="{{ mobile_url_for('mobile.games') }}">試合情報[{{ game_count }}]</a>】<br>

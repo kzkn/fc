@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <center><font color="#FF0000">Fight Club</font></center>
+    <br>
+    <br>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
+    <br>
+    <h4>{{ notice['title'] }}</h4>
+    {{ notice['body'] | safe }}
+  </body>
+</html>
