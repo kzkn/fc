@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import g, abort, session
 from functools import wraps
+from flask import g, abort, session
 from fcsite.models import users
 
 

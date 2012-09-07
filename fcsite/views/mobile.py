@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from functools import wraps
 from flask import Blueprint, request, render_template, abort, redirect
 from fcsite.models import users
 from fcsite.models import schedules as scheds
@@ -7,7 +8,6 @@ from fcsite.models import bbs as bbsmodel
 from fcsite.models import notices
 from fcsite.utils import mobile_url_for, pagination
 from fcsite.auth import do_mobile_login
-from functools import wraps
 
 mod = Blueprint('mobile', __name__, url_prefix='/mobile')
 

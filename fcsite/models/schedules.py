@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
+from json import loads, dumps
 from itertools import groupby
 from time import strptime
 from datetime import datetime
@@ -169,7 +169,7 @@ def find_practice_locations():
     cur = g.db.execute(
         "SELECT body FROM Schedule WHERE type = ?", (TYPE_PRACTICE, ))
     bodies = cur.fetchall()
-    return list(set([json.loads(body[0])['loc'] for body in bodies]))
+    return list(set([loads(body[0])['loc'] for body in bodies]))
 
 
 def is_registered(uid, sid):
@@ -194,7 +194,7 @@ def is_registered(uid, sid):
         return False
 
     # 試合、イベント 未登録 締め切り確認
-    body = json.loads(s['body'])
+    body = loads(s['body'])
     return is_deadline_overred(body)
 
 
@@ -230,7 +230,7 @@ def from_row(row):
     if not row:
         return schedule
     schedule.update(row)
-    body = json.loads(row['body'])
+    body = loads(row['body'])
     schedule.update(body)
     schedule['deadline_overred'] = is_deadline_overred(body)
     return schedule
@@ -266,7 +266,7 @@ def make_practice_body(end, loc, court, no, price, note):
          'no': no,
          'price': price,
          'note': note}
-    return json.dumps(p)
+    return dumps(p)
 
 
 def make_game_obj(form):
@@ -297,7 +297,7 @@ def make_game_body(
           'begin_acceptance': begin_acceptance,
           'begin_game': begin_game,
           'note': note}
-    return json.dumps(ga)
+    return dumps(ga)
 
 
 def make_event_obj(form):
@@ -320,4 +320,4 @@ def make_event_body(name, loc, deadline, price, description):
          'deadline': deadline,
          'price': price,
          'description': description}
-    return json.dumps(e)
+    return dumps(e)

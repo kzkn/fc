@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, flash, get_flashed_messages, url_for
-from BeautifulSoup import BeautifulSoup, Comment
 import re
 import time
+from flask import request, flash, get_flashed_messages, url_for
+from BeautifulSoup import BeautifulSoup, Comment
 
 
 #############

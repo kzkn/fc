@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import sqlite3
+from sqlite3 import connect, PARSE_DECLTYPES, Row
 from fcsite import app
 
 
 def connect_db():
     uri = app.config['DATABASE_URI']
-    db = sqlite3.connect(uri, detect_types=sqlite3.PARSE_DECLTYPES)
-    db.row_factory = sqlite3.Row
+    db = connect(uri, detect_types=PARSE_DECLTYPES)
+    db.row_factory = Row
     return db

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import g
 from datetime import date
+from flask import g
 from fcsite.utils import htmlize_textarea_body, sanitize_html
 
 

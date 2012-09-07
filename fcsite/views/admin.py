@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
+
 from flask import Blueprint, request, render_template, redirect, url_for, g, \
     abort
 from fcsite.models import users
@@ -8,12 +14,6 @@ from fcsite.models import notices
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
     check_required, check_in
 from fcsite.auth import requires_permission, requires_admin
-
-from datetime import datetime
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 
 mod = Blueprint('admin', __name__, url_prefix='/admin')
 
