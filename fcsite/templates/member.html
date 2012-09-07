@@ -1,6 +1,21 @@
 {% extends 'layout.html' %}
 {% set active_page = 'member' %}
 
+{% macro member_list() %}
+<div class="well" style="padding: 8px;">
+  <ul class="nav nav-list">
+    <li class="nav-header">男性</li>
+    {% for u in males %}
+    <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+    {% endfor %}
+    <li class="nav-header">女性</li>
+    {% for u in females %}
+    <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endmacro %}
+
 {% block maincontent %}
       <div class="subhead visible-desktop">
         <h1>メンバー</h1>
@@ -11,18 +26,7 @@
 
       <div class="row">
         <div class="span3 hidden-phone">
-          <div class="well" style="padding: 8px;">
-            <ul class="nav nav-list">
-              <li class="nav-header">男性</li>
-              {% for u in males %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
-              {% endfor %}
-              <li class="nav-header">女性</li>
-              {% for u in females %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
+          {{ member_list() }}
         </div>
         <div class="span9">
           {% if selected_user %}
@@ -34,18 +38,7 @@
           {% endif %}
         </div>
         <div class="span3 visible-phone">
-          <div class="well" style="padding: 8px;">
-            <ul class="nav nav-list">
-              <li class="nav-header">男性</li>
-              {% for u in males %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
-              {% endfor %}
-              <li class="nav-header">女性</li>
-              {% for u in females %}
-              <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
+          {{ member_list() }}
         </div>
       </div>
 {% endblock %}
