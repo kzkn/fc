@@ -74,6 +74,11 @@
               {% endfor %}
             </ul>
             <ul class="nav pull-right">
+              {% if g.user %}
+              <li{% if active_page == 'settings' %} class="active"{% endif %}>
+                <a href="{{ url_for('member.profile') }}">個人設定</a>
+              </li>
+              {% endif %}
               {% if is_admin() %}
               <li{% if active_page == 'admin' %} class="active"{% endif %}>
                 <a href="{{ url_for('admin.index') }}">管理</a>

@@ -1,0 +1,38 @@
+{% from 'macros.html' import you_can_use_tags, error_message %}
+{% extends 'mysettings_layout.html' %}
+{% set active_settings_page = 'profile' %}
+
+{% block settingscontent %}
+          <h2>プロフィール設定</h2>
+          <form action="{{ url_for('member.profile') }}" method="post" class="well">
+            <label>名前</label>
+            {{ error_message('name', errors) }}
+            <input type="text" name="name" value="{{ g.user['name'] }}" readonly></input>
+            <label>パスワード</label>
+            {{ error_message('password', errors) }}
+            <input type="text" name="password" value="{{ g.user['password'] }}"></input>
+            <span class="help-block"><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</span>
+            <label>性別</label>
+            {{ error_message('sex', errors) }}
+            <select name="sex">
+              <option{% if g.user and is_male(g.user) %} selected{% endif %}>男性</option>
+              <option{% if g.user and is_female(g.user) %} selected{% endif %}>女性</option>
+            </select>
+            <label>メールアドレス</label>
+            {{ error_message('email', errors) }}
+            <input type="text" name="email" value="{{ g.user['email'] }}"></input>
+            <label>居住地区</label>
+            {{ error_message('home', errors) }}
+            <input type="text" name="home" value="{{ g.user['home'] }}"></input>
+            <label>車</label>
+            {{ error_message('car', errors) }}
+            <input type="text" name="car" value="{{ g.user['car'] }}"></input>
+            <label>一言</label>
+            {{ you_can_use_tags() }}
+            {{ error_message('comment', errors) }}
+            <textarea name="comment" style="width: 80%; height: 100px;">{{ g.user['comment'] }}</textarea>
+            <span class="help-block"><strong>Note: </strong>一言と言わず、思いの丈をたくさんつづってください。</span>
+            <br>
+            <input type="submit" class="btn" value="登録"></input>
+          </form>
+{% endblock %}

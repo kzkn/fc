@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% set active_page = 'mysettings' %}
+{% set active_settings_page = active_settings_page | default('') %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>個人設定</h1>
+        <p class="lead">
+          お好きにどうぞ。
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="span3">
+          <div class="well" style="padding: 8px;">
+            <ul class="nav nav-list">
+              <li class="nav-header">設定メニュー</li>
+              {% set local_navs = [
+                     ('member.profile', 'profile', 'icon-user', 'プロフィール')
+                 ]
+              %}
+              {% for view, id, icon, caption in local_navs %}
+              {% set is_active = active_settings_page == id %}
+              <li{% if is_active %} class="active"{% endif %}>
+              <a href="{{ url_for(view) }}"><i class="{{ icon }}{% if is_active %} icon-white{% endif %}"></i> {{ caption }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="span9">
+          {% block settingscontent %}
+          {% endblock %}
+        </div>
+      </div>
+{% endblock %}

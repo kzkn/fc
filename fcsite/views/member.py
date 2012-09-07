@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template
-from fcsite import users
+from flask import Blueprint, render_template, request, g, redirect, url_for
+from fcsite.models import users
+from fcsite.utils import requires_login
 
 mod = Blueprint('member', __name__, url_prefix='/member')
 
@@ -20,3 +21,13 @@ def member(id=None):
 
     return render_template('member.html', males=males, females=females,
                            selected_user=selected)
+
+
+@mod.route('/profile', methods=['GET', 'POST'])
+@requires_login
+def profile():
+    if request.method == 'GET':
+        return render_template('profile.html')
+    id = g.user['id']
+    users.update_profile(id, request.form)
+    return redirect(url_for('member.profile'))

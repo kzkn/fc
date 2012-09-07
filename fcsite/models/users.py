@@ -1,10 +1,12 @@
 #! -*- coding: utf-8 -*-
 
+from json import dumps, loads
 from random import randint
 from itertools import groupby
 from sqlite3 import IntegrityError
 from hashlib import sha1
 from flask import g
+#from fcsite.utils import htmlize_textarea_body, sanitize_html
 
 SEX_MALE = 1
 SEX_FEMALE = 2
@@ -15,22 +17,31 @@ PERM_ADMIN_MEMBER = (1 << 2) | PERM_ADMIN
 PERM_ADMIN_GOD = PERM_ADMIN_SCHEDULE | PERM_ADMIN_MEMBER
 
 
+def from_row(row):
+    user = {}
+    user.update(row)
+    profile = loads(row['profile'])
+    user.update(profile)
+    del user['profile']
+    return user
+
+
 def find_by_id(uid):
     cur = g.db.execute('SELECT * FROM User WHERE id = ?', (uid, ))
-    return cur.fetchone()
+    return from_row(cur.fetchone())
 
 
 def find_by_password(password):
     cur = g.db.execute('SELECT id, name FROM User WHERE password = ?',
                        (password, ))
-    return cur.fetchone()
+    return from_row(cur.fetchone())
 
 
 def find_group_by_sex():
     users = g.db.execute('SELECT * FROM User ORDER BY sex, name').fetchall()
     bysex = {}
     for sex, us in groupby(users, lambda u: u['sex']):
-        bysex[sex] = list(us)
+        bysex[sex] = [from_row(u) for u in us]
     return bysex.get(SEX_MALE, []), bysex.get(SEX_FEMALE, [])
 
 
@@ -85,6 +96,29 @@ def update(id, password, sex, permission):
                sex = ?,
                permission = ?
          WHERE id = ?''', (password, sex, permission, id))
+    g.db.commit()
+
+
+def update_profile(id, form):
+    password = get_or_gen_password(form)
+    sex = sex_atoi(form['sex'])
+    email = form['email']
+    home = form['home']
+    car = form['car']
+    #comment = sanitize_html(htmlize_textarea_body(form['comment']))
+    comment = form['comment']
+    profile = dumps({
+        'email': email,
+        'home': home,
+        'car': car,
+        'comment': comment
+        })
+    g.db.execute('''
+        UPDATE User
+           SET password = ?,
+               sex = ?,
+               profile = ?
+         WHERE id = ?''', (password, sex, profile, id))
     g.db.commit()
 
 
