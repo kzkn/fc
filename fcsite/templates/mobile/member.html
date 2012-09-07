@@ -1,0 +1,27 @@
+{% macro def(key, value) %}
+<dt style="font-weight: bold;">{{ key }}</dt>
+<dd>{{ value }}</dd>
+{% endmacro %}
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <center><font color="#FF0000">Fight Club</font></center>
+    <br>
+    <br>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
+    <br>
+
+    <dl>
+      {{ def('名前', user['name']) }}
+      {{ def('性別', '男性' if user['sex'] == 1 else '女性') }}
+      {{ def('メールアドレス', user['email']) }}
+      {{ def('住まい', user['home']) }}
+      {{ def('車', user['car']) }}
+      {{ def('一言', user['comment'] | safe) }}
+    </dl>
+  </body>
+</html>

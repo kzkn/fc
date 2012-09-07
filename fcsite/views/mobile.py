@@ -165,3 +165,18 @@ def bbs_post():
     body = request.form['body']
     bbsmodel.post(body)
     return redirect(mobile_url_for('mobile.bbs'))
+
+
+@mod.route('/member')
+@mod.route('/member/<int:id>')
+@requires_userid
+def member(id=None):
+    if not id:
+        males, females = users.find_group_by_sex()
+        return render_template('mobile/members.html', males=males,
+                females=females)
+    else:
+        user = users.find_by_id(id)
+        if not user:
+            abort(404)
+        return render_template('mobile/member.html', user=user)

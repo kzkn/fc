@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <center><font color="#FF0000">Fight Club</font></center>
+    <br>
+    <br>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
+    <br>
+
+    <h4>男性</h4>
+    <ol>
+      {% for u in males %}
+      <li><a href="{{ mobile_url_for('mobile.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+      {% endfor %}
+    </ol>
+    <h4>女性</h4>
+    <ol>
+      {% for u in females %}
+      <li><a href="{{ mobile_url_for('mobile.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+      {% endfor %}
+    </ol>
+  </body>
+</html>
