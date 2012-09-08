@@ -96,6 +96,7 @@ from fcsite import utils
 app.jinja_env.filters['datetimeformat'] = utils.format_datetime
 app.jinja_env.filters['dateformat'] = utils.format_date
 app.jinja_env.filters['timeformat'] = utils.format_time
+app.jinja_env.filters['strdateformat'] = utils.format_date_str
 
 app.jinja_env.globals['is_admin'] = \
     lambda: g.user and users.is_admin(g.user)

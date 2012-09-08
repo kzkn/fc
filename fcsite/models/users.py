@@ -17,6 +17,8 @@ PERM_ADMIN_MEMBER = (1 << 2) | PERM_ADMIN
 PERM_ADMIN_NOTICE = (1 << 3) | PERM_ADMIN
 PERM_ADMIN_GOD = PERM_ADMIN_SCHEDULE | PERM_ADMIN_MEMBER | PERM_ADMIN_NOTICE
 
+PROFILE_FIELDS = ['email', 'home', 'car', 'comment', 'birthday']
+
 
 def from_row(row):
     user = {}
@@ -26,6 +28,9 @@ def from_row(row):
     profile = loads(row['profile'])
     user.update(profile)
     del user['profile']
+
+    for profile_field in PROFILE_FIELDS:
+        user.setdefault(profile_field, '')
     return user
 
 
@@ -105,11 +110,13 @@ def update(id, password, sex, permission):
 def update_profile(id, form):
     password = get_or_gen_password(form)
     sex = sex_atoi(form['sex'])
+    birthday = form['birthday']
     email = form['email']
     home = form['home']
     car = form['car']
     comment = sanitize_html(htmlize_textarea_body(form['comment']))
     profile = dumps({
+        'birthday': birthday,
         'email': email,
         'home': home,
         'car': car,

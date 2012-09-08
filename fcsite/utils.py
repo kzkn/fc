@@ -2,6 +2,7 @@
 
 import re
 import time
+from datetime import datetime
 from flask import request, flash, get_flashed_messages, url_for
 from BeautifulSoup import BeautifulSoup, Comment
 
@@ -162,6 +163,14 @@ def format_date(dt):
 
 def format_time(dt):
     return dt.strftime('%H:%M').decode('utf8')
+
+
+def format_date_str(s):
+    if not s:
+        return s
+    tm = time.strptime(s, '%Y-%m-%d')
+    dt = datetime(tm.tm_year, tm.tm_mon, tm.tm_mday)
+    return format_date(dt)
 
 
 def mobile_url_for(view, **kwargs):

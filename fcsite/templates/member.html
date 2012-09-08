@@ -45,6 +45,8 @@
             {% if g.user %}
             <dt>メールアドレス</dt>
             <dd>{{ selected_user['email'] }}</dd>
+            <dt>生年月日</dt>
+            <dd>{{ selected_user['birthday'] | strdateformat }}</dd>
             <dt>住まい</dt>
             <dd>{{ selected_user['home'] }}</dd>
             <dt>車</dt>
