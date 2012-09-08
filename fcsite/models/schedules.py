@@ -25,7 +25,7 @@ def find(type):
                    AND is_entry) AS entry_count
           FROM Schedule
          WHERE type = ?
-           AND when_ >= datetime('now', 'localtime')
+           AND when_ >= date('now', 'localtime')
       ORDER BY when_""", (type, ))
 
     # Row -> dict for `entries'
