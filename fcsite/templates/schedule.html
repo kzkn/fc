@@ -1,6 +1,27 @@
 {% extends 'layout.html' %}
 {% set active_page = 'schedule' %}
 
+{% macro entries_list(schedule) %}
+<h5><i class="icon-ok-circle"></i> 参加</h5>
+<dl>
+  {% for e in schedule['entries'] %}
+    {% if e['is_entry'] %}
+  <dt class="enter">{{ e['user_name'] }}</dt>
+  <dd class="enter">{{ e['comment'] }}</dd>
+    {% endif %}
+  {% endfor %}
+</dl>
+<h5><i class="icon-remove-circle"></i> 不参加</h5>
+<dl>
+  {% for e in schedule['entries'] %}
+    {% if not e['is_entry'] %}
+  <dt class="leave">{{ e['user_name'] }}</dt>
+  <dd class="leave">{{ e['comment'] }}</dd>
+    {% endif %}
+  {% endfor %}
+</dl>
+{% endmacro %}
+
 {% block maincontent %}
       <div class="subhead visible-desktop">
         <h1>活動予定</h1>
@@ -52,12 +73,7 @@
                           </dl>
                         </td>
                         <td>
-                          <dl>
-                            {% for e in p['entries'] %}
-                            <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
-                            <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
-                            {% endfor %}
-                          </dl>
+                          {{ entries_list(p) }}
                         </td>
                       </tr>
                     </tbody>
@@ -115,12 +131,7 @@
                           </dl>
                         </td>
                         <td>
-                          <dl>
-                            {% for e in ga['entries'] %}
-                            <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
-                            <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
-                            {% endfor %}
-                          </dl>
+                          {{ entries_list(ga) }}
                         </td>
                       </tr>
                     </tbody>
@@ -172,12 +183,7 @@
                           </dl>
                         </td>
                         <td>
-                          <dl>
-                            {% for e in e['entries'] %}
-                            <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
-                            <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
-                            {% endfor %}
-                          </dl>
+                          {{ entries_list(e) }}
                         </td>
                       </tr>
                     </tbody>
