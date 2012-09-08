@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from imp import load_source
 from flask import Flask, g, session, redirect, url_for, request
 
 app = Flask(__name__)
 app.config.from_object('config')
+secret = load_source('secret', app.config['SECRET_FILE'])
+app.config.update(secret.secrets)
 
 from fcsite import database
 from fcsite.models import users
