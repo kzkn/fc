@@ -52,6 +52,6 @@ def gallery():
     return redirect(url_for('general.index'))
 
 
-@mod.route('/join')
+@mod.route('/join', methods=['GET', 'POST'])
 def join():
-    return redirect(url_for('general.index'))
+    return render_template('join.html')

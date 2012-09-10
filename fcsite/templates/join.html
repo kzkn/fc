@@ -1,0 +1,71 @@
+{% from 'macros.html' import error_message %}
+{% extends 'layout.html' %}
+
+{% block maincontent %}
+      <h2>応募</h2>
+      <form action="{{ url_for('general.join') }}" method="post" class="well">
+        <label>名前 or ニックネーム</label>
+        {{ error_message('name', errors) }}
+        <input type="text" name="name" required></input>
+        <label>住まい</label>
+        {{ error_message('home', errors) }}
+        <input type="text" name="home" required></input>
+        <span class="help-block"><strong>例: </strong>東区、城南区、大野城市 ... etc</span>
+        <label>メールアドレス</label>
+        {{ error_message('email', errors) }}
+        <input type="text" name="email" required></input>
+        <span class="help-block">間違えると折り返しの連絡ができません。</span>
+        <label>性別</label>
+        {{ error_message('sex', errors) }}
+        <select name="sex">
+          <option selected>男性</option>
+          <option>女性</option>
+        </select>
+        <label>年齢</label>
+        {{ error_message('age', errors) }}
+        <select name="age">
+          <option selected>18-20</option>
+          <option>21-23</option>
+          <option>24-26</option>
+          <option>27-29</option>
+          <option>30-32</option>
+          <option>33-35</option>
+          <option>36-38</option>
+          <option>39-41</option>
+          <option>42-</option>
+        </select>
+        <label>車の有無</label>
+        {{ error_message('car', errors) }}
+        <select name="car">
+          <option selected>あり</option>
+          <option>なし</option>
+        </select>
+        <label>ラケットの有無</label>
+        {{ error_message('has_racket', errors) }}
+        <select name="has_racket">
+          <option selected>あり</option>
+          <option>なし</option>
+        </select>
+        <label>休日</label>
+        {{ error_message('holiday', errors) }}
+        <select name="holiday">
+          <option selected>土日</option>
+          <option>日</option>
+          <option>不定期</option>
+        </select>
+        <label>テニス歴</label>
+        {{ error_message('experience', errors) }}
+        <select name="experience">
+          <option selected>1 年未満</option>
+          <option>2 年未満</option>
+          <option>中級</option>
+          <option>中上級</option>
+          <option>上級</option>
+        </select>
+        <label>一言</label>
+        {{ error_message('comment', errors) }}
+        <textarea name="comment" style="width: 80%; height: 100px;" required></textarea>
+        <br>
+        <button type="submit" class="btn">送信</button>
+      </form>
+{% endblock %}
