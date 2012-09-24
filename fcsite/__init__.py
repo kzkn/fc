@@ -25,7 +25,7 @@ def handle_unauthorized(e):
     if request_for_mobile_page():
         return redirect(url_for('mobile.login'))
     else:
-        error_message(u'ログインしてね。')
+        error_message(u'ログインしてください。')
         return redirect(url_for('general.index'))
 
 
