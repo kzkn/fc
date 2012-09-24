@@ -1,4 +1,2 @@
 fc
-==test
-test
-test
+==
