@@ -79,7 +79,7 @@ def teardown_request(exception):
 @app.route('/update', methods=['POST'])
 def update():
     from subprocess import Popen, PIPE
-    proc = Popen(app.config['UPDATE_SCRIPT'],
+    proc = Popen(app.config['UPDATE_SCRIPT'], shell=True,
             stdout=PIPE, stderr=PIPE, close_fds=True)
     print ''.join(proc.communicate())
     return 'ok'
