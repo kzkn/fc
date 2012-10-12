@@ -101,7 +101,7 @@ def join():
     return redirect(url_for('general.index'))
 
 
-@mod.route('/show_join_requests')
+@mod.route('/new_join_requests')
 @requires_login
 def show_join_reqs():
     joinreqs = joins.find_not_handled()
