@@ -21,3 +21,12 @@ def count_has_not_handled():
           FROM JoinRequest
          WHERE handled = 0""").fetchone()
     return ret[0]
+
+
+def find_not_handled():
+    cur = g.db.execute("""
+        SELECT *
+          FROM JoinRequest
+         WHERE handled = 0
+      ORDER BY when_ DESC""")
+    return cur.fetchall()

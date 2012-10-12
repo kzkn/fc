@@ -105,6 +105,7 @@ app.register_blueprint(admin.mod)
 app.register_blueprint(mobile.mod)
 
 from fcsite import utils
+app.jinja_env.filters['datetimeformat_full'] = utils.format_datetime_full
 app.jinja_env.filters['datetimeformat'] = utils.format_datetime
 app.jinja_env.filters['dateformat'] = utils.format_date
 app.jinja_env.filters['timeformat'] = utils.format_time

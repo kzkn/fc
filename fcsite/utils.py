@@ -153,6 +153,10 @@ def sanitize_html(value, valid_tags=VALID_TAGS):
 # FILTERS
 #############
 
+def format_datetime_full(dt):
+    return dt.strftime('%Y-%m-%d(%a) %H:%M').decode('utf8')
+
+
 def format_datetime(dt):
     return dt.strftime('%m-%d(%a) %H:%M').decode('utf8')
 

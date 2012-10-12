@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% set active_page = 'other' %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>応募者リスト</h1>
+        <p class="lead">
+          応募者の一覧です。じゃんじゃん対応して、がんがん引き込みましょう。
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="span3">
+          <div class="well" style="padding: 8px;">
+            <ul class="nav nav-list">
+              {# ('general.show_handled_join_reqs', 'old', '過去の応募') #}
+              {% set join_types = [
+                      ('general.show_join_reqs', 'new', '新規応募者')
+                  ]
+              %}
+              {% for view, id, caption in join_types %}
+              <li{% if id == active_join_type %} class="active"{% endif %}>
+                <a href="{{ url_for(view) }}">{{ caption }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="span9">
+          {% block joinreqs_content %}
+          {% endblock %}
+        </div>
+      </div>
+{% endblock %}

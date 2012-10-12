@@ -102,4 +102,5 @@ def join():
 
 @mod.route('/show_join_requests')
 def show_join_reqs():
-    return redirect(url_for('general.index'))
+    joinreqs = joins.find_not_handled()
+    return render_template('joinreqs_new.html', joinreqs=joinreqs)
