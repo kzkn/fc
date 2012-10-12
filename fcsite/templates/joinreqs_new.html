@@ -26,8 +26,10 @@
             <dd>{{ joinreq.comment | safe }}</dd>
           </dl>
           {# TODO: subject, body #}
+          {% if is_member_admin() %}
           <i class="icon-envelope"></i> <a href="mailto:{{ joinreq.email }}">メールを送る</a><br>
           <i class="icon-ok-circle"></i> <a href="">対応済みにする</a><br>
+          {% endif %}
           <hr>
           {% endfor %}
 {% endblock %}
