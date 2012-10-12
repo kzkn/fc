@@ -5,9 +5,10 @@ from flask import Blueprint, render_template, session, redirect, request, \
 from fcsite.models import schedules as scheds
 from fcsite.models import notices
 from fcsite.models import joins
+from fcsite.models import users
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate
-from fcsite.auth import do_login, requires_login
+from fcsite.auth import do_login, requires_login, requires_permission
 
 mod = Blueprint('general', __name__)
 
@@ -105,3 +106,11 @@ def join():
 def show_join_reqs():
     joinreqs = joins.find_not_handled()
     return render_template('joinreqs_new.html', joinreqs=joinreqs)
+
+
+@mod.route('/handle_joinreq/<int:id>')
+@requires_permission(users.PERM_ADMIN_MEMBER)
+def handle_joinreq(id):
+    joins.handle_join_request(id)
+    info_message(message=u'応募者対応、ありがとう！', title=u'応募者に対応しました')
+    return redirect(url_for('general.show_join_reqs'))

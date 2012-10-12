@@ -30,3 +30,11 @@ def find_not_handled():
          WHERE handled = 0
       ORDER BY when_ DESC""")
     return cur.fetchall()
+
+
+def handle_join_request(id):
+    g.db.execute("""
+        UPDATE JoinRequest
+           SET handled = 1
+         WHERE id = ?""", (id, ))
+    g.db.commit()

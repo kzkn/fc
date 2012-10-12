@@ -28,7 +28,7 @@
           {# TODO: subject, body #}
           {% if is_member_admin() %}
           <i class="icon-envelope"></i> <a href="mailto:{{ joinreq.email }}">メールを送る</a><br>
-          <i class="icon-ok-circle"></i> <a href="">対応済みにする</a><br>
+          <i class="icon-ok-circle"></i> <a onclick="if (confirm('対応済みにしてもいいですか？')) { location.href='{{ url_for("general.handle_joinreq", id=joinreq.id) }}'; } else { return false; }" href="#">対応済みにする</a><br>
           {% endif %}
           <hr>
           {% endfor %}
