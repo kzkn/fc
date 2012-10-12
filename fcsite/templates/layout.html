@@ -70,6 +70,20 @@
               </li>
               {% endif %}
               {% endfor %}
+              <li class="dropdown{% if active_page == 'other' %} active{% endif %}">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  その他 <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  {% if g.user %}
+                  <li>
+                    <a href="{{ url_for('general.show_join_reqs') }}">
+                      {% if count_joins_has_not_handled() > 0 %}<span class="label label-info">new!</span> {% endif %}応募
+                    </a>
+                  </li>
+                  {% endif %}
+                </ul>
+              </li>
             </ul>
             <ul class="nav pull-right">
               {% if g.user %}

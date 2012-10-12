@@ -98,3 +98,8 @@ def join():
     info_message(message=u'後日、サークルのものから折り返し連絡します。',
             title=u'応募ありがとうございます！')
     return redirect(url_for('general.index'))
+
+
+@mod.route('/show_join_requests')
+def show_join_reqs():
+    return redirect(url_for('general.index'))

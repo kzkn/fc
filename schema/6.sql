@@ -12,7 +12,8 @@ CREATE TABLE JoinRequest (
   has_racket VARCHAR(5) NOT NULL,
   holiday VARCHAR(10) NOT NULL,
   experience VARCHAR(10) NOT NULL,
-  comment CLOB NOT NULL
+  comment CLOB NOT NULL,
+  handled BOOLEAN NOT NULL DEFAULT 0
 );
 
 # -- !Downs

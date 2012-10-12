@@ -13,3 +13,11 @@ def insert(name, home, email, sex, age, car, has_racket, holiday, experience,
                      (name, home, email, sex, age, car, has_racket, holiday,
                          experience, comment))
     g.db.commit()
+
+
+def count_has_not_handled():
+    ret = g.db.execute("""
+        SELECT COUNT(*)
+          FROM JoinRequest
+         WHERE handled = 0""").fetchone()
+    return ret[0]
