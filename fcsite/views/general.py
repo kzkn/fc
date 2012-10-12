@@ -7,7 +7,7 @@ from fcsite.models import notices
 from fcsite.models import joins
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate
-from fcsite.auth import do_login
+from fcsite.auth import do_login, requires_login
 
 mod = Blueprint('general', __name__)
 
@@ -101,6 +101,7 @@ def join():
 
 
 @mod.route('/show_join_requests')
+@requires_login
 def show_join_reqs():
     joinreqs = joins.find_not_handled()
     return render_template('joinreqs_new.html', joinreqs=joinreqs)
