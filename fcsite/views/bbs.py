@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, abort
 from fcsite.models import bbs
 from fcsite.auth import requires_login
 from fcsite.utils import pagination
@@ -15,6 +15,8 @@ def index(page=1):
     modelpage = max(0, page - 1)
     posts = bbs.find_posts_on_page(modelpage)
     pages = bbs.count_pages()
+    if page > pages:
+        abort(404)
     begin, end = pagination(page, pages)
     return render_template('bbs.html', page=page, pages=pages, posts=posts,
             begin=begin, end=end)
