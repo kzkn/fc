@@ -119,6 +119,8 @@ app.jinja_env.globals['is_member_admin'] = \
     lambda: g.user and users.is_member_admin(g.user)
 app.jinja_env.globals['is_notice_admin'] = \
     lambda: g.user and users.is_notice_admin(g.user)
+app.jinja_env.globals['is_god'] = \
+    lambda: g.user and users.is_god(g.user)
 app.jinja_env.globals['is_schedule_admin_user'] = \
     lambda u: users.is_schedule_admin(u)
 app.jinja_env.globals['is_member_admin_user'] = \

@@ -191,6 +191,10 @@ def is_notice_admin(user):
     return has_permission(user, PERM_ADMIN_NOTICE)
 
 
+def is_god(user):
+    return has_permission(user, PERM_ADMIN_GOD)
+
+
 def is_male(user):
     return user['sex'] == SEX_MALE
 

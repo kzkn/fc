@@ -1,0 +1,49 @@
+{% from 'macros.html' import you_can_use_tags %}
+{% extends 'layout.html' %}
+{% set active_page = 'other' %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>Fight Club メンバー規約</h1>
+        <p class="lead">
+          Fight Club メンバーが死んでも守らなければならない鉄の掟。
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="span12">
+          <table class="table table-striped">
+            {% set i = 1 %}
+            {% for rule in rules %}
+            <tr>
+              <td>{{ i }}</td>
+              <td>{{ rule.body | safe }}</td>
+              {% if is_god() %}
+              <td><a class="btn btn-danger" href="{{ url_for('general.delete_rule', id=rule.id) }}"><i class="icon-white icon-trash"></i></a></td>
+              {% endif %}
+            </tr>
+            {% set i = i + 1 %}
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      {% if is_god() %}
+      <div class="accordion" id="post">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">規約を追加する</a>
+          </div>
+          <div id="post-form" class="accordion-body collapse">
+            <div class="accordion-inner">
+              <form action="{{ url_for('general.add_rule') }}" method="post">
+                <textarea name="body" style="width: 90%; height: 100px;"></textarea><br>
+                {{ you_can_use_tags() }}
+                <input class="btn" type="submit" name="submit" value="追加"></input>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+{% endblock %}

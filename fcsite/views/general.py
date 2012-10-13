@@ -6,8 +6,10 @@ from fcsite.models import schedules as scheds
 from fcsite.models import notices
 from fcsite.models import joins
 from fcsite.models import users
+from fcsite.models import rules
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate
+from fcsite.utils import htmlize_textarea_body, sanitize_html
 from fcsite.auth import do_login, requires_login, requires_permission
 
 mod = Blueprint('general', __name__)
@@ -114,3 +116,29 @@ def handle_joinreq(id):
     joins.handle_join_request(id)
     info_message(message=u'応募者対応、ありがとう！', title=u'応募者に対応しました')
     return redirect(url_for('general.show_join_reqs'))
+
+
+@mod.route('/rule')
+@requires_login
+def rule():
+    rs = rules.find_all()
+    return render_template('rule.html', rules=rs)
+
+
+@mod.route('/delete_rule/<int:id>')
+@requires_permission(users.PERM_ADMIN_GOD)
+def delete_rule(id):
+    rules.delete(id)
+    info_message(message=u'規約を削除しましたね。通知とかしたほうがいいんじゃないすか？',
+            title=u'規約を削除しました')
+    return redirect(url_for('general.rule'))
+
+
+@mod.route('/add_rule', methods=['POST'])
+@requires_permission(users.PERM_ADMIN_GOD)
+def add_rule():
+    body = sanitize_html(htmlize_textarea_body(request.form['body']))
+    rules.insert(body)
+    info_message(message=u'規約を追加しましたね。通知とかしたほうがいいんじゃないすか？',
+            title=u'規約を追加しました')
+    return redirect(url_for('general.rule'))
