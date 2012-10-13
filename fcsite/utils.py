@@ -106,7 +106,8 @@ def pagination(page, pages):
         begin = pages - 4
     else:
         begin = page - 2
-    end = begin + 5
+    end = min(pages + 1, begin + 5)
+    print page, pages, begin, end
     return (begin, end)
 
 

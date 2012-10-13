@@ -39,7 +39,7 @@ def find_posts_on_page(page):
 def count_pages():
     perpage = app.config['BBS_PER_PAGE']
     count = count_posts()
-    pages = count / perpage
+    pages = max(1, count / perpage)
     if pages * perpage < count:
         pages += 1
     return pages
