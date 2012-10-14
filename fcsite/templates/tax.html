@@ -85,11 +85,14 @@
         var year = $(this).attr('data-year');
         var season = $(this).attr('data-season');
         var userId = $(this).attr('data-user-id');
-        $.get('/switch_payment/' + year + '/' + season + '/' + userId,
-              function(data) {
-                performing.splice(performing.indexOf(id), 1); // id を削除する
-                updatePayment(id, data === '1');
-              });
+        var url = '{{ url_for('general.switch_payment', year=718347183, season='_season_', user_id=23415678) }}';
+        url = url.replace('718347183', year);
+        url = url.replace('_season_', season);
+        url = url.replace('23415678', userId);
+        $.get(url, function(data) {
+          performing.splice(performing.indexOf(id), 1); // id を削除する
+          updatePayment(id, data === '1');
+        });
       });
     })();
     </script>
