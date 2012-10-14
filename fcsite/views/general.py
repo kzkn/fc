@@ -150,3 +150,9 @@ def add_rule():
 def tax_list():
     ts = taxes.find_all()
     return render_template('tax.html', taxes=ts)
+
+
+@mod.route('/tax_for_new_year')
+def tax_for_new_year():
+    taxes.insert_for_new_year()
+    return 'thanks'
