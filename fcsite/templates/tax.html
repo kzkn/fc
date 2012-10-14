@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% set active_page = 'other' %}
+
+{% macro paid_mark(paid) %}
+{% if paid %}
+<span class="badge badge-success">○</span>
+{% else %}
+<span class="badge badge-important">×</span>
+{% endif %}
+{% endmacro %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>部費</h1>
+        <p class="lead">
+          部費の支払い状況一覧です。
+        </p>
+      </div>
+
+      {% for year, payments in taxes.iteritems() %}
+      <div class="row">
+        <div class="span12">
+          <h3>{{ year }} 年</h3>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>前期</th>
+                <th>後期</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for payment in payments %}
+              <tr>
+                <td>{{ payment.name }}</td>
+                <td>{{ paid_mark(payment.paid_first) }}</td>
+                <td>{{ paid_mark(payment.paid_second) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+{% endblock %}

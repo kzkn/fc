@@ -7,6 +7,7 @@ from fcsite.models import notices
 from fcsite.models import joins
 from fcsite.models import users
 from fcsite.models import rules
+from fcsite.models import taxes
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate
 from fcsite.utils import htmlize_textarea_body, sanitize_html
@@ -142,3 +143,10 @@ def add_rule():
     info_message(message=u'規約を追加しましたね。通知とかしたほうがいいんじゃないすか？',
             title=u'規約を追加しました')
     return redirect(url_for('general.rule'))
+
+
+@mod.route('/tax_list')
+@requires_login
+def tax_list():
+    ts = taxes.find_all()
+    return render_template('tax.html', taxes=ts)

@@ -87,6 +87,11 @@
                     <a href="{{ url_for('general.rule') }}">Fight Club メンバー規約</a>
                   </li>
                   {% endif %}
+                  {% if g.user %}
+                  <li>
+                    <a href="{{ url_for('general.tax_list') }}">部費</a>
+                  </li>
+                  {% endif %}
                 </ul>
               </li>
             </ul>
