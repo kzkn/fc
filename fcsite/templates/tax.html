@@ -1,12 +1,16 @@
 {% extends 'layout.html' %}
 {% set active_page = 'other' %}
 
-{% macro paid_mark(paid) %}
-{% if paid %}
-<span class="badge badge-success">○</span>
-{% else %}
-<span class="badge badge-important">×</span>
-{% endif %}
+{% macro paid_mark(i, year, user_id, paid, season) %}
+<a href="#" style="color: white; text-decoration: none;">
+  <span id="tax-badge-{{ i }}"
+        class="badge badge-{% if paid %}success{% else %}important{% endif %}"
+        data-year="{{ year }}"
+        data-season="{{ season }}"
+        data-user-id="{{ user_id }}">
+    {% if paid %}○{% else %}×{% endif %}
+  </span>
+</a>
 {% endmacro %}
 
 {% block maincontent %}
@@ -17,6 +21,12 @@
         </p>
       </div>
 
+      {% if is_god() %}
+      支払い状況を更新するには、<span class="badge badge-success">○</span>
+      や <span class="badge badge-important">×</span> をクリックしてください。
+      {% endif %}
+
+      {% set i = 0 %}
       {% for year, payments in taxes.iteritems() %}
       <div class="row">
         <div class="span12">
@@ -33,8 +43,10 @@
               {% for payment in payments %}
               <tr>
                 <td>{{ payment.name }}</td>
-                <td>{{ paid_mark(payment.paid_first) }}</td>
-                <td>{{ paid_mark(payment.paid_second) }}</td>
+                <td>{{ paid_mark(i, year, payment.user_id, payment.paid_first, 'first') }}</td>
+                {% set i = i + 1 %}
+                <td>{{ paid_mark(i, year, payment.user_id, payment.paid_second, 'second') }}</td>
+                {% set i = i + 1 %}
               </tr>
               {% endfor %}
             </tbody>
@@ -42,4 +54,44 @@
         </div>
       </div>
       {% endfor %}
+{% endblock %}
+
+{% block script %}
+    {% if is_god() %}
+    <script>
+    (function() {
+      var updatePayment = function(id, isPaid) {
+        if (isPaid) {
+          $('#' + id).text('○')
+                     .removeClass('badge-important')
+                     .addClass('badge-success');
+        } else {
+          $('#' + id).text('×')
+                     .removeClass('badge-success')
+                     .addClass('badge-important');
+        }
+      }
+
+      var performing = [];
+
+      $('.badge').click(function(e) {
+        e.preventDefault();
+
+        var id = $(this).attr('id');
+        if (performing.indexOf(id) != -1)
+          return;
+
+        performing.push(id);
+        var year = $(this).attr('data-year');
+        var season = $(this).attr('data-season');
+        var userId = $(this).attr('data-user-id');
+        $.get('/switch_payment/' + year + '/' + season + '/' + userId,
+              function(data) {
+                performing.splice(performing.indexOf(id), 1); // id を削除する
+                updatePayment(id, data === '1');
+              });
+      });
+    })();
+    </script>
+    {% endif %}
 {% endblock %}

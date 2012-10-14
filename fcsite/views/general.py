@@ -156,3 +156,10 @@ def tax_list():
 def tax_for_new_year():
     taxes.insert_for_new_year()
     return 'thanks'
+
+
+@mod.route('/switch_payment/<int:year>/<string:season>/<int:user_id>')
+@requires_permission(users.PERM_ADMIN_GOD)
+def switch_payment(year, season, user_id):
+    newpayments = taxes.switch_payment(year, season == 'first', user_id)
+    return str(newpayments)

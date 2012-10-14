@@ -12,6 +12,7 @@ from flask import g
 def find_all():
     taxes = g.db.execute("""
         SELECT User.name,
+               Tax.user_id,
                Tax.year,
                Tax.paid_first,
                Tax.paid_second
@@ -39,3 +40,21 @@ def do_insert_records_for_year(year):
         INSERT INTO Tax (user_id, year, paid_first, paid_second)
              SELECT id, ?, 0, 0 FROM User""", (year, ))
     g.db.commit()
+
+
+def switch_payment(year, is_first_season, user_id):
+    column = 'paid_first' if is_first_season else 'paid_second'
+    g.db.execute("""
+        UPDATE Tax
+           SET %s = CASE WHEN %s = 1 THEN 0
+                         ELSE 1
+                    END
+         WHERE year = ?
+           AND user_id = ?""" % (column, column), (year, user_id))
+    g.db.commit()
+
+    return g.db.execute("""
+        SELECT %s
+          FROM Tax
+         WHERE year = ?
+           AND user_id = ?""" % column, (year, user_id)).fetchone()[0]
