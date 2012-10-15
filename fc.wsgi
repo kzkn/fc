@@ -6,5 +6,8 @@ sys.path.insert(0, '/var/www/html/newfc')
 
 from fcsite import app as application
 
+import os
 import evolutions
-evolutions.apply_script(application.config['DATABASE_URI'], 'schema')
+evolutions.apply_script(
+        application.config['DATABASE_URI'],
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), 'schema'))
