@@ -7,7 +7,7 @@ from sqlite3 import IntegrityError
 from hashlib import sha1
 from datetime import datetime
 from flask import g
-from fcsite.utils import htmlize_textarea_body, sanitize_html
+from fcsite.utils import sanitize_html
 
 SEX_MALE = 1
 SEX_FEMALE = 2
@@ -122,7 +122,7 @@ def update_profile(id, form):
     email = form['email']
     home = form['home']
     car = form['car']
-    comment = sanitize_html(htmlize_textarea_body(form['comment']))
+    comment = sanitize_html(form['comment'])
     profile = dumps({
         'birthday': birthday,
         'email': email,

@@ -2,7 +2,7 @@
 
 from datetime import date
 from flask import g
-from fcsite.utils import htmlize_textarea_body, sanitize_html
+from fcsite.utils import sanitize_html
 
 
 def from_row(row):
@@ -82,7 +82,7 @@ def make_obj(form):
     title = form['title']
     begin_show = form['begin_show']
     end_show = form['end_show']
-    body = sanitize_html(htmlize_textarea_body(form['body']))
+    body = sanitize_html(form['body'])
     return {'title': title,
             'begin_show': begin_show,
             'end_show': end_show,

@@ -6,7 +6,7 @@
       {% for msg in (direct_msgs + msgs) %}
 <div class="alert alert-block alert-{{ class }}">
   <h4 class="alert-heading">{{ msg.split(':', 1)[0] }}</h4>
-  {{ msg.split(':', 1)[1] | safe }}
+  {{ msg.split(':', 1)[1] | nl2br | safe }}
 </div>
       {% endfor %}
     {% endif %}

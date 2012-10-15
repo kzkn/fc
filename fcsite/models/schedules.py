@@ -5,7 +5,7 @@ from itertools import groupby
 from time import strptime
 from datetime import datetime
 from flask import g
-from fcsite.utils import htmlize_textarea_body, sanitize_html
+from fcsite.utils import sanitize_html
 
 
 TYPE_PRACTICE = 1
@@ -251,7 +251,7 @@ def make_practice_obj(form):
     court = form['court']
     no = form['no']
     price = form['price']
-    note = sanitize_html(htmlize_textarea_body(form['note']))
+    note = sanitize_html(form['note'])
 
     when = date + ' ' + begintime + ':00'
     body = make_practice_body(endtime, loc, court, no, price, note)
@@ -278,7 +278,7 @@ def make_game_obj(form):
     price = form['price']
     begin_acceptance = form['begin_acceptance']
     begin_game = form['begin_game']
-    note = sanitize_html(htmlize_textarea_body(form['note']))
+    note = sanitize_html(form['note'])
 
     when = date + ' 00:00:00'
     body = make_game_body(
@@ -306,7 +306,7 @@ def make_event_obj(form):
     loc = form['loc']
     deadline = form['deadline']
     price = form['price']
-    description = sanitize_html(htmlize_textarea_body(form['description']))
+    description = sanitize_html(form['description'])
 
     when = date + ' 00:00:00'
     body = make_event_body(name, loc, deadline, price, description)

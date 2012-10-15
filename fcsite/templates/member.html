@@ -53,7 +53,7 @@
             <dd>{{ selected_user.car }}</dd>
             {% endif %}
             <dt>一言</dt>
-            <dd>{{ selected_user.comment | safe }}</dd>
+            <dd>{{ selected_user.comment | nl2br | safe }}</dd>
           </dl>
           {% endif %}
         </div>

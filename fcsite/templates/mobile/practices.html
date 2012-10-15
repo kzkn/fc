@@ -8,7 +8,7 @@
     日時：{{ p.when_ | datetimeformat }}-{{ p.end }}<br>
     予約番号：{{ p.no }}<br>
     金額：{{ p.price }}円<br>
-    備考：{{ p.note | safe }}
+    備考：{{ p.note | nl2br | safe }}
     <hr>
     {% endfor %}
 {% endblock %}

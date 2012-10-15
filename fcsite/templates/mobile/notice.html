@@ -10,6 +10,6 @@
     <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
     <br>
     <h4>{{ notice.title }}</h4>
-    {{ notice.body | safe }}
+    {{ notice.body | nl2br | safe }}
   </body>
 </html>

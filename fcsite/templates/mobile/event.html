@@ -6,5 +6,5 @@
     開催日：{{ schedule.when_ | dateformat }}<br>
     〆切：{{ schedule.deadline }}<br>
     費用：{{ schedule.price }}円<br>
-    内容：{{ schedule.description | safe }}
+    内容：{{ schedule.description | nl2br | safe }}
 {% endblock %}

@@ -8,5 +8,5 @@
     受付開始：{{ schedule.begin_acceptance }}<br>
     試合開始：{{ schedule.begin_game }}<br>
     金額：{{ schedule.price }}円<br>
-    備考：{{ schedule.note | safe }}
+    備考：{{ schedule.note | nl2br | safe }}
 {% endblock %}

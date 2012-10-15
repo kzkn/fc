@@ -17,7 +17,7 @@
             {% for rule in rules %}
             <tr>
               <td>{{ i }}</td>
-              <td>{{ rule.body | safe }}</td>
+              <td>{{ rule.body | nl2br | safe }}</td>
               {% if is_god() %}
               <td><a class="btn btn-danger" href="{{ url_for('general.delete_rule', id=rule.id) }}"><i class="icon-white icon-trash"></i></a></td>
               {% endif %}

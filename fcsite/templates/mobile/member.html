@@ -21,7 +21,7 @@
       {{ def('メールアドレス', user.email) }}
       {{ def('住まい', user.home) }}
       {{ def('車', user.car) }}
-      {{ def('一言', user.comment | safe) }}
+      {{ def('一言', user.comment | nl2br | safe) }}
     </dl>
   </body>
 </html>

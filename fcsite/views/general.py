@@ -10,7 +10,7 @@ from fcsite.models import rules
 from fcsite.models import taxes
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate
-from fcsite.utils import htmlize_textarea_body, sanitize_html
+from fcsite.utils import sanitize_html
 from fcsite.auth import do_login, requires_login, requires_permission
 
 mod = Blueprint('general', __name__)
@@ -138,7 +138,7 @@ def delete_rule(id):
 @mod.route('/add_rule', methods=['POST'])
 @requires_permission(users.PERM_ADMIN_GOD)
 def add_rule():
-    body = sanitize_html(htmlize_textarea_body(request.form['body']))
+    body = sanitize_html(request.form['body'])
     rules.insert(body)
     info_message(message=u'規約を追加しましたね。通知とかしたほうがいいんじゃないすか？',
             title=u'規約を追加しました')

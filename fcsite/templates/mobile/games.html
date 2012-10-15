@@ -10,7 +10,7 @@
     受付開始：{{ ga.begin_acceptance }}<br>
     試合開始：{{ ga.begin_game }}<br>
     金額：{{ ga.price }}円<br>
-    備考：{{ ga.note | safe }}
+    備考：{{ ga.note | nl2br | safe }}
     <hr>
     {% endfor %}
 {% endblock %}

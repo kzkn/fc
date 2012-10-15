@@ -94,10 +94,6 @@ def request_for_mobile_page():
     return re.match(r'^/mobile', request.path)
 
 
-def htmlize_textarea_body(body):
-    return body.replace('\n', '<br>')
-
-
 def pagination(page, pages):
     # pagination は最大 5 つまで
     if page < 3:
@@ -186,6 +182,10 @@ def mobile_url_for(view, **kwargs):
         return path + ('?uid=%s&sid=%s' % (user_id, session_id))
     else:
         return path
+
+
+def nl2br(body):
+    return body.replace('\n', '<br>')
 
 
 #############

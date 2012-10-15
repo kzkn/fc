@@ -23,7 +23,7 @@
             <dt>テニス歴</dt>
             <dd>{{ joinreq.experience }}</dd>
             <dt>コメント</dt>
-            <dd>{{ joinreq.comment | safe }}</dd>
+            <dd>{{ joinreq.comment | nl2br | safe }}</dd>
           </dl>
           {# TODO: subject, body #}
           {% if is_member_admin() %}

@@ -63,7 +63,7 @@
                             <dt>コート代</dt>
                             <dd>{{ p.price }}円</dd>
                             <dt>備考</dt>
-                            <dd>{{ p.note | safe }}</dd>
+                            <dd>{{ p.note | nl2br | safe }}</dd>
                           </dl>
                         </td>
                       </tr>
@@ -117,7 +117,7 @@
                             <dt>試合開始</dt>
                             <dd>{{ ga.begin_game }}</dd>
                             <dt>備考</dt>
-                            <dd>{{ ga.note | safe }}</dd>
+                            <dd>{{ ga.note | nl2br | safe }}</dd>
                           </dl>
                         </td>
                       </tr>
@@ -165,7 +165,7 @@
                             <dt>費用</dt>
                             <dd>{{ e.price }}円</dd>
                             <dt>内容</dt>
-                            <dd>{{ e.description | safe }}</dd>
+                            <dd>{{ e.description | nl2br | safe }}</dd>
                           </dl>
                         </td>
                       </tr>

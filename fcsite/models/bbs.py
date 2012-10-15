@@ -3,7 +3,7 @@
 from datetime import datetime
 from flask import g
 from fcsite import app
-from fcsite.utils import htmlize_textarea_body, sanitize_html
+from fcsite.utils import sanitize_html
 
 
 def find_posts(begin):
@@ -27,7 +27,7 @@ def post(body):
         INSERT INTO BBS (user_id, when_, body) VALUES (?, ?, ?)""", (
             g.user['id'],
             datetime.now(),
-            sanitize_html(htmlize_textarea_body(body))))
+            sanitize_html(body)))
     g.db.commit()
 
 

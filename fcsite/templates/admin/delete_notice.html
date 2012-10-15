@@ -14,7 +14,7 @@
             </tr>
             <tr>
               <th>内容</th>
-              <td>{{ notice.body | safe }}</td>
+              <td>{{ notice.body | nl2br | safe }}</td>
             </tr>
           </table>
           <form action="{{ url_for('admin.delete_notice', id=notice.id) }}" method="post" class="well">

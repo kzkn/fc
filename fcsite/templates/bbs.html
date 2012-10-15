@@ -36,7 +36,7 @@
             <small>{{ post.when_ | datetimeformat }}</small>
           </p>
           <p>
-            {{ post.body | safe }}
+            {{ post.body | nl2br | safe }}
           </p>
         </div>
       </div>

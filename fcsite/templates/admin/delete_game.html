@@ -39,7 +39,7 @@
                     <dt>試合開始</dt>
                     <dd>{{ schedule.begin_game }}</dd>
                     <dt>備考</dt>
-                    <dd>{{ schedule.note | safe }}</dd>
+                    <dd>{{ schedule.note | nl2br | safe }}</dd>
                   </dl>
                 </td>
                 <td>
