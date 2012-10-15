@@ -6,12 +6,12 @@
   <body bgcolor="#FFFFFF" text="#000000">
     <center><font color="#FF0000">Fight Club</font></center>
     <hr>
-    <center>[{{ user['name'] }}]</center>
+    <center>[{{ user.name }}]</center>
     <hr>
     {% if notices %}
     □告知<br>
     {% for n in notices %}
-    <a href="{{ mobile_url_for('mobile.notice', id=n['id']) }}">{{ n['title'] }}</a><br>
+    <a href="{{ mobile_url_for('mobile.notice', id=n.id) }}">{{ n.title }}</a><br>
     {% endfor %}
     <br>
     {% endif %}

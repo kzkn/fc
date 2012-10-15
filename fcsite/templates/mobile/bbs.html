@@ -16,8 +16,8 @@
     {% for post in posts %}
     <hr>
     <font size="3">
-      {{ post['user_name'] }} <font color="gray" size="-1">{{ post['when_'] | datetimeformat }}</font><br>
-      {{ post['body'] | safe }}
+      {{ post.user_name }} <font color="gray" size="-1">{{ post.when_ | datetimeformat }}</font><br>
+      {{ post.body | safe }}
     </font>
     {% endfor %}
     <hr>

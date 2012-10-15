@@ -6,18 +6,18 @@
           <table class="table table-bordered">
             <tr>
               <th>タイトル</th>
-              <td>{{ notice['title'] }}</td>
+              <td>{{ notice.title }}</td>
             </tr>
             <tr>
               <th>表示期間</th>
-              <td>{{ notice['begin_show'] | dateformat }} から {{ notice['end_show'] | dateformat }}</td>
+              <td>{{ notice.begin_show | dateformat }} から {{ notice.end_show | dateformat }}</td>
             </tr>
             <tr>
               <th>内容</th>
-              <td>{{ notice['body'] | safe }}</td>
+              <td>{{ notice.body | safe }}</td>
             </tr>
           </table>
-          <form action="{{ url_for('admin.delete_notice', id=notice['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.delete_notice', id=notice.id) }}" method="post" class="well">
             <p>
               削除しますか？
               <input type="submit" name="action" class="btn btn-danger" value="はい"></input>

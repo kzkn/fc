@@ -2,13 +2,13 @@
 
 {% block content %}
     {% for p in practices %}
-    <strong><a href="{{ mobile_url_for('mobile.practice', schid=p['id']) }}">状況【{{ p['entry_count'] }}人】</a></strong><br>
-    場所：{{ p['loc'] }}<br>
-    コート：{{ p['court'] }}<br>
-    日時：{{ p['when_'] | datetimeformat }}-{{ p['end'] }}<br>
-    予約番号：{{ p['no'] }}<br>
-    金額：{{ p['price'] }}円<br>
-    備考：{{ p['note'] | safe }}
+    <strong><a href="{{ mobile_url_for('mobile.practice', schid=p.id) }}">状況【{{ p.entry_count }}人】</a></strong><br>
+    場所：{{ p.loc }}<br>
+    コート：{{ p.court }}<br>
+    日時：{{ p.when_ | datetimeformat }}-{{ p.end }}<br>
+    予約番号：{{ p.no }}<br>
+    金額：{{ p.price }}円<br>
+    備考：{{ p.note | safe }}
     <hr>
     {% endfor %}
 {% endblock %}

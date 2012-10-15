@@ -12,10 +12,10 @@
               {% for u in males %}
               <tr>
                 <td>
-                  <a href="{{ url_for('admin.edit_member', id=u['id']) }}">{{ u['name'] }}</a>
+                  <a href="{{ url_for('admin.edit_member', id=u.id) }}">{{ u.name }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u.id) }}"><i class="icon-white icon-trash"></i> 削除</a>
                 </td>
               </tr>
               {% endfor %}
@@ -27,10 +27,10 @@
               {% for u in females %}
               <tr>
                 <td>
-                  <a href="{{ url_for('admin.edit_member', id=u['id']) }}">{{ u['name'] }}</a>
+                  <a href="{{ url_for('admin.edit_member', id=u.id) }}">{{ u.name }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u.id) }}"><i class="icon-white icon-trash"></i> 削除</a>
                 </td>
               </tr>
               {% endfor %}

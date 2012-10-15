@@ -6,11 +6,11 @@
   <ul class="nav nav-list">
     <li class="nav-header">男性</li>
     {% for u in males %}
-    <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+    <li class="{{ 'active' if selected_user and u.id == selected_user.id else '' }}"><a href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a></li>
     {% endfor %}
     <li class="nav-header">女性</li>
     {% for u in females %}
-    <li class="{{ 'active' if selected_user and u['id'] == selected_user['id'] else '' }}"><a href="{{ url_for('member.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+    <li class="{{ 'active' if selected_user and u.id == selected_user.id else '' }}"><a href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a></li>
     {% endfor %}
   </ul>
 </div>
@@ -38,22 +38,22 @@
         </div>
         <div class="span9">
           {% if selected_user %}
-          <h2>{{ selected_user['name'] }}</h2>
+          <h2>{{ selected_user.name }}</h2>
           <dl id="profile" class="dl">
             <dt>性別</dt>
-            <dd>{{ '男性' if selected_user['sex'] == 1 else '女性' }}</dd>
+            <dd>{{ '男性' if selected_user.sex == 1 else '女性' }}</dd>
             {% if g.user %}
             <dt>メールアドレス</dt>
-            <dd>{{ selected_user['email'] }}</dd>
+            <dd>{{ selected_user.email }}</dd>
             <dt>生年月日</dt>
-            <dd>{{ selected_user['birthday'] | strdateformat }}</dd>
+            <dd>{{ selected_user.birthday | strdateformat }}</dd>
             <dt>住まい</dt>
-            <dd>{{ selected_user['home'] }}</dd>
+            <dd>{{ selected_user.home }}</dd>
             <dt>車</dt>
-            <dd>{{ selected_user['car'] }}</dd>
+            <dd>{{ selected_user.car }}</dd>
             {% endif %}
             <dt>一言</dt>
-            <dd>{{ selected_user['comment'] | safe }}</dd>
+            <dd>{{ selected_user.comment | safe }}</dd>
           </dl>
           {% endif %}
         </div>

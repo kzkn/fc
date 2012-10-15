@@ -2,7 +2,7 @@
 {% set active_tab = 'practice' %}
 
 {% block tabcontent %}
-          <form action="{{ url_for('admin.delete_practice', id=schedule['id']) }}" method="post" class="well">
+          <form action="{{ url_for('admin.delete_practice', id=schedule.id) }}" method="post" class="well">
             <p>
               本当に削除しますか？
               <input type="submit" name="action" class="btn btn-danger" value="はい"></input>
@@ -23,24 +23,24 @@
                 <td>
                   <dl>
                     <dt>日程</dt>
-                    <dd>{{ schedule['when_'] | datetimeformat }}-{{ schedule['end'] }}</dd>
+                    <dd>{{ schedule.when_ | datetimeformat }}-{{ schedule.end }}</dd>
                     <dt>場所</dt>
-                    <dd>{{ schedule['loc'] }}</dd>
+                    <dd>{{ schedule.loc }}</dd>
                     <dt>コート</dt>
-                    <dd>{{ schedule['court'] }}</dd>
+                    <dd>{{ schedule.court }}</dd>
                     <dt>予約番号</dt>
-                    <dd>{{ schedule['no'] }}</dd>
+                    <dd>{{ schedule.no }}</dd>
                     <dt>コート代</dt>
-                    <dd>{{ schedule['price'] }}円</dd>
+                    <dd>{{ schedule.price }}円</dd>
                     <dt>備考</dt>
-                    <dd>{{ schedule['note'] | safe }}</dd>
+                    <dd>{{ schedule.note | safe }}</dd>
                   </dl>
                 </td>
                 <td>
                   <dl>
-                    {% for e in schedule['entries'] %}
-                    <dt class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['user_name'] }}</dt>
-                    <dd class="{{ 'enter' if e['is_entry'] else 'leave' }}">{{ e['comment'] }}</dd>
+                    {% for e in schedule.entries %}
+                    <dt class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.user_name }}</dt>
+                    <dd class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.comment }}</dd>
                     {% endfor %}
                   </dl>
                 </td>

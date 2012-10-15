@@ -4,19 +4,19 @@
 {% macro entries_list(schedule) %}
 <h5><i class="icon-ok-circle"></i> 参加</h5>
 <dl>
-  {% for e in schedule['entries'] %}
-    {% if e['is_entry'] %}
-  <dt class="enter">{{ e['user_name'] }}</dt>
-  <dd class="enter">{{ e['comment'] }}</dd>
+  {% for e in schedule.entries %}
+    {% if e.is_entry %}
+  <dt class="enter">{{ e.user_name }}</dt>
+  <dd class="enter">{{ e.comment }}</dd>
     {% endif %}
   {% endfor %}
 </dl>
 <h5><i class="icon-remove-circle"></i> 不参加</h5>
 <dl>
-  {% for e in schedule['entries'] %}
-    {% if not e['is_entry'] %}
-  <dt class="leave">{{ e['user_name'] }}</dt>
-  <dd class="leave">{{ e['comment'] }}</dd>
+  {% for e in schedule.entries %}
+    {% if not e.is_entry %}
+  <dt class="leave">{{ e.user_name }}</dt>
+  <dd class="leave">{{ e.comment }}</dd>
     {% endif %}
   {% endfor %}
 </dl>
@@ -38,14 +38,14 @@
             {% for p in practices %}
             <div class="accordion-group">
               <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#practices" href="#practice{{ p['id'] }}">
-                  {{ p['when_'] | datetimeformat }}-{{ p['end'] }} @{{ p['loc'] }} ({{ p['entry_count'] }}人) {% if not is_registered(g.user, p) %}<span class="label label-info">未登録</span>{% endif %}
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#practices" href="#practice{{ p.id }}">
+                  {{ p.when_ | datetimeformat }}-{{ p.end }} @{{ p.loc }} ({{ p.entry_count }}人) {% if not is_registered(g.user, p) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
-              <div id="practice{{ p['id'] }}" class="accordion-body collapse">
+              <div id="practice{{ p.id }}" class="accordion-body collapse">
                 <div class="accordion-inner">
                   {% if g.user %}
-                  <form action="{{ url_for('schedule.entry', sid=p['id']) }}" method="post" class="well">
+                  <form action="{{ url_for('schedule.entry', sid=p.id) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
                     <input class="btn" type="submit" name="action" value="参加しない"></input>
@@ -63,13 +63,13 @@
                         <td>
                           <dl>
                             <dt>コート</dt>
-                            <dd>{{ p['court'] }}</dd>
+                            <dd>{{ p.court }}</dd>
                             <dt>予約番号</dt>
-                            <dd>{{ p['no'] }}</dd>
+                            <dd>{{ p.no }}</dd>
                             <dt>コート代</dt>
-                            <dd>{{ p['price'] }}円</dd>
+                            <dd>{{ p.price }}円</dd>
                             <dt>備考</dt>
-                            <dd>{{ p['note'] | safe }}</dd>
+                            <dd>{{ p.note | safe }}</dd>
                           </dl>
                         </td>
                         <td>
@@ -90,14 +90,14 @@
             {% for ga in games %}
             <div class="accordion-group">
               <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#games" href="#game{{ ga['id'] }}">
-                  {{ ga['name'] }} @{{ ga['loc'] }} ({{ ga['entry_count'] }}人) {% if not is_registered(g.user, ga) %}<span class="label label-info">未登録</span>{% endif %}
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#games" href="#game{{ ga.id }}">
+                  {{ ga.name }} @{{ ga.loc }} ({{ ga.entry_count }}人) {% if not is_registered(g.user, ga) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
-              <div id="game{{ ga['id'] }}" class="accordion-body collapse">
+              <div id="game{{ ga.id }}" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {% if g.user and not ga['deadline_overred'] %}
-                  <form action="{{ url_for('schedule.entry', sid=ga['id']) }}" method="post" class="well">
+                  {% if g.user and not ga.deadline_overred %}
+                  <form action="{{ url_for('schedule.entry', sid=ga.id) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
                     <input class="btn" type="submit" name="action" value="参加しない"></input>
@@ -115,19 +115,19 @@
                         <td>
                           <dl>
                             <dt>開催日</dt>
-                            <dd>{{ ga['when_'] | dateformat }}</dd>
+                            <dd>{{ ga.when_ | dateformat }}</dd>
                             <dt>ジャンル</dt>
-                            <dd>{{ ga['genre'] }}</dd>
+                            <dd>{{ ga.genre }}</dd>
                             <dt>締め切り</dt>
-                            <dd>{{ ga['deadline'] }}</dd>
+                            <dd>{{ ga.deadline }}</dd>
                             <dt>試合代</dt>
-                            <dd>{{ ga['price'] }}円</dd>
+                            <dd>{{ ga.price }}円</dd>
                             <dt>受付開始</dt>
-                            <dd>{{ ga['begin_acceptance'] }}</dd>
+                            <dd>{{ ga.begin_acceptance }}</dd>
                             <dt>試合開始</dt>
-                            <dd>{{ ga['begin_game'] }}</dd>
+                            <dd>{{ ga.begin_game }}</dd>
                             <dt>備考</dt>
-                            <dd>{{ ga['note'] | safe }}</dd>
+                            <dd>{{ ga.note | safe }}</dd>
                           </dl>
                         </td>
                         <td>
@@ -148,14 +148,14 @@
             {% for e in events %}
             <div class="accordion-group">
               <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#events" href="#event{{ e['id'] }}">
-                  {{ e['name'] }} @{{ e['loc'] }} ({{ e['entry_count'] }}人) {% if not is_registered(g.user, e) %}<span class="label label-info">未登録</span>{% endif %}
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#events" href="#event{{ e.id }}">
+                  {{ e.name }} @{{ e.loc }} ({{ e.entry_count }}人) {% if not is_registered(g.user, e) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
-              <div id="event{{ e['id'] }}" class="accordion-body collapse">
+              <div id="event{{ e.id }}" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {% if g.user and not e['deadline_overred'] %}
-                  <form action="{{ url_for('schedule.entry', sid=e['id']) }}" method="post" class="well">
+                  {% if g.user and not e.deadline_overred %}
+                  <form action="{{ url_for('schedule.entry', sid=e.id) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
                     <input class="btn" type="submit" name="action" value="参加しない"></input>
@@ -173,13 +173,13 @@
                         <td>
                           <dl>
                             <dt>開催日</dt>
-                            <dd>{{ e['when_'] | dateformat }}</dd>
+                            <dd>{{ e.when_ | dateformat }}</dd>
                             <dt>締め切り</dt>
-                            <dd>{{ e['deadline'] }}</dd>
+                            <dd>{{ e.deadline }}</dd>
                             <dt>費用</dt>
-                            <dd>{{ e['price'] }}円</dd>
+                            <dd>{{ e.price }}円</dd>
                             <dt>内容</dt>
-                            <dd>{{ e['description'] | safe }}</dd>
+                            <dd>{{ e.description | safe }}</dd>
                           </dl>
                         </td>
                         <td>

@@ -10,10 +10,10 @@
               {% for p in practices %}
               <tr>
                 <td>
-                  <a href="{{ url_for('admin.edit_practice', id=p['id']) }}">{{ p['when_'] | datetimeformat }}-{{ p['end'] }} @{{ p['loc'] }}</a>
+                  <a href="{{ url_for('admin.edit_practice', id=p.id) }}">{{ p.when_ | datetimeformat }}-{{ p.end }} @{{ p.loc }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_practice', id=p['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_practice', id=p.id) }}"><i class="icon-white icon-trash"></i> 削除</a>
                 </td>
               </tr>
               {% endfor %}

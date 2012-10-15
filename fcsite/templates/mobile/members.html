@@ -13,13 +13,13 @@
     <h4>男性</h4>
     <ol>
       {% for u in males %}
-      <li><a href="{{ mobile_url_for('mobile.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+      <li><a href="{{ mobile_url_for('mobile.member', id=u.id) }}">{{ u.name }}</a></li>
       {% endfor %}
     </ol>
     <h4>女性</h4>
     <ol>
       {% for u in females %}
-      <li><a href="{{ mobile_url_for('mobile.member', id=u['id']) }}">{{ u['name'] }}</a></li>
+      <li><a href="{{ mobile_url_for('mobile.member', id=u.id) }}">{{ u.name }}</a></li>
       {% endfor %}
     </ol>
   </body>

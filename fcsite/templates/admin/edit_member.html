@@ -4,13 +4,13 @@
 
 {% block admincontent %}
           <h2>メンバー管理</h2>
-          <form action="{% if user %}{{ url_for('admin.edit_member', id=user['id']) }}{% else %}{{ url_for('admin.new_member') }}{% endif %}" method="post" class="well">
+          <form action="{% if user %}{{ url_for('admin.edit_member', id=user.id) }}{% else %}{{ url_for('admin.new_member') }}{% endif %}" method="post" class="well">
             <label>名前</label>
             {{ error_message('name', errors) }}
-            <input type="text" name="name" {% if user %}value="{{ user['name'] }}" readonly{% else %}required{% endif %}></input>
+            <input type="text" name="name" {% if user %}value="{{ user.name }}" readonly{% else %}required{% endif %}></input>
             <label>パスワード</label>
             {{ error_message('password', errors) }}
-            <input type="text" name="password"{% if user %} value="{{ user['password'] }}"{% endif %}></input>
+            <input type="text" name="password"{% if user %} value="{{ user.password }}"{% endif %}></input>
             <span class="help-block"><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</span>
             <label>性別</label>
             {{ error_message('sex', errors) }}

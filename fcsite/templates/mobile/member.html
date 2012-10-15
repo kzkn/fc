@@ -16,12 +16,12 @@
     <br>
 
     <dl>
-      {{ def('名前', user['name']) }}
-      {{ def('性別', '男性' if user['sex'] == 1 else '女性') }}
-      {{ def('メールアドレス', user['email']) }}
-      {{ def('住まい', user['home']) }}
-      {{ def('車', user['car']) }}
-      {{ def('一言', user['comment'] | safe) }}
+      {{ def('名前', user.name) }}
+      {{ def('性別', '男性' if user.sex == 1 else '女性') }}
+      {{ def('メールアドレス', user.email) }}
+      {{ def('住まい', user.home) }}
+      {{ def('車', user.car) }}
+      {{ def('一言', user.comment | safe) }}
     </dl>
   </body>
 </html>

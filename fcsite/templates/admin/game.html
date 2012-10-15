@@ -10,10 +10,10 @@
               {% for ga in games %}
               <tr>
                 <td>
-                  <a href="{{ url_for('admin.edit_game', id=ga['id']) }}">{{ ga['name'] }} @{{ ga['loc'] }}</a>
+                  <a href="{{ url_for('admin.edit_game', id=ga.id) }}">{{ ga.name }} @{{ ga.loc }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_game', id=ga['id']) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_game', id=ga.id) }}"><i class="icon-white icon-trash"></i> 削除</a>
                 </td>
               </tr>
               {% endfor %}

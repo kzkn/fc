@@ -6,23 +6,23 @@
 <form action="{{ url }}" method="post" class="well">
   <label>イベント名</label>
   {{ error_message('name', errors) }}
-  <input type="text" name="name" {% if schedule %}value="{{ schedule['name'] }}"{% endif %} required></input>
+  <input type="text" name="name" {% if schedule %}value="{{ schedule.name }}"{% endif %} required></input>
   <label>開催日</label>
   {{ error_message('date', errors) }}
-  <input type="date" name="date" {% if schedule %}value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"{% endif %} placeholder="年-月-日" required></input>
+  <input type="date" name="date" {% if schedule %}value="{{ schedule.when_.strftime('%Y-%m-%d') }}"{% endif %} placeholder="年-月-日" required></input>
   <label>場所</label>
   {{ error_message('loc', errors) }}
-  <input type="text" name="loc" {% if schedule %}value="{{ schedule['loc'] }}"{% endif %} required></input>
+  <input type="text" name="loc" {% if schedule %}value="{{ schedule.loc }}"{% endif %} required></input>
   <label>締め切り</label>
   {{ error_message('deadline', errors) }}
-  <input type="date" name="deadline" {% if schedule %}value="{{ schedule['deadline'] }}"{% endif %} placeholder="年-月-日"></input>
+  <input type="date" name="deadline" {% if schedule %}value="{{ schedule.deadline }}"{% endif %} placeholder="年-月-日"></input>
   <label>費用</label>
   {{ error_message('price', errors) }}
-  <input type="text" name="price" {% if schedule %}value="{{ schedule['price'] }}"{% endif %}></input>
+  <input type="text" name="price" {% if schedule %}value="{{ schedule.price }}"{% endif %}></input>
   <label>内容</label>
   {{ you_can_use_tags() }}
   {{ error_message('description', errors) }}
-  <textarea name="description" style="width: 80%; height: 100px;" required>{% if schedule %}{{ schedule['description'] | safe }}{% endif %}</textarea>
+  <textarea name="description" style="width: 80%; height: 100px;" required>{% if schedule %}{{ schedule.description | safe }}{% endif %}</textarea>
   <br>
   <button type="submit" class="btn">登録</button>
 </form>
@@ -30,7 +30,7 @@
 
 {% block tabcontent %}
           {% if schedule is defined %}
-          {{ input_forms(url_for('admin.edit_event', id=schedule['id'])) }}
+          {{ input_forms(url_for('admin.edit_event', id=schedule.id)) }}
           {% else %}
           {{ input_forms(url_for('admin.new_event')) }}
           {% endif %}

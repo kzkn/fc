@@ -6,29 +6,29 @@
 <form action="{{ url }}" method="post" class="well">
   <label>日付</label>
   {{ error_message('date', errors) }}
-  <input type="date" name="date" {% if schedule %}value="{{ schedule['when_'].strftime('%Y-%m-%d') }}"{% endif %} placeholder="年-月-日" required></input>
+  <input type="date" name="date" {% if schedule %}value="{{ schedule.when_.strftime('%Y-%m-%d') }}"{% endif %} placeholder="年-月-日" required></input>
   <label>開始時刻</label>
   {{ error_message('begintime', errors) }}
-  <input type="time" name="begintime" {% if schedule %}value="{{ schedule['when_'] | timeformat }}"{% endif %} placeholder="時:分" required></input>
+  <input type="time" name="begintime" {% if schedule %}value="{{ schedule.when_ | timeformat }}"{% endif %} placeholder="時:分" required></input>
   <label>終了時刻</label>
   {{ error_message('endtime', errors) }}
-  <input type="time" name="endtime" {% if schedule %}value="{{ schedule['end'] }}"{% endif %} placeholder="時:分" required></input>
+  <input type="time" name="endtime" {% if schedule %}value="{{ schedule.end }}"{% endif %} placeholder="時:分" required></input>
   <label>場所</label>
   {{ error_message('loc', errors) }}
-  <input type="text" name="loc" {% if schedule %}value="{{ schedule['loc'] }}"{% endif %} required></input>
+  <input type="text" name="loc" {% if schedule %}value="{{ schedule.loc }}"{% endif %} required></input>
   <label>コート</label>
   {{ error_message('court', errors) }}
-  <input type="text" name="court" {% if schedule %}value="{{ schedule['court'] }}"{% endif %}></input>
+  <input type="text" name="court" {% if schedule %}value="{{ schedule.court }}"{% endif %}></input>
   <label>予約番号</label>
   {{ error_message('no', errors) }}
-  <input type="text" name="no" {% if schedule %}value="{{ schedule['no'] }}"{% endif %}></input>
+  <input type="text" name="no" {% if schedule %}value="{{ schedule.no }}"{% endif %}></input>
   <label>コート代</label>
   {{ error_message('price', errors) }}
-  <input type="text" name="price" {% if schedule %}value="{{ schedule['price'] }}"{% endif %}></input>
+  <input type="text" name="price" {% if schedule %}value="{{ schedule.price }}"{% endif %}></input>
   <label>備考</label>
   {{ you_can_use_tags() }}
   {{ error_message('note', errors) }}
-  <textarea name="note" style="width: 80%; height: 100px;">{% if schedule %}{{ schedule['note'] | safe }}{% endif %}</textarea>
+  <textarea name="note" style="width: 80%; height: 100px;">{% if schedule %}{{ schedule.note | safe }}{% endif %}</textarea>
   <br>
   <button type="submit" class="btn">登録</button>
 </form>
@@ -36,7 +36,7 @@
 
 {% block tabcontent %}
           {% if schedule is defined %}
-          {{ input_forms(url_for('admin.edit_practice', id=schedule['id'])) }}
+          {{ input_forms(url_for('admin.edit_practice', id=schedule.id)) }}
           {% else %}
           {{ input_forms(url_for('admin.new_practice')) }}
           {% endif %}

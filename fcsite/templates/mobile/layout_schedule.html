@@ -12,7 +12,7 @@
     {% block description %}
     {% endblock %}
     <hr>
-    <form action="{{ mobile_url_for('mobile.entry', schid=schedule['id']) }}" method="post">
+    <form action="{{ mobile_url_for('mobile.entry', schid=schedule.id) }}" method="post">
       <input type="hidden" name="come_from" value="{{ request.url }}"></input>
       <input type="text" name="comment"></input>
       <select name="action">
@@ -28,13 +28,13 @@
       <input type="submit" name="submit" value="登録"></input>
     </form>
     <ol>
-    {% for e in schedule['entries'] %}
-      {% set is_me = e['user_id'] == user['id'] %}
+    {% for e in schedule.entries %}
+      {% set is_me = e.user_id == user.id %}
       {% if is_me %}
       <b>
       {% endif %}
-      <font color="{{ 'blue' if e['is_entry'] else 'red' }}">
-        <li>{{ '参加' if e['is_entry'] else '不参加' }} {{ e['user_name'] }} {{ e['comment'] }}</li>
+      <font color="{{ 'blue' if e.is_entry else 'red' }}">
+        <li>{{ '参加' if e.is_entry else '不参加' }} {{ e.user_name }} {{ e.comment }}</li>
       </font>
       {% if is_me %}
       </b>
