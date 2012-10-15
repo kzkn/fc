@@ -52,12 +52,6 @@
                   </form>
                   {% endif %}
                   <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>詳細</th>
-                        <th>状況</th>
-                      </tr>
-                    </thead>
                     <tbody>
                       <tr>
                         <td>
@@ -72,6 +66,8 @@
                             <dd>{{ p.note | safe }}</dd>
                           </dl>
                         </td>
+                      </tr>
+                      <tr>
                         <td>
                           {{ entries_list(p) }}
                         </td>
@@ -104,12 +100,6 @@
                   </form>
                   {% endif %}
                   <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>詳細</th>
-                        <th>状況</th>
-                      </tr>
-                    </thead>
                     <tbody>
                       <tr>
                         <td>
@@ -130,6 +120,8 @@
                             <dd>{{ ga.note | safe }}</dd>
                           </dl>
                         </td>
+                      </tr>
+                      <tr>
                         <td>
                           {{ entries_list(ga) }}
                         </td>
@@ -162,12 +154,6 @@
                   </form>
                   {% endif %}
                   <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>詳細</th>
-                        <th>状況</th>
-                      </tr>
-                    </thead>
                     <tbody>
                       <tr>
                         <td>
@@ -182,6 +168,8 @@
                             <dd>{{ e.description | safe }}</dd>
                           </dl>
                         </td>
+                      </tr>
+                      <tr>
                         <td>
                           {{ entries_list(e) }}
                         </td>
