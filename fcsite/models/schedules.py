@@ -188,7 +188,7 @@ def is_registered(uid, sid):
     s = cur.fetchone()
     if not s:  # スケジュールが存在しない
         return False
-    if s['user_id']:  # 登録済み
+    if s['user_id'] is not None:  # 登録済み
         return True
     if s['type'] == TYPE_PRACTICE:  # 練習 未登録
         return False
