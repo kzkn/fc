@@ -19,7 +19,7 @@ def find_all():
           FROM User
                INNER JOIN Tax ON
                  User.id = Tax.user_id
-      ORDER BY Tax.year DESC, User.sex, User.name""").fetchall()
+      ORDER BY Tax.year DESC, User.sex, User.id""").fetchall()
 
     payments_by_year = OrderedDict()
     for year, payments in groupby(taxes, lambda e: e['year']):

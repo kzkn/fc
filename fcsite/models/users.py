@@ -47,7 +47,7 @@ def find_by_password(password):
 
 
 def find_group_by_sex():
-    users = g.db.execute('SELECT * FROM User ORDER BY sex, name').fetchall()
+    users = g.db.execute('SELECT * FROM User ORDER BY sex, id').fetchall()
     bysex = {}
     for sex, us in groupby(users, lambda u: u['sex']):
         bysex[sex] = [from_row(u) for u in us]
