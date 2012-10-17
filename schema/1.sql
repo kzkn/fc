@@ -93,16 +93,16 @@ CREATE TABLE Tax (
 
 # -- !Downs
 
-DROP TABLE User;
-DROP TABLE Schedule;
-DROP TABLE Entry;
-DROP TABLE BBS;
-DROP TABLE MobileSession;
-DROP TABLE Notice;
-DROP TABLE JoinRequest;
-DROP TABLE Rule;
-DROP TABLE Tax;
 DROP INDEX Schedule_when_index;
 DROP INDEX BBS_when_index;
 DROP INDEX Entry_when_index;
 DROP INDEX Notice_time_index;
+DROP TABLE Tax;
+DROP TABLE Rule;
+DROP TABLE JoinRequest;
+DROP TABLE Notice;
+DROP TABLE MobileSession;
+DROP TABLE BBS;
+DROP TABLE Entry;
+DROP TABLE Schedule;
+DROP TABLE User;
