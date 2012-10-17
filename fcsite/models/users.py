@@ -41,13 +41,19 @@ def find_by_id(uid):
 
 
 def find_by_password(password):
-    cur = g.db.execute('SELECT * FROM User WHERE password = ?',
+    # 特殊ユーザ (id=-1) はログインさせないように無視する
+    cur = g.db.execute('SELECT * FROM User WHERE password = ? AND id <> -1',
                        (password, ))
     return from_row(cur.fetchone())
 
 
 def find_group_by_sex():
-    users = g.db.execute('SELECT * FROM User ORDER BY sex, id').fetchall()
+    # 特殊ユーザ (id=-1) は一覧上に表示させないように無視する
+    users = g.db.execute('''
+        SELECT *
+          FROM User
+         WHERE id <> -1
+      ORDER BY sex, id''').fetchall()
     bysex = {}
     for sex, us in groupby(users, lambda u: u['sex']):
         bysex[sex] = [from_row(u) for u in us]

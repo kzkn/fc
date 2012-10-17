@@ -36,9 +36,10 @@ def insert_for_new_year():
 
 
 def do_insert_records_for_year(year):
+    # 特殊ユーザ (id=-1) は支払い状況を表示しないよう insert の対象外とする
     g.db.execute("""
         INSERT INTO Tax (user_id, year, paid_first, paid_second)
-             SELECT id, ?, 0, 0 FROM User""", (year, ))
+             SELECT id, ?, 0, 0 FROM User WHERE id <> -1""", (year, ))
     g.db.commit()
 
 

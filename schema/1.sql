@@ -27,18 +27,18 @@ CREATE TABLE Entry (
   comment VARCHAR(512) NOT NULL,
   when_ TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, schedule_id),
-  FOREIGN KEY (user_id) REFERENCES User(id),
-  FOREIGN KEY (schedule_id) REFERENCES Schedule(id)
+  FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE,
+  FOREIGN KEY (schedule_id) REFERENCES Schedule(id) ON DELETE CASCADE
 );
 
 CREATE INDEX Entry_when_index ON Entry(when_);
 
 CREATE TABLE BBS (
   id INTEGER PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL DEFAULT -1,
   when_ TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   body CLOB NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES User(id)
+  FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE SET DEFAULT
 );
 
 CREATE INDEX BBS_when_index ON BBS(when_);
@@ -47,7 +47,7 @@ CREATE TABLE MobileSession(
   user_id INTEGER PRIMARY KEY,
   session_id CHAR(6) NOT NULL UNIQUE,
   expire TIMPSTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES User(id)
+  FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Notice (
@@ -88,7 +88,7 @@ CREATE TABLE Tax (
   paid_first BOOLEAN NOT NULL,
   paid_second BOOLEAN NOT NULL,
   PRIMARY KEY (user_id, year),
-  FOREIGN KEY (user_id) REFERENCES User(id)
+  FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
 # -- !Downs

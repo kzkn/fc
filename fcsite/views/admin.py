@@ -60,6 +60,7 @@ def validate_event():
 def validate_member():
     validations = OrderedDict()
     validations['name'] = [check_required]
+    validations['password'] = [check_number]
     validations['sex'] = [check_in(u'男性', u'女性')]
     do_validate(request.form, validations)
 
