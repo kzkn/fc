@@ -175,7 +175,7 @@ def bbs_post():
 @mod.route('/member/<int:id>')
 @requires_userid
 def member(id=None):
-    if not id:
+    if id is None:  # show member list
         males, females = users.find_group_by_sex()
         return render_template('mobile/members.html', males=males,
                 females=females)

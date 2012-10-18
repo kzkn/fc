@@ -18,7 +18,7 @@ def validate_profile():
 @mod.route('/<int:id>')
 def member(id=None):
     males, females = users.find_group_by_sex()
-    selected = users.find_by_id(id) if id else None
+    selected = users.find_by_id(id) if id is not None else None
 
     if not selected:
         if males:
