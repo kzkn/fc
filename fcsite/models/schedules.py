@@ -82,7 +82,7 @@ def find_by_id(sid, with_entry=True):
 def find_my_entry(sid):
     cur = g.db.execute("""
         SELECT COUNT(*) FROM Entry
-        WHERE user_id = ? AND schedule_id = ?""", (g.user['id'], sid))
+        WHERE user_id = ? AND schedule_id = ?""", (g.user.id, sid))
     return cur.fetchone()[0] > 0
 
 
@@ -131,14 +131,14 @@ def update_entry(sid, comment, entry):
                comment = ?,
                when_ = CURRENT_TIMESTAMP
          WHERE user_id = ?
-           AND schedule_id = ?""", (entry, comment, g.user['id'], sid))
+           AND schedule_id = ?""", (entry, comment, g.user.id, sid))
     g.db.commit()
 
 
 def insert_entry(sid, comment, entry):
     g.db.execute("""
         INSERT INTO Entry (user_id, schedule_id, is_entry, comment)
-        VALUES (?, ?, ?, ?)""", (g.user['id'], sid, entry, comment))
+        VALUES (?, ?, ?, ?)""", (g.user.id, sid, entry, comment))
     g.db.commit()
 
 

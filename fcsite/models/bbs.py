@@ -25,7 +25,7 @@ def count_posts():
 def post(body):
     g.db.execute("""
         INSERT INTO BBS (user_id, when_, body) VALUES (?, ?, ?)""", (
-            g.user['id'],
+            g.user.id,
             datetime.now(),
             sanitize_html(body)))
     g.db.commit()

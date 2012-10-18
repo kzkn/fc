@@ -263,7 +263,7 @@ def new_member():
             return render_template('admin/edit_member.html', errors=e.errors)
 
         u = users.make_obj(request.form)
-        users.insert(u['name'], u['password'], u['sex'], u['permission'])
+        users.insert(u.name, u.password, u.sex, u.permission)
         return redirect(url_for('admin.member'))
 
 
@@ -281,10 +281,10 @@ def edit_member(id):
             return render_template('admin/edit_member.html', user=user,
                     errors=e.errors)
 
-        u = users.make_obj(request.form)
-        users.update(id, u['password'], u['sex'], u['permission'])
+        u = users.make_obj(request.form, id)
+        users.update(id, u.password, u.sex, u.permission)
 
-        if id != g.user['id']:
+        if id != g.user.id:
             return redirect(url_for('admin.member'))
         else:
             if users.is_member_admin(u):

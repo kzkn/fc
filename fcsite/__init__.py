@@ -52,7 +52,7 @@ def before_request():
     if request_from_featurephone() and not request_for_mobile_page():
         return redirect(
                 url_for('mobile.index') +
-                (('?uid=%d' % g.user['id']) if g.user else ''))
+                (('?uid=%d' % g.user.id) if g.user else ''))
 
     if request_for_mobile_page():
         request.charset = 'Shift_JIS'
@@ -135,9 +135,9 @@ app.jinja_env.globals['admin_navigation_list'] = \
 app.jinja_env.globals['mobile_url_for'] = \
     utils.mobile_url_for
 app.jinja_env.globals['is_registered'] = \
-    lambda u, s: scheds.is_registered(u['id'], s['id'])
+    lambda u, s: scheds.is_registered(u.id, s['id'])
 app.jinja_env.globals['is_entered'] = \
-    lambda u, s: scheds.is_entered(u['id'], s['id'])
+    lambda u, s: scheds.is_entered(u.id, s['id'])
 app.jinja_env.globals['count_joins_has_not_handled'] = \
     lambda: joins.count_has_not_handled()
 

@@ -24,10 +24,10 @@ def requires_userid(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         uid = get_userid()
-        if not uid or not users.find_by_id(uid):
+        if uid is None or not users.find_by_id(uid):
             abort(401)
         sid = get_sessionid()
-        if not sid or not users.is_valid_session_id(uid, sid):
+        if sid is None or not users.is_valid_session_id(uid, sid):
             abort(401)
         return f(*args, **kwargs)
     return decorated_function
@@ -48,7 +48,8 @@ def login():
     if request.method == 'POST':
         password = request.form['password']
         (uid, sid) = do_mobile_login(password)
-        if uid:
+        if uid is not None:
+            print 'hogehoge', uid, sid
             return redirect(mobile_url_for('mobile.index', uid=uid, sid=sid))
     return render_template('mobile/login.html')
 
@@ -57,7 +58,7 @@ def login():
 @requires_userid
 def index():
     user = users.find_by_id(get_userid())
-    if scheds.has_non_registered_practice(user['id']):
+    if scheds.has_non_registered_practice(user.id):
         return redirect(mobile_url_for('mobile.non_registered_practices'))
     ns = notices.find_showing()
     practice_count = scheds.count_schedules(scheds.TYPE_PRACTICE)
@@ -77,7 +78,7 @@ def non_registered_practices():
     user = users.find_by_id(get_userid())
     if not user:
         abort(401)
-    ps = [scheds.from_row(s) for s in scheds.find_non_registered(user['id'],
+    ps = [scheds.from_row(s) for s in scheds.find_non_registered(user.id,
         scheds.TYPE_PRACTICE)]
     return render_template('mobile/practices.html', user=user, practices=ps,
             info_msg=u'未登録の練習があります。')

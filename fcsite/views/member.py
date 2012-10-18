@@ -40,6 +40,5 @@ def profile():
     except ValueError, e:
         return render_template('profile.html', errors=e.errors)
 
-    id = g.user['id']
-    users.update_profile(id, request.form)
+    users.update_profile(g.user.id, request.form)
     return redirect(url_for('member.profile'))

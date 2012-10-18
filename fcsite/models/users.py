@@ -21,18 +21,23 @@ PERM_ADMIN_GOD = PERM_ADMIN_SCHEDULE | PERM_ADMIN_MEMBER | PERM_ADMIN_NOTICE
 PROFILE_FIELDS = ['email', 'home', 'car', 'comment', 'birthday']
 
 
-def from_row(row):
-    user = {}
-    if not row:
-        return user
-    user.update(row)
-    profile = loads(row['profile'])
-    user.update(profile)
-    del user['profile']
+class User(object):
+    def __init__(self, row):
+        self.id = row['id']
+        self.name = row['name']
+        self.password = row['password']
+        self.sex = row['sex']
+        self.permission = row['permission']
+        profile = loads(row['profile'])
+        self.email = profile.get('email', '')
+        self.home = profile.get('home', '')
+        self.car = profile.get('car', '')
+        self.comment = profile.get('comment', '')
+        self.birthday = profile.get('birthday', '')
 
-    for profile_field in PROFILE_FIELDS:
-        user.setdefault(profile_field, '')
-    return user
+
+def from_row(row):
+    return User(row) if row else {}
 
 
 def find_by_id(uid):
@@ -150,11 +155,14 @@ def delete_by_id(id):
     g.db.commit()
 
 
-def make_obj(form):
-    return {'name': form['name'],
+def make_obj(form, id=-9999):
+    dummy_row = {'id': id,
+            'name': form['name'],
             'password': get_or_gen_password(form),
             'sex': sex_atoi(form['sex']),
-            'permission': permission_atoi(form)}
+            'permission': permission_atoi(form),
+            'profile': '{}'}
+    return User(dummy_row)
 
 
 def get_or_gen_password(form):
@@ -186,7 +194,7 @@ def generate_uniq_password():
 
 
 def has_permission(user, permission):
-    return (user['permission'] & permission) == permission
+    return (user.permission & permission) == permission
 
 
 def is_admin(user):
@@ -210,8 +218,8 @@ def is_god(user):
 
 
 def is_male(user):
-    return user['sex'] == SEX_MALE
+    return user.sex == SEX_MALE
 
 
 def is_female(user):
-    return user['sex'] == SEX_FEMALE
+    return user.sex == SEX_FEMALE

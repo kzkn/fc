@@ -46,12 +46,12 @@ def requires_permission(permission):
 def do_login(password):
     user = users.find_by_password(password)
     if user:
-        session['user_id'] = user['id']
+        session['user_id'] = user.id
     return True if user else False
 
 
 def do_mobile_login(password):
     user = users.find_by_password(password)
     if user:
-        sid = users.issue_new_session_id(user['id'])
-    return (user['id'], sid) if user else (None, None)
+        sid = users.issue_new_session_id(user.id)
+    return (user.id, sid) if user else (None, None)

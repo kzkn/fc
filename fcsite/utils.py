@@ -178,7 +178,7 @@ def mobile_url_for(view, **kwargs):
     user_id = kwargs.pop('uid', request.args.get('uid', None))
     session_id = kwargs.pop('sid', request.args.get('sid', None))
     path = url_for(view, **kwargs)
-    if user_id and session_id:
+    if user_id is not None and session_id is not None:
         return path + ('?uid=%s&sid=%s' % (user_id, session_id))
     else:
         return path
