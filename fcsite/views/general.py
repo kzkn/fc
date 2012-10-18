@@ -28,8 +28,8 @@ def validate_join_request():
     validators['has_racket'] = [check_required, check_in(u'あり', u'なし')]
     validators['holiday'] = [check_required, check_in(u'土日', u'日',
         u'不定期')]
-    validators['experience'] = [check_required, check_in(u'1 年未満',
-        u'2 年未満', u'中級', u'中上級', u'上級')]
+    validators['experience'] = [check_required, check_in(u'初心者',
+        u'初級', u'中級', u'上級', u'神、いわゆるゴッド')]
     validators['comment'] = [check_required]
     do_validate(request.form, validators)
 
