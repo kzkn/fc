@@ -24,8 +24,8 @@
       <div><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</div><br>
       {{ label('パスワード') }}
       <select name="sex">
-        <option{% if g.user and is_male(g.user) %} selected{% endif %}>男性</option>
-        <option{% if g.user and is_female(g.user) %} selected{% endif %}>女性</option>
+        <option{% if g.user and g.user.is_male() %} selected{% endif %}>男性</option>
+        <option{% if g.user and g.user.is_female() %} selected{% endif %}>女性</option>
       </select><br><br>
       {{ label('メールアドレス') }}
       <input type="text" name="email" value="{{ g.user.email }}"></input><br><br>
