@@ -7,6 +7,7 @@ from sqlite3 import IntegrityError
 from hashlib import sha1
 from datetime import datetime
 from flask import g
+from fcsite.models import schedules as scheds
 from fcsite.utils import sanitize_html
 
 SEX_MALE = 1
@@ -58,6 +59,31 @@ class User(object):
 
     def is_female(self):
         return self.sex == SEX_FEMALE
+
+    def is_registered(self, schedule):
+        cur = g.db.execute("""
+            SELECT Schedule.id,
+                   Schedule.type,
+                   Schedule.body,
+                   Entry.user_id
+              FROM Schedule
+                   LEFT OUTER JOIN (SELECT schedule_id,
+                                           user_id
+                                      FROM Entry
+                                     WHERE user_id = ?) Entry ON
+                     Schedule.id = Entry.schedule_id
+             WHERE Schedule.id = ?""", (self.id, schedule['id']))
+        s = cur.fetchone()
+        if not s:  # スケジュールが存在しない
+            return False
+        if s['user_id'] is not None:  # 登録済み
+            return True
+        if s['type'] == scheds.TYPE_PRACTICE:  # 練習 未登録
+            return False
+
+        # 試合、イベント 未登録 締め切り確認
+        body = loads(s['body'])
+        return scheds.is_deadline_overred(body)
 
 
 def from_row(row):

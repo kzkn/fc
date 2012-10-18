@@ -126,8 +126,6 @@ app.jinja_env.globals['admin_navigation_list'] = \
     lambda: admin.get_navigation_list(g.user)
 app.jinja_env.globals['mobile_url_for'] = \
     utils.mobile_url_for
-app.jinja_env.globals['is_registered'] = \
-    lambda u, s: scheds.is_registered(u.id, s['id'])
 app.jinja_env.globals['is_entered'] = \
     lambda u, s: scheds.is_entered(u.id, s['id'])
 app.jinja_env.globals['count_joins_has_not_handled'] = \

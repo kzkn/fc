@@ -16,7 +16,7 @@
       <input type="hidden" name="come_from" value="{{ request.url }}"></input>
       <input type="text" name="comment"></input>
       <select name="action">
-        {% if not is_registered(user, schedule) or is_entered(user, schedule) %}
+        {% if not user.is_registered(schedule) or is_entered(user, schedule) %}
         <option selected>参加</option>
         <option>不参加</option>
         {% else %}

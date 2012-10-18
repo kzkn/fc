@@ -172,32 +172,6 @@ def find_practice_locations():
     return list(set([loads(body[0])['loc'] for body in bodies]))
 
 
-def is_registered(uid, sid):
-    cur = g.db.execute("""
-        SELECT Schedule.id,
-               Schedule.type,
-               Schedule.body,
-               Entry.user_id
-          FROM Schedule
-               LEFT OUTER JOIN (SELECT schedule_id,
-                                       user_id
-                                  FROM Entry
-                                 WHERE user_id = ?) Entry ON
-                 Schedule.id = Entry.schedule_id
-         WHERE Schedule.id = ?""", (uid, sid))
-    s = cur.fetchone()
-    if not s:  # スケジュールが存在しない
-        return False
-    if s['user_id'] is not None:  # 登録済み
-        return True
-    if s['type'] == TYPE_PRACTICE:  # 練習 未登録
-        return False
-
-    # 試合、イベント 未登録 締め切り確認
-    body = loads(s['body'])
-    return is_deadline_overred(body)
-
-
 def is_deadline_overred(schedule_body):
     if not schedule_body.get('deadline', None):  # 締め切りなし
         return False
