@@ -6,7 +6,7 @@
   {% if errors and name in errors %}
 <span class="help-block">
   <span class="label label-important">エラー</span>
-  {{ errors.name }}
+  {{ errors[name] }}
 </span>
   {% endif %}
 {% endmacro %}
