@@ -180,16 +180,6 @@ def is_deadline_overred(schedule_body):
     return deadline < datetime.now()
 
 
-def is_entered(uid, sid):
-    cur = g.db.execute("""
-        SELECT user_id
-          FROM Entry
-         WHERE user_id = ?
-           AND schedule_id = ?
-           AND is_entry = 1""", (uid, sid))
-    return cur.fetchone() is not None
-
-
 def count_schedules(type):
     cur = g.db.execute("""
         SELECT COUNT(*)

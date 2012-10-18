@@ -85,6 +85,15 @@ class User(object):
         body = loads(s['body'])
         return scheds.is_deadline_overred(body)
 
+    def is_entered(self, schedule):
+        cur = g.db.execute("""
+            SELECT user_id
+              FROM Entry
+             WHERE user_id = ?
+               AND schedule_id = ?
+               AND is_entry = 1""", (self.id, schedule['id']))
+        return cur.fetchone() is not None
+
 
 def from_row(row):
     return User(row) if row else {}
