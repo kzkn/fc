@@ -66,6 +66,11 @@ def logout():
     return redirect(url_for('general.index'))
 
 
+@mod.route('/introduction')
+def introduction():
+    return render_template('introduction.html')
+
+
 @mod.route('/report')
 def report():
     return redirect(url_for('general.index'))
