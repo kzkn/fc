@@ -15,8 +15,8 @@
             <label>性別</label>
             {{ error_message('sex', errors) }}
             <select name="sex">
-              <option{% if g.user and is_male(g.user) %} selected{% endif %}>男性</option>
-              <option{% if g.user and is_female(g.user) %} selected{% endif %}>女性</option>
+              <option{% if g.user.is_male() %} selected{% endif %}>男性</option>
+              <option{% if g.user.is_female() %} selected{% endif %}>女性</option>
             </select>
             <label>メールアドレス</label>
             {{ error_message('email', errors) }}

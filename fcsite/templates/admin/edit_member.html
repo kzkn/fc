@@ -15,21 +15,21 @@
             <label>性別</label>
             {{ error_message('sex', errors) }}
             <select name="sex">
-              <option{% if user and is_male(user) %} selected{% endif %}>男性</option>
-              <option{% if user and is_female(user) %} selected{% endif %}>女性</option>
+              <option{% if user and user.is_male() %} selected{% endif %}>男性</option>
+              <option{% if user and user.is_female() %} selected{% endif %}>女性</option>
             </select>
             <label>権限</label>
             {{ error_message('permissions', errors) }}
             <label class="checkbox">
-              <input type="checkbox" name="permissions" value="schedule"{% if user and is_schedule_admin_user(user) %} checked{% endif %}>
+              <input type="checkbox" name="permissions" value="schedule"{% if user and user.is_schedule_admin() %} checked{% endif %}>
               予定
             </label>
             <label class="checkbox">
-              <input type="checkbox" name="permissions" value="member"{% if user and is_member_admin_user(user) %} checked{% endif %}>
+              <input type="checkbox" name="permissions" value="member"{% if user and user.is_member_admin() %} checked{% endif %}>
               メンバー
             </label>
             <label class="checkbox">
-              <input type="checkbox" name="permissions" value="notice"{% if user and is_notice_admin_user(user) %} checked{% endif %}>
+              <input type="checkbox" name="permissions" value="notice"{% if user and user.is_notice_admin() %} checked{% endif %}>
               告知
             </label>
             <br>

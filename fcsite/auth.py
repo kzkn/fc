@@ -21,7 +21,7 @@ def requires_login(f):
 def requires_admin(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not users.is_admin(g.user):
+        if not g.user.is_admin():
             abort(403)
         return f(*args, **kwargs)
     return requires_login(decorated_function)
@@ -31,7 +31,7 @@ def requires_permission(permission):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not users.has_permission(g.user, permission):
+            if not g.user.has_permission(permission):
                 abort(403)
             return f(*args, **kwargs)
         return requires_login(decorated_function)

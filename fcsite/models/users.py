@@ -35,6 +35,30 @@ class User(object):
         self.comment = profile.get('comment', '')
         self.birthday = profile.get('birthday', '')
 
+    def has_permission(self, permission):
+        return (self.permission & permission) == permission
+
+    def is_admin(self):
+        return self.has_permission(PERM_ADMIN)
+
+    def is_schedule_admin(self):
+        return self.has_permission(PERM_ADMIN_SCHEDULE)
+
+    def is_member_admin(self):
+        return self.has_permission(PERM_ADMIN_MEMBER)
+
+    def is_notice_admin(self):
+        return self.has_permission(PERM_ADMIN_NOTICE)
+
+    def is_god(self):
+        return self.has_permission(PERM_ADMIN_GOD)
+
+    def is_male(self):
+        return self.sex == SEX_MALE
+
+    def is_female(self):
+        return self.sex == SEX_FEMALE
+
 
 def from_row(row):
     return User(row) if row else {}
@@ -191,35 +215,3 @@ def generate_uniq_password():
     while find_by_password(p):
         p = randint(100000, 999999)
     return p
-
-
-def has_permission(user, permission):
-    return (user.permission & permission) == permission
-
-
-def is_admin(user):
-    return has_permission(user, PERM_ADMIN)
-
-
-def is_schedule_admin(user):
-    return has_permission(user, PERM_ADMIN_SCHEDULE)
-
-
-def is_member_admin(user):
-    return has_permission(user, PERM_ADMIN_MEMBER)
-
-
-def is_notice_admin(user):
-    return has_permission(user, PERM_ADMIN_NOTICE)
-
-
-def is_god(user):
-    return has_permission(user, PERM_ADMIN_GOD)
-
-
-def is_male(user):
-    return user.sex == SEX_MALE
-
-
-def is_female(user):
-    return user.sex == SEX_FEMALE

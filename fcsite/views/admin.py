@@ -77,11 +77,11 @@ def validate_notice():
 @mod.route('/')
 @requires_admin
 def index():
-    if users.is_schedule_admin(g.user):
+    if g.user.is_schedule_admin():
         return practice()
-    if users.is_member_admin(g.user):
+    if g.user.is_member_admin():
         return member()
-    if users.is_notice_admin(g.user):
+    if g.user.is_notice_admin():
         return notice()
     abort(403)
 
@@ -287,9 +287,9 @@ def edit_member(id):
         if id != g.user.id:
             return redirect(url_for('admin.member'))
         else:
-            if users.is_member_admin(u):
+            if u.is_member_admin():
                 return redirect(url_for('admin.member'))
-            elif users.is_admin(u):
+            elif u.is_admin():
                 return redirect(url_for('admin.index'))
             else:
                 return redirect(url_for('general.index'))
@@ -368,10 +368,10 @@ def delete_notice(id):
 
 def get_navigation_list(user):
     navs = []
-    if users.is_schedule_admin(user):
+    if user.is_schedule_admin():
         navs.append(('admin.practice', 'practice', 'icon-calendar', u'活動予定'))
-    if users.is_member_admin(user):
+    if user.is_member_admin():
         navs.append(('admin.member', 'member', 'icon-user', u'メンバー'))
-    if users.is_notice_admin(user):
+    if user.is_notice_admin():
         navs.append(('admin.notice', 'notice', 'icon-info-sign', u'告知'))
     return navs
