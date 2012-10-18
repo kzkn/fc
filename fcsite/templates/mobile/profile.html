@@ -29,6 +29,8 @@
       </select><br><br>
       {{ label('メールアドレス') }}
       <input type="text" name="email" value="{{ g.user.email }}"></input><br><br>
+      {{ label('生年月日 (西暦年-月-日)') }}
+      <input type="date" name="birthday" value="{{ g.user.birthday }}"></input><br><br>
       {{ label('住まい') }}
       <input type="text" name="home" value="{{ g.user.home }}"></input><br><br>
       {{ label('車') }}
