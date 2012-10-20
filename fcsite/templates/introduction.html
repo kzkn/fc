@@ -9,17 +9,40 @@
         </p>
       </div>
       <div class="row">
-        {# TODO いい感じの画像が手に入ったらレイアウトを変える #}
         <div class="span12">
           <dl>
             <dt>メンバー紹介</dt>
             <dd>最大メンバー数: 約40人 (男性: 6割、女性: 4割)</dd>
+            <ul class="thumbnails" style="margin-top: 10px;">
+              <li class="span6">
+                <div class="thumbnail">
+                  <img src="{{ url_for('static', filename='img/gasshuku.jpg') }}">
+                </div>
+              </li>
+              <li class="span6 hidden-phone">
+                <div class="thumbnail">
+                  <img src="{{ url_for('static', filename='img/women-doubles.jpg') }}">
+                </div>
+              </li>
+            </ul>
             <dt>レベル</dt>
             <dd>レベル的には初心者〜上級者</dd>
             <dt>年齢層</dt>
             <dd>年齢は22歳から40代後半まで、そこそこ幅広いです。主に20後半〜30半ばぐらいが主です。</dd>
             <dt>今後の目標</dt>
             <dd>1. シングル戦、ダブルス戦にでまくる。もちろん入賞！！</dd>
+            <ul class="thumbnails" style="margin-top: 10px;">
+              <li class="span6">
+                <div class="thumbnail">
+                  <img src="{{ url_for('static', filename='img/service.jpg') }}">
+                </div>
+              </li>
+              <li class="span6">
+                <div class="thumbnail hidden-phone">
+                  <img src="{{ url_for('static', filename='img/forehand.jpg') }}">
+                </div>
+              </li>
+            </ul>
             <dt>会費等</dt>
             <dd>今費、3ヶ月2000円徴収しています。ボールはリッチにいいボールを使いまくってます。テニスをした時にその日のコート代を来た人数で割って払っています。</dd>
             <dt>その他の活動</dt>
@@ -30,6 +53,18 @@
                 <li>雨天時はある施設でもちろんテニスをしています。どこかは内緒！</li>
               </ol>
             </dd>
+            <ul class="thumbnails" style="margin-top: 10px;">
+              <li class="span6">
+                <div class="thumbnail">
+                  <img src="{{ url_for('static', filename='img/kappa.jpg') }}">
+                </div>
+              </li>
+              <li class="span6">
+                <div class="thumbnail hidden-phone">
+                  <img src="{{ url_for('static', filename='img/backhand.jpg') }}">
+                </div>
+              </li>
+            </ul>
             <dt>補足</dt>
             <dd>
               <ol>
