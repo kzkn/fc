@@ -10,6 +10,11 @@
         border-bottom: 1px dotted #ccc;
       }
 
+      .post-meta {
+        color: #888;
+        font-size: .5em;
+      }
+
       .feat-img img {
         padding: 5px;
         border: 1px solid #ccc;
@@ -34,7 +39,7 @@
                 <img src="{{ report.feature_image_url if report.feature_image_url else url_for('static', filename='img/fc-logo.png') }}">
               </div>
               <div class="span6">
-                <h2>{{ report.title }}</a></h2>
+                <h2>{{ report.title }} <small class="post-meta pull-right">{{ report.when | datetimeformat }} by {{ report.author_name }}</small></h2>
                 <p>
                   {{ report.description_html | safe }}
                 </p>
