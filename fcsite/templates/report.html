@@ -1,3 +1,4 @@
+{% from 'macros.html' import report_sidebar %}
 {% extends 'layout.html' %}
 {% set active_page = 'index' %}
 
@@ -19,16 +20,7 @@
             {{ report.body | safe }}
           </p>
         </div>
-        <div class="span4">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">最近の投稿</li>
-              {% for report in recent_reports %}
-              <li><a href="{{ url_for('general.report', id=report.id) }}">{{ report.title }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
+        {{ report_sidebar(recent_reports) }}
       </div>
 
       <div class="pagination pagination-centered">

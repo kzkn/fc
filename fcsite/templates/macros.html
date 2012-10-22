@@ -10,3 +10,16 @@
 </span>
   {% endif %}
 {% endmacro %}
+
+{% macro report_sidebar(recent_reports) %}
+        <div class="span4">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">最近の投稿</li>
+              {% for report in recent_reports %}
+              <li><a href="{{ url_for('general.report', id=report.id) }}">{{ report.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+{% endmacro %}
