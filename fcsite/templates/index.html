@@ -2,7 +2,6 @@
 {% set active_page = 'index' %}
 
 {% block maincontent %}
-      <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
         <div class="row-fluid">
           <div class="span7">
@@ -20,12 +19,11 @@
         </div>
       </div>
 
-      <!-- Example row of columns -->
       <div class="row">
         <div class="span4">
           <h2>活動記録</h2>
           <p>合宿やイベントなどの活動記録を掲載しています。</p>
-          <p><a class="btn" href="{{ url_for('general.report') }}">一覧へ &raquo;</a></p>
+          <p><a class="btn" href="{{ url_for('general.report_list') }}">一覧へ &raquo;</a></p>
         </div>
         <div class="span4">
           <h2>ギャラリー</h2>

@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% set active_page = 'index' %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>活動記録</h1>
+        <p class="lead">
+          こんなことやってます！
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="span8">
+          <h2>{{ report.title }}</h2>
+          <p>
+            {{ report.description | safe }}
+          </p>
+          <p>
+            {{ report.body | safe }}
+          </p>
+        </div>
+        <div class="span4">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">最近の投稿</li>
+              {% for report in recent_reports %}
+              <li><a href="{{ url_for('general.report', id=report.id) }}">{{ report.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination pagination-centered">
+        <ul>
+          <li {% if not report.newer_id %}class="disabled"{% endif %}>
+            <a href="{{ '#' if not report.newer_id else url_for('general.report', id=report.newer_id) }}">&laquo; 新しい投稿へ</a>
+          </li>
+          <li>
+            <a href="{{ url_for('general.report_list') }}">一覧へ</a>
+          </li>
+          <li {% if not report.older_id %}class="disabled"{% endif %}>
+            <a href="{{ '#' if not report.older_id else url_for('general.report', id=report.older_id) }}">昔の投稿へ &raquo;</a>
+          </li>
+        </ul>
+      </div>
+{% endblock %}

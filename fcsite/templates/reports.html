@@ -1,0 +1,75 @@
+{% extends 'layout.html' %}
+{% set active_page = 'index' %}
+
+{% block css %}
+    <style>
+      .post {
+        padding-bottom: 15px;
+        border-bottom: 1px dotted #ccc;
+      }
+      {# そのうちやりたい
+      .desc-img img {
+        padding: 5px;
+        border: 1px solid #ccc;
+      }
+      #}
+    </style>
+{% endblock %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>活動記録</h1>
+        <p class="lead">
+          こんなことやってます！
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="span8">
+          {% for report in reports %}
+          <div class="post">
+            <div class="row">
+              {# そのうちやりたい
+              <div class="desc-img span2">
+                <img src="{{ report.description_image_url }}">
+              </div>
+              #}
+              <div class="span8">
+                <h2>{{ report.title }}</a></h2>
+                <p>
+                  {{ report.description | safe }}
+                </p>
+                <p><a href="{{ url_for('general.report', id=report.id) }}" class="btn pull-right">もっと読む</a></p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="span4">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">最近の投稿</li>
+              {% for report in recent_reports %}
+              <li><a href="{{ url_for('general.report', id=report.id) }}">{{ report.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination pagination-centered">
+        <ul>
+          <li {% if page == 1 %}class="disabled"{% endif %}>
+            <a href="{{ '#' if page == 1 else url_for('general.report_list', page=page-1) }}">&laquo;</a>
+          </li>
+          {% for i in range(begin, end) %}
+          <li {% if i == page %}class="active"{% endif %}>
+            <a href="{{ '#' if i == page else url_for('general.report_list', page=i) }}">{{ i }}</a>
+          </li>
+          {% endfor %}
+          <li {% if page == pages %}class="disabled"{% endif %}>
+            <a href="{{ '#' if page == pages else url_for('general.report_list', page=page+1) }}">&raquo;</a>
+          </li>
+        </ul>
+      </div>
+{% endblock %}

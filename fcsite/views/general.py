@@ -2,16 +2,17 @@
 
 import re
 from flask import render_template, session, redirect, request, \
-    url_for, g
+    url_for, g, abort
 from fcsite import check_forced_registration_blueprint
 from fcsite.models import notices
 from fcsite.models import joins
 from fcsite.models import users
 from fcsite.models import rules
 from fcsite.models import taxes
+from fcsite.models import reports
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate
-from fcsite.utils import sanitize_html
+from fcsite.utils import sanitize_html, pagination
 from fcsite.auth import do_login, requires_login, requires_permission
 
 ignores = [(['POST'], re.compile('/login')),
@@ -70,9 +71,29 @@ def introduction():
     return render_template('introduction.html')
 
 
-@mod.route('/report')
-def report():
-    return redirect(url_for('general.index'))
+@mod.route('/reports')
+@mod.route('/reports/<int:page>')
+def report_list(page=1):
+    modelpage = max(0, page - 1)
+    rs = reports.find_reports_on_page(modelpage)
+    pages = reports.count_pages()
+    if page > pages:
+        abort(404)
+    begin, end = pagination(page, pages)
+    recent_reports = reports.recent()
+    return render_template('reports.html', page=page, pages=pages,
+            reports=rs, begin=begin, end=end,
+            recent_reports=recent_reports)
+
+
+@mod.route('/report/<int:id>')
+def report(id):
+    r = reports.find_by_id(id)
+    if not r:
+        abort(404)
+    recent_reports = reports.recent()
+    return render_template('report.html', report=r,
+            recent_reports=recent_reports)
 
 
 @mod.route('/gallery')
