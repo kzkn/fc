@@ -15,12 +15,16 @@
         <label>タイトル</label>
         {{ error_message('title', errors) }}
         <input type="text" name="title" {% if report %}value="{{ report.title }}"{% endif %} required></input>
+        <label>画像 URL</label>
+        <span class="help-block">一覧に表示される画像です。Picasa の<a href="http://support.google.com/picasa/bin/answer.py?hl=ja&answer=66969">この写真へのリンク (画像)</a>を使うといいよ</span>
+        {{ error_message('feature_image_url', errors) }}
+        <input type="text" name="feature_image_url" {% if report %}value="{{ report.feature_image_url }}"{% endif %}></input>
         <label>概要</label>
-        {{ you_can_use_tags() }}
+        <span class="help-block">一覧に表示される文章です。<a href="http://blog.2310.net/archives/6">markdown 記法</a> なるものが使えまっせ</span>
         {{ error_message('description', errors) }}
         <textarea name="description" style="width: 80%; height: 100px;" required>{% if report %}{{ report.description | safe }}{% endif %}</textarea>
         <label>本文</label>
-        {{ you_can_use_tags() }}
+        <span class="help-block">一覧には表示されない文章です。<a href="http://blog.2310.net/archives/6">markdown 記法</a> なるものが使えまっせ</span>
         {{ error_message('body', errors) }}
         <textarea name="body" style="width: 80%; height: 100px;" required>{% if report %}{{ report.body | safe }}{% endif %}</textarea>
         <br>

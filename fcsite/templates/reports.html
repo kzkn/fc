@@ -5,15 +5,15 @@
 {% block css %}
     <style>
       .post {
+        padding-top: 10px;
         padding-bottom: 15px;
         border-bottom: 1px dotted #ccc;
       }
-      {# そのうちやりたい
-      .desc-img img {
+
+      .feat-img img {
         padding: 5px;
         border: 1px solid #ccc;
       }
-      #}
     </style>
 {% endblock %}
 
@@ -30,12 +30,10 @@
           {% for report in reports %}
           <div class="post">
             <div class="row">
-              {# そのうちやりたい
-              <div class="desc-img span2">
-                <img src="{{ report.description_image_url }}">
+              <div class="feat-img span2">
+                <img src="{{ report.feature_image_url if report.feature_image_url else url_for('static', filename='img/fc-logo.png') }}">
               </div>
-              #}
-              <div class="span8">
+              <div class="span6">
                 <h2>{{ report.title }}</a></h2>
                 <p>
                   {{ report.description_html | safe }}

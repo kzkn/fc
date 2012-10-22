@@ -11,6 +11,7 @@ class Report(object):
         self.when = record['when_']
         self.author_name = record['author_name']
         self.title = record['title']
+        self.feature_image_url = record['feature_image_url']
         self.description = record['description']
         self.description_html = record['description_html']
         self.body = record['body']
@@ -47,19 +48,20 @@ class Report(object):
         self._newer_id_gotten = True
         return self._newer_id
 
-    def update(self, title, description, body):
+    def update(self, title, feature_image_url, description, body):
         desc_html = sanitize_markdown(description)
         body_html = sanitize_markdown(body)
         g.db.execute("""
             UPDATE Report
                SET when_ = datetime('now', 'localtime'),
                    title = ?,
+                   feature_image_url = ?,
                    description = ?,
                    description_html = ?,
                    body = ?,
                    body_html = ?
-             WHERE id = ?""", (title, description, desc_html, body, body_html,
-                 self.id))
+             WHERE id = ?""", (title, feature_image_url,
+                 description, desc_html, body, body_html, self.id))
         g.db.commit()
 
         self.title = title
@@ -76,6 +78,7 @@ def find_reports(begin, records=None):
                Report.when_,
                User.name as author_name,
                Report.title,
+               Report.feature_image_url,
                Report.description,
                Report.description_html,
                Report.body,
@@ -116,6 +119,7 @@ def find_by_id(id):
                Report.when_,
                User.name as author_name,
                Report.title,
+               Report.feature_image_url,
                Report.description,
                Report.description_html,
                Report.body,
@@ -127,13 +131,13 @@ def find_by_id(id):
     return Report(rec) if rec else None
 
 
-def insert(title, description, body):
+def insert(title, feature_image_url, description, body):
     with g.db:
         g.db.execute("""
-            INSERT INTO Report (when_, author_id, title, description,
-                                description_html, body, body_html)
-                 VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?, ?)""",
-                 (g.user.id, title,
+            INSERT INTO Report (when_, author_id, title, feature_image_url,
+                                description, description_html, body, body_html)
+                 VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?, ?, ?)""",
+                 (g.user.id, title, feature_image_url,
                      description, sanitize_markdown(description),
                      body, sanitize_markdown(body)))
         return g.db.execute("""

@@ -119,13 +119,14 @@ def edit_report(id=None):
         return render_template('report_edit.html', errors=e.errors, report=r)
 
     title = request.form['title']
+    feature_image_url = request.form.get('feature_image_url', '')
     description = request.form['description']
     body = request.form['body']
     if r:
-        r.update(title, description, body)
+        r.update(title, feature_image_url, description, body)
         newid = r.id
     else:
-        newid = reports.insert(title, description, body)
+        newid = reports.insert(title, feature_image_url, description, body)
     return redirect(url_for('general.report', id=newid))
 
 
@@ -134,12 +135,15 @@ def edit_report(id=None):
 @requires_login
 def preview_report(id=None):
     title = request.form.get('title', '')
+    feature_image_url = request.form.get('feature_image_url', '')
     description = request.form.get('description', '')
     body = request.form.get('body', '')
 
-    inputs = dict(id=id, title=title, description=description, body=body)
+    inputs = dict(id=id, title=title, feature_image_url=feature_image_url,
+            description=description, body=body)
     preview_report = dict(
             title=title,
+            feature_image_url=feature_image_url,
             description=sanitize_markdown(description),
             body=sanitize_markdown(body))
     return render_template('general.edit_report', report=inputs,
