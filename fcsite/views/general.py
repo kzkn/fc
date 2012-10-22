@@ -12,7 +12,7 @@ from fcsite.models import taxes
 from fcsite.models import reports
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate
-from fcsite.utils import sanitize_html, pagination
+from fcsite.utils import sanitize_html, pagination, sanitize_markdown
 from fcsite.auth import do_login, requires_login, requires_permission
 
 ignores = [(['POST'], re.compile('/login')),
@@ -36,6 +36,14 @@ def validate_join_request():
     validators['experience'] = [check_required, check_in(u'初心者',
         u'初級', u'中級', u'上級', u'神、いわゆるゴッド')]
     validators['comment'] = [check_required]
+    do_validate(request.form, validators)
+
+
+def validate_report():
+    validators = {}
+    validators['title'] = [check_required]
+    validators['description'] = [check_required]
+    validators['body'] = [check_required]
     do_validate(request.form, validators)
 
 
@@ -94,6 +102,48 @@ def report(id):
     recent_reports = reports.recent()
     return render_template('report.html', report=r,
             recent_reports=recent_reports)
+
+
+@mod.route('/report/edit', methods=['GET', 'POST'])
+@mod.route('/report/edit/<int:id>', methods=['GET', 'POST'])
+@requires_login
+def edit_report(id=None):
+    r = reports.find_by_id(id) if id is not None else None
+    if request.method == 'GET':
+        return render_template('report_edit.html', report=r)
+
+    # post
+    try:
+        validate_report()
+    except ValueError, e:
+        return render_template('report_edit.html', errors=e.errors, report=r)
+
+    title = request.form['title']
+    description = request.form['description']
+    body = request.form['body']
+    if r:
+        r.update(title, description, body)
+        newid = r.id
+    else:
+        newid = reports.insert(title, description, body)
+    return redirect(url_for('general.report', id=newid))
+
+
+@mod.route('/report/preview', methods=['POST'])
+@mod.route('/report/preview/<int:id>', methods=['POST'])
+@requires_login
+def preview_report(id=None):
+    title = request.form.get('title', '')
+    description = request.form.get('description', '')
+    body = request.form.get('body', '')
+
+    inputs = dict(id=id, title=title, description=description, body=body)
+    preview_report = dict(
+            title=title,
+            description=sanitize_markdown(description),
+            body=sanitize_markdown(body))
+    return render_template('general.edit_report', report=inputs,
+            preview=preview_report)
 
 
 @mod.route('/gallery')

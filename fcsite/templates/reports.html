@@ -38,7 +38,7 @@
               <div class="span8">
                 <h2>{{ report.title }}</a></h2>
                 <p>
-                  {{ report.description | safe }}
+                  {{ report.description_html | safe }}
                 </p>
                 <p><a href="{{ url_for('general.report', id=report.id) }}" class="btn pull-right">もっと読む</a></p>
               </div>
@@ -46,7 +46,7 @@
           </div>
           {% endfor %}
         </div>
-        {{ report_sidebar(recent_reports) }}
+        {{ report_sidebar(recent_reports, g.user) }}
       </div>
 
       <div class="pagination pagination-centered">

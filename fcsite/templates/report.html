@@ -14,13 +14,13 @@
         <div class="span8">
           <h2>{{ report.title }}</h2>
           <p>
-            {{ report.description | safe }}
+            {{ report.description_html | safe }}
           </p>
           <p>
-            {{ report.body | safe }}
+            {{ report.body_html | safe }}
           </p>
         </div>
-        {{ report_sidebar(recent_reports) }}
+        {{ report_sidebar(recent_reports, g.user, report) }}
       </div>
 
       <div class="pagination pagination-centered">

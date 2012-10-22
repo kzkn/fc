@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 from flask import request, flash, get_flashed_messages, url_for
 from BeautifulSoup import BeautifulSoup, Comment
+from markdown import markdown
 
 
 #############
@@ -144,6 +145,10 @@ def sanitize_html(value, valid_tags=VALID_TAGS):
             break
     newoutput = newoutput.replace('<br />', '<br>')
     return newoutput.decode('utf8')
+
+
+def sanitize_markdown(markdown_text):
+    return markdown(markdown_text)
 
 
 #############

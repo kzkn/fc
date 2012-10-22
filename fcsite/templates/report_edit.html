@@ -1,0 +1,29 @@
+{% from 'macros.html' import you_can_use_tags, error_message %}
+{% extends 'layout.html' %}
+{% set active_page = 'index' %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h1>活動記録 - 編集</h1>
+        <p class="lead">
+          書いちゃってください。
+        </p>
+      </div>
+
+      {% set report_id = report.id if report else None %}
+      <form action="{{ url_for('general.edit_report', id=report_id) }}" method="post" class="well">
+        <label>タイトル</label>
+        {{ error_message('title', errors) }}
+        <input type="text" name="title" {% if report %}value="{{ report.title }}"{% endif %} required></input>
+        <label>概要</label>
+        {{ you_can_use_tags() }}
+        {{ error_message('description', errors) }}
+        <textarea name="description" style="width: 80%; height: 100px;" required>{% if report %}{{ report.description | safe }}{% endif %}</textarea>
+        <label>本文</label>
+        {{ you_can_use_tags() }}
+        {{ error_message('body', errors) }}
+        <textarea name="body" style="width: 80%; height: 100px;" required>{% if report %}{{ report.body | safe }}{% endif %}</textarea>
+        <br>
+        <button type="submit" class="btn">登録</button>
+      </form>
+{% endblock %}

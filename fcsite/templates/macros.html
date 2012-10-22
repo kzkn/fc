@@ -11,8 +11,19 @@
   {% endif %}
 {% endmacro %}
 
-{% macro report_sidebar(recent_reports) %}
+{% macro report_sidebar(recent_reports, user, current_report=None) %}
         <div class="span4">
+          {% if user %}
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">活動記録の管理</li>
+              {% if current_report %}
+              <li><a href="{{ url_for('general.edit_report', id=current_report.id) }}"><i class="icon-pencil"></i> 編集</a></li>
+              {% endif %}
+              <li><a href="{{ url_for('general.edit_report') }}"><i class="icon-plus"></i> 新規追加</a></li>
+            </ul>
+          </div>
+          {% endif %}
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">最近の投稿</li>

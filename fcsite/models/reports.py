@@ -2,6 +2,7 @@
 
 from flask import g
 from fcsite import app
+from fcsite.utils import sanitize_markdown
 
 
 class Report(object):
@@ -11,7 +12,9 @@ class Report(object):
         self.author_name = record['author_name']
         self.title = record['title']
         self.description = record['description']
+        self.description_html = record['description_html']
         self.body = record['body']
+        self.body_html = record['body_html']
 
     _older_id_gotten = False
     _newer_id_gotten = False
@@ -44,6 +47,27 @@ class Report(object):
         self._newer_id_gotten = True
         return self._newer_id
 
+    def update(self, title, description, body):
+        desc_html = sanitize_markdown(description)
+        body_html = sanitize_markdown(body)
+        g.db.execute("""
+            UPDATE Report
+               SET when_ = datetime('now', 'localtime'),
+                   title = ?,
+                   description = ?,
+                   description_html = ?,
+                   body = ?,
+                   body_html = ?
+             WHERE id = ?""", (title, description, desc_html, body, body_html,
+                 self.id))
+        g.db.commit()
+
+        self.title = title
+        self.description = description
+        self.description_html = desc_html
+        self.body = body
+        self.body_html = body_html
+
 
 def find_reports(begin, records=None):
     records = records if records else app.config['REPORTS_PER_PAGE']
@@ -53,7 +77,9 @@ def find_reports(begin, records=None):
                User.name as author_name,
                Report.title,
                Report.description,
-               Report.body
+               Report.description_html,
+               Report.body,
+               Report.body_html
           FROM Report
                INNER JOIN User ON
                  Report.author_id = User.id
@@ -91,9 +117,26 @@ def find_by_id(id):
                User.name as author_name,
                Report.title,
                Report.description,
-               Report.body
+               Report.description_html,
+               Report.body,
+               Report.body_html
           FROM Report
                INNER JOIN User ON
                  Report.author_id = User.id
          WHERE Report.id = ?""", (id, )).fetchone()
     return Report(rec) if rec else None
+
+
+def insert(title, description, body):
+    with g.db:
+        g.db.execute("""
+            INSERT INTO Report (when_, author_id, title, description,
+                                description_html, body, body_html)
+                 VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?, ?)""",
+                 (g.user.id, title,
+                     description, sanitize_markdown(description),
+                     body, sanitize_markdown(body)))
+        return g.db.execute("""
+            SELECT id
+              FROM Report
+             WHERE when_ = (SELECT MAX(when_) FROM Report)""").fetchone()[0]
