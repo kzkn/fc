@@ -94,6 +94,21 @@ class User(object):
                AND is_entry = 1""", (self.id, schedule['id']))
         return cur.fetchone() is not None
 
+    def has_not_registered_schedule_yet(self):
+        cur = g.db.execute("""
+            SELECT Schedule.id
+              FROM Schedule
+                   LEFT OUTER JOIN (SELECT *
+                                      FROM Entry
+                                     WHERE user_id = ?) AS Entry ON
+                     Schedule.id = Entry.schedule_id
+             WHERE Schedule.when_ >= datetime('now', 'localtime')
+               AND Schedule.type = ?
+          GROUP BY Schedule.id
+            HAVING COUNT(Entry.user_id) = 0""",
+            (self.id, scheds.TYPE_PRACTICE))
+        return cur.fetchone() is not None
+
 
 def from_row(row):
     return User(row) if row else {}

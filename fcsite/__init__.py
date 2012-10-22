@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from imp import load_source
-from flask import Flask, g, session, redirect, url_for, request
+from flask import Flask, Blueprint, g, session, redirect, url_for, request
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -11,7 +11,6 @@ app.config.update(secret.secrets)
 
 from fcsite import database
 from fcsite.models import users
-from fcsite.models import schedules as scheds
 from fcsite.models import joins
 from fcsite.utils import request_from_featurephone, request_for_mobile_page, \
         error_message
@@ -71,6 +70,26 @@ def after_request(response):
 def teardown_request(exception):
     if hasattr(g, 'db'):
         g.db.close()
+
+
+def check_forced_registration_blueprint(name, import_name, **kwargs):
+    ignore_patterns = kwargs.pop('ignore_patterns', [])
+    bp = Blueprint(name, import_name, **kwargs)
+
+    def match_any_ignore_pattern():
+        for methods, path in ignore_patterns:
+            if request.method in methods and path.match(request.path):
+                return True
+        return False
+
+    def check_impl():
+        if not g.user or match_any_ignore_pattern():
+            return
+        if g.user.has_not_registered_schedule_yet():
+            return redirect(url_for('schedule.schedule'))
+
+    bp.before_request(check_impl)
+    return bp
 
 
 #############

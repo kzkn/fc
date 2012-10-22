@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, request, g, redirect, url_for
+from flask import render_template, request, g, redirect, url_for
+from fcsite import check_forced_registration_blueprint
 from fcsite.models import users
 from fcsite.auth import requires_login
 from fcsite.utils import do_validate, check_date
 
-mod = Blueprint('member', __name__, url_prefix='/member')
+mod = check_forced_registration_blueprint('member', __name__,
+        url_prefix='/member')
 
 
 def validate_profile():

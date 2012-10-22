@@ -58,7 +58,7 @@ def login():
 @requires_userid
 def index():
     user = users.find_by_id(get_userid())
-    if scheds.has_non_registered_practice(user.id):
+    if user.has_not_registered_schedule_yet():
         return redirect(mobile_url_for('mobile.non_registered_practices'))
     ns = notices.find_showing()
     practice_count = scheds.count_schedules(scheds.TYPE_PRACTICE)

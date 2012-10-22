@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, request, redirect, url_for, abort
+from flask import render_template, request, redirect, url_for, abort
+from fcsite import check_forced_registration_blueprint
 from fcsite.models import bbs
 from fcsite.auth import requires_login
 from fcsite.utils import pagination
 
-mod = Blueprint('bbs', __name__, url_prefix='/bbs')
+mod = check_forced_registration_blueprint('bbs', __name__, url_prefix='/bbs')
 
 
 @mod.route('/')

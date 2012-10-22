@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, session, redirect, request, \
+import re
+from flask import render_template, session, redirect, request, \
     url_for, g
-from fcsite.models import schedules as scheds
+from fcsite import check_forced_registration_blueprint
 from fcsite.models import notices
 from fcsite.models import joins
 from fcsite.models import users
@@ -13,7 +14,10 @@ from fcsite.utils import error_message, info_message, check_required, \
 from fcsite.utils import sanitize_html
 from fcsite.auth import do_login, requires_login, requires_permission
 
-mod = Blueprint('general', __name__)
+ignores = [(['POST'], re.compile('/login')),
+           (['GET'], re.compile('/logout'))]
+mod = check_forced_registration_blueprint('general', __name__,
+        ignore_patterns=ignores)
 
 
 def validate_join_request():
@@ -37,14 +41,9 @@ def validate_join_request():
 @mod.route('/')
 def index():
     info_msgs = []
-
     if g.user:
         ns = notices.find_showing()
         info_msgs = info_msgs + [notice_to_message(n) for n in ns]
-
-    if g.user and scheds.has_non_registered_practice(g.user.id):
-        info_msgs.append(u'通知:未登録の練習があります。登録は' +
-                u'<a href="%s">コチラから</a>。' % url_for('schedule.schedule'))
     return render_template('index.html', info_msgs=info_msgs)
 
 
