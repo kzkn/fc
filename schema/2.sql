@@ -14,5 +14,5 @@ CREATE INDEX Report_when_index ON Report(when_);
 
 # -- !Downs
 
-DROP INDEX Report_when_index
-DROP TABLE Report
+DROP INDEX Report_when_index;
+DROP TABLE Report;
