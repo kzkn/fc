@@ -143,7 +143,8 @@
       <hr>
 
       <footer>
-        <p>困ったことがあれば Y.K までご連絡を。すぐにかけつけます。</p>
+        {% set saying = select_random_saying() %}
+        <p>{% if saying %}「{{ saying.body }}」 by {{ saying.who }}{% else %}困ったことがあれば Y.K までご連絡を。すぐにかけつけます。{% endif %}</p>
       </footer>
 
     </div> <!-- /container -->

@@ -30,3 +30,13 @@ def insert(who, body, private):
         INSERT INTO Saying (who, body, private) VALUES (?, ?, ?)""",
         (who, body, private))
     g.db.commit()
+
+
+def select_random():
+    return g.db.execute("""
+        SELECT * FROM Saying ORDER BY RANDOM()""").fetchone()
+
+
+def select_random_public():
+    return g.db.execute("""
+        SELECT * FROM Saying WHERE private = 0 ORDER BY RANDOM()""").fetchone()

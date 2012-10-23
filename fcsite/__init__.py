@@ -12,6 +12,7 @@ app.config.update(secret.secrets)
 from fcsite import database
 from fcsite.models import users
 from fcsite.models import joins
+from fcsite.models import sayings
 from fcsite.utils import request_from_featurephone, request_for_mobile_page, \
         error_message
 
@@ -147,6 +148,16 @@ app.jinja_env.globals['mobile_url_for'] = \
     utils.mobile_url_for
 app.jinja_env.globals['count_joins_has_not_handled'] = \
     lambda: joins.count_has_not_handled()
+app.jinja_env.globals['select_random_saying'] = \
+    lambda: select_random_saying()
+
+
+def select_random_saying():
+    if g.user:
+        return sayings.select_random()
+    else:
+        return sayings.select_random_public()
+
 
 import locale
 locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')
