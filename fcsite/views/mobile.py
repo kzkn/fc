@@ -6,6 +6,7 @@ from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
 from fcsite.models import notices
+from fcsite.models import rules
 from fcsite.utils import mobile_url_for, pagination
 from fcsite.auth import do_mobile_login
 
@@ -197,6 +198,14 @@ def profile():
 
 
 @mod.route('/notice/<int:id>')
+@requires_userid
 def notice(id):
     notice = notices.find_by_id(id)
     return render_template('mobile/notice.html', notice=notice)
+
+
+@mod.route('/rule')
+@requires_userid
+def rule():
+    rs = rules.find_all()
+    return render_template('mobile/rule.html', rules=rs)

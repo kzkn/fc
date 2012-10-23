@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+    <title>Fight Club</title>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    <center><font color="#FF0000">Fight Club</font></center>
+    <br>
+    <br>
+    <center><a href="{{ mobile_url_for('mobile.index') }}">メニュー</a></center>
+    <br>
+
+    <h4>Fight Club メンバー規約</h4>
+    {% set i = 1 %}
+    {% for rule in rules %}
+    <p>{{ i }}. {{ rule.body | nl2br | safe }}</p>
+    {% set i = i + 1 %}
+    {% endfor %}
+  </body>
+</html>
+
