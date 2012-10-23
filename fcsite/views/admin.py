@@ -11,6 +11,7 @@ from flask import Blueprint, request, render_template, redirect, url_for, g, \
 from fcsite.models import users
 from fcsite.models import schedules as scheds
 from fcsite.models import notices
+from fcsite.models import sayings
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
     check_required, check_in
 from fcsite.auth import requires_permission, requires_admin
@@ -83,6 +84,8 @@ def index():
         return member()
     if g.user.is_notice_admin():
         return notice()
+    if g.user.is_admin():
+        return saying()
     abort(403)
 
 
@@ -362,6 +365,26 @@ def delete_notice(id):
         return redirect(url_for('admin.notice'))
 
 
+@mod.route('/saying')
+@requires_permission(users.PERM_ADMIN)
+def saying():
+    (public, private) = sayings.find_all_group_by_publication()
+    return render_template('admin/saying.html', public_saying=public,
+            private_saying=private)
+
+
+@mod.route('/saying/new')
+@requires_permission(users.PERM_ADMIN)
+def new_saying():
+    pass
+
+
+@mod.route('/saying/delete/<int:id>')
+@requires_permission(users.PERM_ADMIN)
+def delete_saying(id):
+    pass
+
+
 #############
 # UTILITIES
 #############
@@ -374,4 +397,6 @@ def get_navigation_list(user):
         navs.append(('admin.member', 'member', 'icon-user', u'メンバー'))
     if user.is_notice_admin():
         navs.append(('admin.notice', 'notice', 'icon-info-sign', u'告知'))
+    if user.is_admin():
+        navs.append(('admin.saying', 'saying', 'icon-comment', u'名言'))
     return navs

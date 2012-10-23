@@ -1,0 +1,52 @@
+{% extends 'admin/layout.html' %}
+{% set active_admin_page = 'saying' %}
+
+{% macro saying_table(saying) %}
+          <table class="table table-striped" style="margin-top: 12px;">
+            <thead>
+              <tr>
+                <th>発言者</th>
+                <th>内容</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in sayings %}
+              <tr>
+                <td>{{ s.who }}</td>
+                <td>{{ s.body }}</td>
+                <td>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_saying', id=s.id) }}">
+                    <i class="icon-white icon-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+{% endmacro %}
+
+{% block admincontent %}
+          <h2>告知管理</h2>
+          <div class="accordion" id="post">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">新規登録</a>
+              </div>
+              <div id="post-form" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <form action="{{ url_for('admin.new_saying') }}" method="post">
+                    <input class="input-small" type="text" name="who" placeholder="発言者"></input><br>
+                    <input class="input-xlarge" type="text" name="body" placeholder="内容"></input><br>
+                    <input class="btn" type="submit" name="submit" value="登録"></input>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h4>一般公開名言</h4>
+          {{ saying_table(public_saying) }}
+          <h4>非公開名言 (ログインユーザにのみ表示)</h4>
+          {{ saying_table(private_saying) }}
+{% endblock %}
