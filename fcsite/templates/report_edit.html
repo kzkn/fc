@@ -28,6 +28,6 @@
         {{ error_message('body', errors) }}
         <textarea name="body" style="width: 80%; height: 100px;" required>{% if report %}{{ report.body | safe }}{% endif %}</textarea>
         <br>
-        <button type="submit" class="btn">登録</button>
+        <button type="submit" class="btn">投稿</button>
       </form>
 {% endblock %}
