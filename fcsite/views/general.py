@@ -116,6 +116,15 @@ def edit_report(id=None):
         return render_template('report_edit.html', report=r)
 
     # post
+    action = request.form['action']
+    if action == u'投稿':
+        return post_report(r)
+    elif action == u'削除':
+        return delete_report(r)
+    abort(400)
+
+
+def post_report(r):
     try:
         validate_report()
     except ValueError, e:
@@ -131,6 +140,12 @@ def edit_report(id=None):
     else:
         newid = reports.insert(title, feature_image_url, description, body)
     return redirect(url_for('general.report', id=newid))
+
+
+def delete_report(r):
+    r.delete()
+    info_message(message=u'活動記録を削除しました。')
+    return redirect(url_for('general.report_list'))
 
 
 @mod.route('/report/preview', methods=['POST'])

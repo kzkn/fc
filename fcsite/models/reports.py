@@ -74,6 +74,11 @@ class Report(object):
     def can_edit_by(self, user):
         return user and (user.is_god() or user.id == self.author_id)
 
+    def delete(self):
+        g.db.execute("""
+            DELETE FROM Report WHERE id = ?""", (self.id, ))
+        g.db.commit()
+
 
 def find_reports(begin, records=None):
     records = records if records else app.config['REPORTS_PER_PAGE']
