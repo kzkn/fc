@@ -109,6 +109,9 @@ def report(id):
 @requires_login
 def edit_report(id=None):
     r = reports.find_by_id(id) if id is not None else None
+    if r and not r.can_edit_by(g.user):
+        abort(403)
+
     if request.method == 'GET':
         return render_template('report_edit.html', report=r)
 

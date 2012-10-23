@@ -9,6 +9,7 @@ class Report(object):
     def __init__(self, record):
         self.id = record['id']
         self.when = record['when_']
+        self.author_id = record['author_id']
         self.author_name = record['author_name']
         self.title = record['title']
         self.feature_image_url = record['feature_image_url']
@@ -70,12 +71,16 @@ class Report(object):
         self.body = body
         self.body_html = body_html
 
+    def can_edit_by(self, user):
+        return user and (user.is_god() or user.id == self.author_id)
+
 
 def find_reports(begin, records=None):
     records = records if records else app.config['REPORTS_PER_PAGE']
     recs = g.db.execute("""
         SELECT Report.id,
                Report.when_,
+               Report.author_id,
                User.name as author_name,
                Report.title,
                Report.feature_image_url,
@@ -117,6 +122,7 @@ def find_by_id(id):
     rec = g.db.execute("""
         SELECT Report.id,
                Report.when_,
+               Report.author_id,
                User.name as author_name,
                Report.title,
                Report.feature_image_url,

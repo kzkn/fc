@@ -17,7 +17,7 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">活動記録の管理</li>
-              {% if current_report %}
+              {% if current_report and current_report.can_edit_by(user) %}
               <li><a href="{{ url_for('general.edit_report', id=current_report.id) }}"><i class="icon-pencil"></i> 編集</a></li>
               {% endif %}
               <li><a href="{{ url_for('general.edit_report') }}"><i class="icon-plus"></i> 新規追加</a></li>
