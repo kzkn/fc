@@ -87,7 +87,7 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#games" href="#game{{ ga.id }}">
-                  {{ ga.name }} @{{ ga.loc }} ({{ ga.entry_count }}人) {% if not g.user.is_registered(ga) %}<span class="label label-info">未登録</span>{% endif %}
+                  {{ ga.when_ | dateformat }} {{ ga.name }} @{{ ga.loc }} ({{ ga.entry_count }}人) {% if not g.user.is_registered(ga) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
               <div id="game{{ ga.id }}" class="accordion-body collapse">
@@ -141,7 +141,7 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#events" href="#event{{ e.id }}">
-                  {{ e.name }} @{{ e.loc }} ({{ e.entry_count }}人) {% if not g.user.is_registered(e) %}<span class="label label-info">未登録</span>{% endif %}
+                  {{ e.when_ | dateformat }} {{ e.name }} @{{ e.loc }} ({{ e.entry_count }}人) {% if not g.user.is_registered(e) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
               <div id="event{{ e.id }}" class="accordion-body collapse">
