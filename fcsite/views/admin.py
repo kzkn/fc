@@ -75,6 +75,13 @@ def validate_notice():
     do_validate(request.form, validations)
 
 
+def validate_saying():
+    validations = OrderedDict()
+    validations['who'] = [check_required]
+    validations['body'] = [check_required]
+    do_validate(request.form, validations)
+
+
 @mod.route('/')
 @requires_admin
 def index():
@@ -373,16 +380,28 @@ def saying():
             private_saying=private)
 
 
-@mod.route('/saying/new')
+@mod.route('/saying/new', methods=['POST'])
 @requires_permission(users.PERM_ADMIN)
 def new_saying():
-    pass
+    try:
+        validate_saying()
+    except ValueError, e:
+        (public, private) = sayings.find_all_group_by_publication()
+        return render_template('admin/saying.html', public_saying=public,
+                private_saying=private, errors=e.errors)
+
+    who = request.form['who']
+    body = request.form['body']
+    private = 'private' in request.form.getlist('private')
+    sayings.insert(who, body, private)
+    return redirect(url_for('admin.saying'))
 
 
 @mod.route('/saying/delete/<int:id>')
 @requires_permission(users.PERM_ADMIN)
 def delete_saying(id):
-    pass
+    sayings.delete(id)
+    return redirect(url_for('admin.saying'))
 
 
 #############

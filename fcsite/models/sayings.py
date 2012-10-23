@@ -14,8 +14,8 @@ def find_all_group_by_publication():
     for private, ss in groupby(sayings, lambda s: s['private']):
         bypublication[private] = list(ss)
 
-    public = bypublication.get(False, [])
-    private = bypublication.get(True, [])
+    public = bypublication.get(0, [])
+    private = bypublication.get(1, [])
     return public, private
 
 
