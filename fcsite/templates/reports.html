@@ -12,7 +12,8 @@
 
       .post-meta {
         color: #888;
-        font-size: .5em;
+        font-size: .8em;
+        text-align: right;
       }
 
       .feat-img img {
@@ -39,7 +40,8 @@
                 <img src="{{ report.feature_image_url if report.feature_image_url else url_for('static', filename='img/fc-logo.png') }}">
               </div>
               <div class="span6">
-                <h2>{{ report.title }} <small class="post-meta pull-right">{{ report.when | datetimeformat }} by {{ report.author_name }}</small></h2>
+                <h2>{{ report.title }}</h2>
+                <div class="post-meta">{{ report.when | datetimeformat }} by {{ report.author_name }}</div>
                 <p>
                   {{ report.description_html | safe }}
                 </p>
