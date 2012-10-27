@@ -50,7 +50,6 @@ def login():
         password = request.form['password']
         (uid, sid) = do_mobile_login(password)
         if uid is not None:
-            print 'hogehoge', uid, sid
             return redirect(mobile_url_for('mobile.index', uid=uid, sid=sid))
     return render_template('mobile/login.html')
 
