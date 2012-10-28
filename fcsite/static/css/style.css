@@ -17,6 +17,11 @@ dd.enter {
     color: #468847;
 }
 
+dt.enter_not_paid,
+dd.enter_not_paid {
+    color: #c09853;
+}
+
 dt.leave,
 dd.leave {
     color: #b94a48;

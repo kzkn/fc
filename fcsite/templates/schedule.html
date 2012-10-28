@@ -1,13 +1,14 @@
 {% extends 'layout.html' %}
 {% set active_page = 'schedule' %}
 
-{% macro entries_list(schedule) %}
+{% macro entries_list(schedule, show_payment_status=False) %}
 <h5><i class="icon-ok-circle"></i> 参加</h5>
 <dl>
   {% for e in schedule.entries %}
     {% if e.is_entry %}
-  <dt class="enter">{{ e.user_name }}</dt>
-  <dd class="enter">{{ e.comment }}</dd>
+    {% set enter_class = 'enter_not_paid' if show_payment_status and not is_paid_tax_for_current_season(e.user_id) else 'enter' %}
+    <dt class="{{ enter_class }}">{{ e.user_name }}</dt>
+    <dd class="{{ enter_class }}">{{ e.comment }}</dd>
     {% endif %}
   {% endfor %}
 </dl>
@@ -69,7 +70,7 @@
                       </tr>
                       <tr>
                         <td>
-                          {{ entries_list(p) }}
+                          {{ entries_list(p, show_payment_status=True) }}
                         </td>
                       </tr>
                     </tbody>
