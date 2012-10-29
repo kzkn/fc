@@ -23,7 +23,7 @@
             <input type="text" name="email" value="{{ g.user.email }}"></input>
             <label>生年月日</label>
             {{ error_message('birthday', errors) }}
-            <input type="date" name="birthday" value="{{ g.user.birthday }}"></input>
+            <input type="date" name="birthday" value="{{ g.user.birthday }}" placeholder="年-月-日"></input>
             <label>住まい</label>
             {{ error_message('home', errors) }}
             <input type="text" name="home" value="{{ g.user.home }}"></input>

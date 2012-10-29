@@ -10,10 +10,10 @@
             <input type="text" name="title"{% if notice %} value="{{ notice.title }}"{% endif %} required></input>
             <label>表示開始</label>
             {{ error_message('begin_show', errors) }}
-            <input type="date" name="begin_show"{% if notice %} value="{{ notice.begin_show }}"{% endif %} required></input>
+            <input type="date" name="begin_show"{% if notice %} value="{{ notice.begin_show }}"{% endif %} placeholder="年-月-日" required></input>
             <label>表示終了</label>
             {{ error_message('end_show', errors) }}
-            <input type="date" name="end_show"{% if notice %} value="{{ notice.end_show }}"{% endif %} required></input>
+            <input type="date" name="end_show"{% if notice %} value="{{ notice.end_show }}"{% endif %} placeholder="年-月-日" required></input>
             <label>内容</label>
             {{ you_can_use_tags() }}
             {{ error_message('body', errors) }}
