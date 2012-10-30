@@ -9,8 +9,6 @@
       </div>
       <div class="row">
         <div id="gallery" class="span12">
-          <div class="body">
-          </div>
         </div>
       </div>
 {% endblock %}
@@ -22,4 +20,10 @@
 {% block script %}
 <script src="{{ url_for('static', filename='js/jquery-photowall.js') }}"></script>
 <script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+<script>
+$(function() {
+    ALBUM_BASE_URL = 'hoge/@albumid@';
+    showAlbumList();
+});
+</script>
 {% endblock %}

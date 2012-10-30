@@ -22,6 +22,17 @@ dd.leave {
     color: #b94a48;
 }
 
+.thumbnail {
+    text-align: center;
+}
+
+.thumbnail .desc {
+    color: #211922;
+    font-size: 11px;
+    padding: 0;
+    margin: 10px 0 5px;
+}
+
 @media (max-width: 767px) {
     .hero-unit {
         padding: 20px;
