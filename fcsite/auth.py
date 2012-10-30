@@ -47,6 +47,7 @@ def do_login(password):
     user = users.find_by_password(password)
     if user:
         session['user_id'] = user.id
+        session.permanent = True
     return True if user else False
 
 
