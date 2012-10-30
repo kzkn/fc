@@ -1,5 +1,5 @@
 var ALBUM_BASE_URL = null;  // ロードする側で設定する。
-var USER_ID = '113613698969275302586';
+var USER_ID = '116368120089675858953';
 var THUMBNAIL_SIZE = 160;
 
 var appendThumbnailFor = function(thumbnails, makers) {
