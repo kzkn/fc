@@ -173,6 +173,11 @@ def gallery():
     return render_template('gallery.html')
 
 
+@mod.route('/gallery/<int:albumId>')
+def album(albumId):
+    return render_template('album.html', albumId=albumId)
+
+
 @mod.route('/join', methods=['GET', 'POST'])
 def join():
     if request.method == 'GET':
