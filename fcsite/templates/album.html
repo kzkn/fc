@@ -1,0 +1,9 @@
+{% extends 'gallery_layout.html' %}
+
+{% block gallery_script %}
+  <script>
+    $(function() {
+      showPhotoList('{{ albumId }}');
+    });
+  </script>
+{% endblock %}

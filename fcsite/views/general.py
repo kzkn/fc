@@ -170,7 +170,12 @@ def preview_report(id=None):
 
 @mod.route('/gallery')
 def gallery():
-    return redirect(url_for('general.index'))
+    return render_template('gallery.html')
+
+
+@mod.route('/gallery/<int:albumId>')
+def album(albumId):
+    return render_template('album.html', albumId=albumId)
 
 
 @mod.route('/join', methods=['GET', 'POST'])

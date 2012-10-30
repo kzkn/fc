@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block maincontent %}
+      <div class="subhead visible-desktop">
+        <h2>ギャラリー</h2>
+        <p class="lead">
+          こんな写真撮りました。
+        </p>
+      </div>
+      <div class="row">
+        <div id="gallery" class="span12">
+        </div>
+      </div>
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+  {% block gallery_script %}
+  {% endblock %}
+{% endblock %}
