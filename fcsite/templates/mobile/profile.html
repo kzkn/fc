@@ -30,6 +30,7 @@
       {{ label('メールアドレス') }}
       <input type="text" name="email" value="{{ g.user.email }}"></input><br><br>
       {{ label('生年月日 (西暦年-月-日)') }}
+      {% if errors and errors.birthday %}<p><font color="#FF0000">日付形式になっていません。「西暦年-月-日」の形式で入力してください。</font></p>{% endif %}
       <input type="date" name="birthday" value="{{ g.user.birthday }}"></input><br><br>
       {{ label('住まい') }}
       <input type="text" name="home" value="{{ g.user.home }}"></input><br><br>

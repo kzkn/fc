@@ -7,10 +7,16 @@ from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
 from fcsite.models import notices
 from fcsite.models import rules
-from fcsite.utils import mobile_url_for, pagination
+from fcsite.utils import mobile_url_for, pagination, do_validate, check_date
 from fcsite.auth import do_mobile_login
 
 mod = Blueprint('mobile', __name__, url_prefix='/mobile')
+
+
+def validate_profile():
+    validators = {}
+    validators['birthday'] = [check_date]
+    do_validate(request.form, validators)
 
 
 def get_userid():
@@ -191,6 +197,11 @@ def member(id=None):
 def profile():
     if request.method == 'GET':
         return render_template('mobile/profile.html')
+
+    try:
+        validate_profile()
+    except ValueError, e:
+        return render_template('mobile/profile.html', errors=e.errors)
     id = get_userid()
     users.update_profile(id, request.form)
     return redirect(mobile_url_for('mobile.profile'))
