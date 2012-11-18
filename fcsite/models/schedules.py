@@ -3,7 +3,7 @@
 from json import loads, dumps
 from itertools import groupby
 from time import strptime
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import g
 from fcsite.utils import sanitize_html
 
@@ -161,7 +161,8 @@ def is_deadline_overred(schedule_body):
     if not schedule_body.get('deadline', None):  # 締め切りなし
         return False
     tm = strptime(schedule_body['deadline'], '%Y-%m-%d')
-    deadline = datetime(tm.tm_year, tm.tm_mon, tm.tm_mday)
+    # 「その日のうちに」ということで、次の日の 0 時を過ぎたかどうかチェック
+    deadline = datetime(tm.tm_year, tm.tm_mon, tm.tm_mday) + timedelta(1)
     return deadline < datetime.now()
 
 
