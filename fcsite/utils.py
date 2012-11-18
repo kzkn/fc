@@ -56,6 +56,16 @@ def check_number(s):
     return s
 
 
+def check_multiple_number(s):
+    if not s:
+        return s
+    for s in s.split(','):
+        if not s.strip().isdigit():
+            raise ValueError(u'数値、複数の数値であれば' +
+                             u'カンマ(半角)区切りで入力してください。')
+    return s
+
+
 def check_required(s):
     if not s:
         raise ValueError(u'入力必須です。')

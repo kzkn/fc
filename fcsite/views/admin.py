@@ -13,7 +13,7 @@ from fcsite.models import schedules as scheds
 from fcsite.models import notices
 from fcsite.models import sayings
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
-    check_required, check_in
+    check_required, check_in, check_multiple_number
 from fcsite.auth import requires_permission, requires_admin
 
 mod = Blueprint('admin', __name__, url_prefix='/admin')
@@ -29,8 +29,7 @@ def validate_practice():
     validations['begintime'] = [check_required, check_time]
     validations['endtime'] = [check_required, check_time]
     validations['loc'] = [check_required]
-    validations['no'] = [check_number]
-    validations['price'] = [check_number]
+    validations['no'] = [check_multiple_number]
     do_validate(request.form, validations)
 
 
@@ -41,7 +40,6 @@ def validate_game():
     validations['loc'] = [check_required]
     validations['genre'] = [check_required]
     validations['deadline'] = [check_date]
-    validations['price'] = [check_number]
     validations['begin_acceptance'] = [check_time]
     validations['begin_game'] = [check_time]
     do_validate(request.form, validations)
@@ -53,7 +51,6 @@ def validate_event():
     validations['date'] = [check_required, check_date]
     validations['loc'] = [check_required]
     validations['deadline'] = [check_date]
-    validations['price'] = [check_number]
     validations['description'] = [check_required]
     do_validate(request.form, validations)
 
