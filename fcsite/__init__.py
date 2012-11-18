@@ -14,6 +14,7 @@ from fcsite.models import users
 from fcsite.models import joins
 from fcsite.models import sayings
 from fcsite.models import taxes
+from fcsite.models import schedules as scheds
 from fcsite.utils import request_from_featurephone, request_for_mobile_page, \
         error_message
 
@@ -153,6 +154,8 @@ app.jinja_env.globals['select_random_saying'] = \
     lambda: select_random_saying()
 app.jinja_env.globals['is_paid_tax_for_current_season'] = \
     lambda user_id: taxes.is_paid_tax_for_current_season(user_id)
+app.jinja_env.globals['is_entried'] = \
+    lambda sched, user_id: scheds.is_entried(sched, user_id)
 
 
 def select_random_saying():

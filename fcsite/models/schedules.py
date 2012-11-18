@@ -270,3 +270,10 @@ def make_event_body(name, loc, deadline, price, description):
          'price': price,
          'description': description}
     return dumps(e)
+
+
+def is_entried(sched, user_id):
+    for e in sched.get('entries', []):
+        if e['user_id'] == user_id:
+            return e['is_entry']
+    return False

@@ -93,7 +93,7 @@
               </div>
               <div id="game{{ ga.id }}" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {% if g.user and not ga.deadline_overred %}
+                  {% if g.user and (not ga.deadline_overred or is_entried(ga, g.user.id)) %}
                   <form action="{{ url_for('schedule.entry', sid=ga.id) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
@@ -147,7 +147,7 @@
               </div>
               <div id="event{{ e.id }}" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {% if g.user and not e.deadline_overred %}
+                  {% if g.user and (not e.deadline_overred or is_entried(e, g.user.id)) %}
                   <form action="{{ url_for('schedule.entry', sid=e.id) }}" method="post" class="well">
                     <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
                     <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
