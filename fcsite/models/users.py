@@ -177,13 +177,13 @@ def do_issue_new_session_id(uid, sid):
 
 
 def insert(name, password, sex, permission):
-    g.db.execute('''
+    cursor = g.db.cursor()
+    cursor.execute('''
         INSERT INTO User (name, password, sex, permission)
         VALUES (?, ?, ?, ?)''', (name, password, sex, permission))
 
-    newid = g.db.execute('''
-        SELECT id FROM User WHERE name = ?''', (name, )).fetchone()[0]
-    g.db.execute('''
+    newid = cursor.lastrowid
+    cursor.execute('''
         INSERT INTO Tax (user_id, year, paid_first, paid_second)
              VALUES (?, ?, ?, ?)''', (newid, datetime.now().year, 0, 0))
 
