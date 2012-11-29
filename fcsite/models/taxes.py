@@ -20,10 +20,27 @@ def find_all():
                INNER JOIN Tax ON
                  User.id = Tax.user_id
       ORDER BY Tax.year DESC, User.sex, User.id""").fetchall()
+    histories = g.db.execute("""
+        SELECT User.name,
+               Updater.name AS updater,
+               TaxPaymentHistory.year,
+               TaxPaymentHistory.season,
+               TaxPaymentHistory.action,
+               TaxPaymentHistory.when_
+          FROM TaxPaymentHistory
+               INNER JOIN User ON
+                 User.id = TaxPaymentHistory.user_id
+               INNER JOIN User AS Updater ON
+                 Updater.id = TaxPaymentHistory.updater_user_id
+      ORDER BY TaxPaymentHistory.year DESC,
+               TaxPaymentHistory.when_ DESC""").fetchall()
 
     payments_by_year = OrderedDict()
     for year, payments in groupby(taxes, lambda e: e['year']):
-        payments_by_year[year] = list(payments)
+        payments_by_year[year] = [list(payments), []]
+    for year, hists in groupby(histories, lambda e: e['year']):
+        payments_by_year[year][1] = list(hists)
+
     return payments_by_year
 
 
@@ -44,6 +61,7 @@ def do_insert_records_for_year(year):
 
 
 def switch_payment(year, is_first_season, user_id):
+    # Tax テーブルを更新
     column = 'paid_first' if is_first_season else 'paid_second'
     g.db.execute("""
         UPDATE Tax
@@ -52,13 +70,41 @@ def switch_payment(year, is_first_season, user_id):
                     END
          WHERE year = ?
            AND user_id = ?""" % (column, column), (year, user_id))
-    g.db.commit()
-
-    return g.db.execute("""
+    payment = g.db.execute("""
         SELECT %s
           FROM Tax
          WHERE year = ?
            AND user_id = ?""" % column, (year, user_id)).fetchone()[0]
+
+    # 履歴に保存
+    season = 1 if is_first_season else 2
+    action = 1 if payment else 2
+    g.db.execute("""
+        INSERT INTO TaxPaymentHistory (
+                user_id, year, season, action, updater_user_id)
+             VALUES (?, ?, ?, ?, ?)""",
+             (user_id, year, season, action, g.user.id))
+    new_history = g.db.execute("""
+        SELECT TaxPaymentHistory.when_ AS when_,
+               User.name AS user_name,
+               Updater.name AS updater_name,
+               TaxPaymentHistory.season AS season,
+               TaxPaymentHistory.action AS action
+          FROM TaxPaymentHistory
+               INNER JOIN User ON
+                 User.id = TaxPaymentHistory.user_id
+               INNER JOIN User AS Updater ON
+                 Updater.id = TaxPaymentHistory.updater_user_id
+         WHERE TaxPaymentHistory.user_id = ?
+           AND TaxPaymentHistory.year = ?
+           AND TaxPaymentHistory.season = ?
+           AND TaxPaymentHistory.action = ?
+      ORDER BY TaxPaymentHistory.when_ DESC
+         LIMIT 1""", (user_id, year, season, action)).fetchone()
+
+    g.db.commit()
+
+    return payment, new_history
 
 
 def is_paid_tax_for_current_season(user_id):

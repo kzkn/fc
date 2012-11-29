@@ -7,10 +7,34 @@
         class="badge badge-{% if paid %}success{% else %}important{% endif %}"
         data-year="{{ year }}"
         data-season="{{ season }}"
-        data-user-id="{{ user_id }}">
+        data-user-id="{{ user_id }}"
+        data-hist-id="{{ 'payment-histories-%d-rows' % year }}">
     {% if paid %}○{% else %}×{% endif %}
   </span>
 </a>
+{% endmacro %}
+
+{% macro payment_histories_list(id, payment_histories) %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>日付</th>
+      <th>名前</th>
+      <th>変更内容</th>
+      <th>更新者</th>
+    </tr>
+  </thead>
+  <tbody class="{{ id }}">
+    {% for h in payment_histories %}
+    <tr>
+      <td>{{ h.when_ | dateformat }}</td>
+      <td>{{ h.name }}</td>
+      <td>{{ h | historyactionformat }}</td>
+      <td>{{ h.updater }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endmacro %}
 
 {% block maincontent %}
@@ -27,10 +51,11 @@
       {% endif %}
 
       {% set i = 0 %}
-      {% for year, payments in taxes.iteritems() %}
+      {% for year, (payments, payment_histories) in taxes.iteritems() %}
       <div class="row">
-        <div class="span12">
-          <h3>{{ year }} 年</h3>
+        <h3>{{ year }} 年</h3>
+        <div class="span8">
+          <h4>状況</h4>
           <table class="table table-striped">
             <thead>
               <tr>
@@ -52,6 +77,26 @@
             </tbody>
           </table>
         </div>
+        <div class="span4 visible-desktop">
+          <h4>履歴</h4>
+          {{ payment_histories_list('payment-histories-%d-rows' % year, payment_histories) }}
+        </div>
+        <div class="span4 hidden-desktop">
+          <div class="accordion" id="payment-histories-{{ year }}">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#payment-histories-{{ year }}" href="#payment-histories-{{ year }}-list">
+                  履歴
+                </a>
+              </div>
+              <div id="payment-histories-{{ year }}-list" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  {{ payment_histories_list('payment-histories-%d-rows' % year, payment_histories) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       {% endfor %}
 {% endblock %}
@@ -72,6 +117,16 @@
         }
       }
 
+      var updateHistory = function(id, newHistory) {
+        // visible-desktop 用と hidden-desktop 用のふたつがあるので、
+        // id ではなく class で指定している
+        $('.' + id).prepend(
+            $('<tr/>').append($('<td/>').text(newHistory.when))
+                      .append($('<td/>').text(newHistory.name))
+                      .append($('<td/>').text(newHistory.action))
+                      .append($('<td/>').text(newHistory.updater)));
+      }
+
       var performing = [];
 
       $('.badge').click(function(e) {
@@ -85,13 +140,16 @@
         var year = $(this).attr('data-year');
         var season = $(this).attr('data-season');
         var userId = $(this).attr('data-user-id');
+        var histId = $(this).attr('data-hist-id');
         var url = '{{ url_for('general.switch_payment', year=718347183, season='_season_', user_id=23415678) }}';
         url = url.replace('718347183', year);
         url = url.replace('_season_', season);
         url = url.replace('23415678', userId);
         $.get(url, function(data) {
           performing.splice(performing.indexOf(id), 1); // id を削除する
-          updatePayment(id, data === '1');
+          var data = JSON.parse(data)
+          updatePayment(id, data.paid === 1);
+          updateHistory(histId, data.newHistory);
         });
       });
     })();

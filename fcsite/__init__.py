@@ -133,6 +133,8 @@ app.jinja_env.filters['dateformat'] = utils.format_date
 app.jinja_env.filters['timeformat'] = utils.format_time
 app.jinja_env.filters['strdateformat'] = utils.format_date_str
 app.jinja_env.filters['nl2br'] = utils.nl2br
+app.jinja_env.filters['historyactionformat'] = \
+    lambda h: utils.format_season_action(h['season'], h['action'])
 
 app.jinja_env.globals['is_admin'] = \
     lambda: g.user and g.user.is_admin()

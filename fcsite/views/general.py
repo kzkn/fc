@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import json
 from flask import render_template, session, redirect, request, \
     url_for, g, abort
 from fcsite import check_forced_registration_blueprint
@@ -11,7 +12,7 @@ from fcsite.models import rules
 from fcsite.models import taxes
 from fcsite.models import reports
 from fcsite.utils import error_message, info_message, check_required, \
-        check_in, do_validate
+        check_in, do_validate, format_date, format_season_action
 from fcsite.utils import sanitize_html, pagination, sanitize_markdown
 from fcsite.auth import do_login, requires_login, requires_permission
 
@@ -263,5 +264,16 @@ def tax_for_new_year():
 @mod.route('/switch_payment/<int:year>/<string:season>/<int:user_id>')
 @requires_permission(users.PERM_ADMIN_GOD)
 def switch_payment(year, season, user_id):
-    newpayments = taxes.switch_payment(year, season == 'first', user_id)
-    return str(newpayments)
+    newpayments, history = \
+            taxes.switch_payment(year, season == 'first', user_id)
+
+    when = format_date(history['when_'])
+    name = history['user_name']
+    updater = history['updater_name']
+    action = format_season_action(history['season'], history['action'])
+    newhistory = {'when': when,
+                  'name': name,
+                  'updater': updater,
+                  'action': action}
+
+    return json.dumps({'paid': newpayments, 'newHistory': newhistory})

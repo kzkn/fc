@@ -188,6 +188,12 @@ def format_date_str(s):
     return format_date(dt)
 
 
+def format_season_action(season, action):
+    season = u'前期' if season == 1 else u'後期'
+    action = u'→ ○' if action == 1 else u'→ ×'
+    return season + ' ' + action
+
+
 def mobile_url_for(view, **kwargs):
     user_id = kwargs.pop('uid', request.args.get('uid', None))
     session_id = kwargs.pop('sid', request.args.get('sid', None))
