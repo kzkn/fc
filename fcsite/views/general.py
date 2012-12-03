@@ -266,14 +266,27 @@ def tax_for_new_year():
 def switch_payment(year, season, user_id):
     newpayments, history = \
             taxes.switch_payment(year, season == 'first', user_id)
+    newhistory = history_to_dict(history)
+    return json.dumps({'paid': newpayments, 'newHistory': newhistory})
 
+
+def history_to_dict(history):
     when = format_date(history['when_'])
     name = history['user_name']
     updater = history['updater_name']
     action = format_season_action(history['season'], history['action'])
-    newhistory = {'when': when,
-                  'name': name,
-                  'updater': updater,
-                  'action': action}
+    return {'when': when,
+            'name': name,
+            'updater': updater,
+            'action': action}
 
-    return json.dumps({'paid': newpayments, 'newHistory': newhistory})
+
+TAX_HISTORIES_STEP = 10
+
+
+@mod.route('/tax_histories/<int:year>/<int:page>')
+@requires_permission(users.PERM_ADMIN_GOD)
+def tax_histories(year, page):
+    begin = (page - 1) * TAX_HISTORIES_STEP
+    hists = taxes.find_histories(year, begin, TAX_HISTORIES_STEP)
+    return json.dumps([history_to_dict(h) for h in hists])

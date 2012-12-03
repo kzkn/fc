@@ -33,7 +33,8 @@ def find_all():
                INNER JOIN User AS Updater ON
                  Updater.id = TaxPaymentHistory.updater_user_id
       ORDER BY TaxPaymentHistory.year DESC,
-               TaxPaymentHistory.when_ DESC""").fetchall()
+               TaxPaymentHistory.when_ DESC
+         LIMIT 10""").fetchall()
 
     payments_by_year = OrderedDict()
     for year, payments in groupby(taxes, lambda e: e['year']):
@@ -118,3 +119,20 @@ def is_paid_tax_for_current_season(user_id):
            AND year = ?
            AND paid_%s = 1""" % season, (user_id, year)).fetchone()
     return ret[0] > 0
+
+
+def find_histories(year, begin, count):
+    return g.db.execute("""
+        SELECT TaxPaymentHistory.when_ AS when_,
+               User.name AS user_name,
+               Updater.name AS updater_name,
+               TaxPaymentHistory.season AS season,
+               TaxPaymentHistory.action AS action
+          FROM TaxPaymentHistory
+               INNER JOIN User ON
+                 User.id = TaxPaymentHistory.user_id
+               INNER JOIN User AS Updater ON
+                 Updater.id = TaxPaymentHistory.updater_user_id
+         WHERE TaxPaymentHistory.year = ?
+      ORDER BY TaxPaymentHistory.when_ DESC
+         LIMIT ?, ?""", (year, begin, count)).fetchall()

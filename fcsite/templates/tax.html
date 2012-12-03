@@ -14,7 +14,8 @@
 </a>
 {% endmacro %}
 
-{% macro payment_histories_list(id, payment_histories) %}
+{% macro payment_histories_list(year, payment_histories) %}
+{% set id = 'payment-histories-%d-rows' % year %}
 <table class="table table-striped">
   <thead>
     <tr>
@@ -35,6 +36,11 @@
     {% endfor %}
   </tbody>
 </table>
+<a class="more-history"
+   style="display: block; text-align: center;"
+   href="#"
+   data-year="{{ year }}"
+   data-hist-id="{{ id }}">次の 10 件</a>
 {% endmacro %}
 
 {% block maincontent %}
@@ -79,7 +85,7 @@
         </div>
         <div class="span4 visible-desktop">
           <h4>履歴</h4>
-          {{ payment_histories_list('payment-histories-%d-rows' % year, payment_histories) }}
+          {{ payment_histories_list(year, payment_histories) }}
         </div>
         <div class="span4 hidden-desktop">
           <div class="accordion" id="payment-histories-{{ year }}">
@@ -91,7 +97,7 @@
               </div>
               <div id="payment-histories-{{ year }}-list" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {{ payment_histories_list('payment-histories-%d-rows' % year, payment_histories) }}
+                  {{ payment_histories_list(year, payment_histories) }}
                 </div>
               </div>
             </div>
@@ -117,14 +123,13 @@
         }
       }
 
-      var updateHistory = function(id, newHistory) {
-        // visible-desktop 用と hidden-desktop 用のふたつがあるので、
-        // id ではなく class で指定している
-        $('.' + id).prepend(
-            $('<tr/>').append($('<td/>').text(newHistory.when))
-                      .append($('<td/>').text(newHistory.name))
-                      .append($('<td/>').text(newHistory.action))
-                      .append($('<td/>').text(newHistory.updater)));
+      var makeHistoryDom = function(history) {
+        return '<tr>' +
+                 '<td>' + history.when + '</td>' +
+                 '<td>' + history.name + '</td>' +
+                 '<td>' + history.action + '</td>' +
+                 '<td>' + history.updater + '</td>' +
+               '</tr>';
       }
 
       var performing = [];
@@ -149,7 +154,32 @@
           performing.splice(performing.indexOf(id), 1); // id を削除する
           var data = JSON.parse(data)
           updatePayment(id, data.paid === 1);
-          updateHistory(histId, data.newHistory);
+          $('.' + histId).prepend(makeHistoryDom(data.newHistory));
+        });
+      });
+
+      $('.more-history').click(function(e) {
+        e.preventDefault();
+
+        var self = $(this);
+        var year = $(this).attr('data-year');
+        var histId = $(this).attr('data-hist-id');
+        var rows = $('.' + histId).first().find('> tr').length;
+        var page = rows == 0 ? 1 : Math.ceil(rows / 10) + 1;
+        var url = '{{ url_for('general.tax_histories', year=718347183, page=23415678) }}';
+        url = url.replace('718347183', year);
+        url = url.replace('23415678', page);
+        console.log(rows + ': ' + url);
+        $.get(url, function(data) {
+          var data = JSON.parse(data);
+          if (data.length == 0) {
+            self.hide();
+          } else {
+            var hists = '';
+            for (var i in data)
+              hists += makeHistoryDom(data[i]);
+            $('.' + histId).append(hists);
+          }
         });
       });
     })();
