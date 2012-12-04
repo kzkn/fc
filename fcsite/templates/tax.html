@@ -61,7 +61,7 @@
       <div class="row">
         <h3>{{ year }} 年</h3>
         <div class="span8">
-          <h4>状況</h4>
+          {% if is_god() %}<h4>状況</h4>{% endif %}
           <table class="table table-striped">
             <thead>
               <tr>
@@ -83,6 +83,7 @@
             </tbody>
           </table>
         </div>
+        {% if is_god() %}
         <div class="span4 visible-desktop">
           <h4>履歴</h4>
           {{ payment_histories_list(year, payment_histories) }}
@@ -103,6 +104,7 @@
             </div>
           </div>
         </div>
+        {% endif %}
       </div>
       {% endfor %}
 {% endblock %}
