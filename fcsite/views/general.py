@@ -281,7 +281,7 @@ def history_to_dict(history):
             'action': action}
 
 
-TAX_HISTORIES_STEP = 10
+TAX_HISTORIES_STEP = 5
 
 
 @mod.route('/tax_histories/<int:year>/<int:page>')

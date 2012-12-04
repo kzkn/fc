@@ -40,7 +40,7 @@
    style="display: block; text-align: center;"
    href="#"
    data-year="{{ year }}"
-   data-hist-id="{{ id }}">次の 10 件</a>
+   data-hist-id="{{ id }}">次の 5 件</a>
 {% endmacro %}
 
 {% block maincontent %}
@@ -165,7 +165,7 @@
         var year = $(this).attr('data-year');
         var histId = $(this).attr('data-hist-id');
         var rows = $('.' + histId).first().find('> tr').length;
-        var page = rows == 0 ? 1 : Math.ceil(rows / 10) + 1;
+        var page = rows == 0 ? 1 : Math.ceil(rows / 5) + 1;
         var url = '{{ url_for('general.tax_histories', year=718347183, page=23415678) }}';
         url = url.replace('718347183', year);
         url = url.replace('23415678', page);
