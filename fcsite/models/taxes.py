@@ -61,24 +61,27 @@ def do_insert_records_for_year(year):
     g.db.commit()
 
 
-def switch_payment(year, is_first_season, user_id):
+def switch_payment(year, season, user_id):
     # Tax テーブルを更新
-    column = 'paid_first' if is_first_season else 'paid_second'
-    g.db.execute("""
-        UPDATE Tax
-           SET %s = CASE WHEN %s = 1 THEN 0
-                         ELSE 1
-                    END
-         WHERE year = ?
-           AND user_id = ?""" % (column, column), (year, user_id))
-    payment = g.db.execute("""
-        SELECT %s
+    paid = g.db.execute("""
+        SELECT COUNT(*)
           FROM Tax
          WHERE year = ?
-           AND user_id = ?""" % column, (year, user_id)).fetchone()[0]
+           AND season = ?
+           AND user_id = ?""", (year, season, user_id)).fetchone()[0]
+    if paid:
+        g.db.execute("""
+            DELETE FROM Tax
+             WHERE year = ?
+               AND season = ?
+               AND user_id = ?""", (year, season, user_id))
+    else:
+        g.db.execute("""
+            INSERT INTO Tax (user_id, year, season) VALUES (?, ?, ?)""",
+            (user_id, year, season))
+    payment = not paid
 
     # 履歴に保存
-    season = 1 if is_first_season else 2
     action = 1 if payment else 2
     g.db.execute("""
         INSERT INTO TaxPaymentHistory (

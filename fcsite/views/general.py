@@ -261,11 +261,10 @@ def tax_for_new_year():
     return 'thanks'
 
 
-@mod.route('/switch_payment/<int:year>/<string:season>/<int:user_id>')
+@mod.route('/switch_payment/<int:year>/<int:season>/<int:user_id>')
 @requires_permission(users.PERM_ADMIN_GOD)
 def switch_payment(year, season, user_id):
-    newpayments, history = \
-            taxes.switch_payment(year, season == 'first', user_id)
+    newpayments, history = taxes.switch_payment(year, season, user_id)
     newhistory = history_to_dict(history)
     return json.dumps({'paid': newpayments, 'newHistory': newhistory})
 
