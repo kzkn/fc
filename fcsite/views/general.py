@@ -255,12 +255,6 @@ def tax_list():
     return render_template('tax.html', taxes=ts)
 
 
-@mod.route('/tax_for_new_year')
-def tax_for_new_year():
-    taxes.insert_for_new_year()
-    return 'thanks'
-
-
 @mod.route('/switch_payment/<int:year>/<int:season>/<int:user_id>')
 @requires_permission(users.PERM_ADMIN_GOD)
 def switch_payment(year, season, user_id):

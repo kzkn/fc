@@ -46,19 +46,7 @@ def find_all():
 
 
 def insert_for_new_year():
-    year = datetime.now().year
-    max_stored_year = g.db.execute("""
-        SELECT MAX(year) FROM Tax""").fetchone()[0]
-    if not max_stored_year or year > max_stored_year:
-        do_insert_records_for_year(year)
-
-
-def do_insert_records_for_year(year):
-    # 特殊ユーザ (id=-1) は支払い状況を表示しないよう insert の対象外とする
-    g.db.execute("""
-        INSERT INTO Tax (user_id, year, paid_first, paid_second)
-             SELECT id, ?, 0, 0 FROM User WHERE id <> -1""", (year, ))
-    g.db.commit()
+    pass
 
 
 def switch_payment(year, season, user_id):
