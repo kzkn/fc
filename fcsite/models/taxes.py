@@ -102,13 +102,13 @@ def switch_payment(year, season, user_id):
 def is_paid_tax_for_current_season(user_id):
     now = datetime.now()
     year = now.year
-    season = 'first' if now.month <= 6 else 'second'
+    season = now.month
     ret = g.db.execute("""
         SELECT COUNT(user_id)
           FROM Tax
          WHERE user_id = ?
            AND year = ?
-           AND paid_%s = 1""" % season, (user_id, year)).fetchone()
+           AND season = ?""", (user_id, year, season)).fetchone()
     return ret[0] > 0
 
 
