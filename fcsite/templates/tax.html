@@ -1,19 +1,6 @@
 {% extends 'layout.html' %}
 {% set active_page = 'other' %}
 
-{% macro paid_mark(i, year, user_id, paid, season) %}
-<a href="#" style="color: white; text-decoration: none;">
-  <span id="tax-badge-{{ i }}"
-        class="badge badge-{% if paid %}success{% else %}important{% endif %}"
-        data-year="{{ year }}"
-        data-season="{{ season }}"
-        data-user-id="{{ user_id }}"
-        data-hist-id="{{ 'payment-histories-%d-rows' % year }}">
-    {% if paid %}○{% else %}×{% endif %}
-  </span>
-</a>
-{% endmacro %}
-
 {% macro payment_histories_list(year, payment_histories) %}
 {% set id = 'payment-histories-%d-rows' % year %}
 <table class="table table-striped">
@@ -52,32 +39,33 @@
       </div>
 
       {% if is_god() %}
-      支払い状況を更新するには、<span class="badge badge-success">○</span>
-      や <span class="badge badge-important">×</span> をクリックしてください。
+      支払い状況を更新するには、どうすんの
       {% endif %}
 
-      {% set i = 0 %}
-      {% for year, (payments, payment_histories) in taxes.iteritems() %}
+      {% for stat in payment_stats %}
       <div class="row">
-        <h3>{{ year }} 年</h3>
         <div class="span8">
+          <h3>
+            {{ stat.year }} 年
+            {% if is_god() %}<small>(集金率: {{ '%.2f' % (100 * stat.rate_of_payments()) }}%)</small>{% endif %}
+          </h3>
           {% if is_god() %}<h4>状況</h4>{% endif %}
           <table class="table table-striped">
             <thead>
               <tr>
                 <th>名前</th>
-                <th>前期</th>
-                <th>後期</th>
               </tr>
             </thead>
             <tbody>
-              {% for payment in payments %}
+              {% for name, user_id, paid in stat %}
               <tr>
-                <td>{{ payment.name }}</td>
-                <td>{{ paid_mark(i, year, payment.user_id, payment.paid_first, 'first') }}</td>
-                {% set i = i + 1 %}
-                <td>{{ paid_mark(i, year, payment.user_id, payment.paid_second, 'second') }}</td>
-                {% set i = i + 1 %}
+                <td style="background: #{{ 'D9EDF7' if paid else 'FCF8E3' }};">
+                  <i class="icon-{{ 'ok' if paid else 'remove' }}"></i>
+                  &nbsp;
+                  <a class="open-payment" data-year="{{ stat.year }}" data-user-id="{{ user_id }}">
+                    {{ name }}
+                  </a>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -86,19 +74,19 @@
         {% if is_god() %}
         <div class="span4 visible-desktop">
           <h4>履歴</h4>
-          {{ payment_histories_list(year, payment_histories) }}
+          {{ payment_histories_list(stat.year, stat.histories) }}
         </div>
         <div class="span4 hidden-desktop">
-          <div class="accordion" id="payment-histories-{{ year }}">
+          <div class="accordion" id="payment-histories-{{ stat.year }}">
             <div class="accordion-group">
               <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#payment-histories-{{ year }}" href="#payment-histories-{{ year }}-list">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#payment-histories-{{ stat.year }}" href="#payment-histories-{{ stat.year }}-list">
                   履歴
                 </a>
               </div>
-              <div id="payment-histories-{{ year }}-list" class="accordion-body collapse">
+              <div id="payment-histories-{{ stat.year }}-list" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {{ payment_histories_list(year, payment_histories) }}
+                  {{ payment_histories_list(stat.year, stat.histories) }}
                 </div>
               </div>
             </div>

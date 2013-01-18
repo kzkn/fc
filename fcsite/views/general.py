@@ -252,7 +252,7 @@ def add_rule():
 @requires_login
 def tax_list():
     ts = taxes.find_all()
-    return render_template('tax.html', taxes=ts)
+    return render_template('tax.html', payment_stats=ts)
 
 
 @mod.route('/switch_payment/<int:year>/<int:season>/<int:user_id>')

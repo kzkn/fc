@@ -93,6 +93,7 @@ def find_all():
           FROM User
                LEFT OUTER JOIN Tax ON
                  User.id = Tax.user_id
+         WHERE User.id <> -1
       ORDER BY User.sex, User.id""").fetchall()
 
     payments = []
@@ -104,7 +105,7 @@ def find_all():
         payments.append(p)
 
     stats = []
-    for y in years():
+    for y in reversed(years()):
         histories = g.db.execute("""
             SELECT User.name,
                    Updater.name AS updater,
