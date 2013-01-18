@@ -8,41 +8,121 @@ except ImportError:
     from ordereddict import OrderedDict
 from flask import g
 
+MINIMUM_YEAR = 2012
+
+
+def years():
+    return range(MINIMUM_YEAR, datetime.now().year + 1)
+
+
+def seasons():
+    return range(1, 13)
+
+
+class Payment(object):
+    def __init__(self, name, user_id):
+        self.name = name
+        self.user_id = user_id
+        self.paid_seasons = []
+
+    def pay(self, year, season):
+        self.paid_seasons.append((year, season))
+
+    def is_paid(self, year, season):
+        return (year, season) in self.paid_seasons
+
+    def season_status(self, year, season):
+        last = datetime(year, season, 1)
+        for y in years():
+            if y != year:
+                continue
+            for m in seasons():
+                if datetime(y, m, 1) > last:
+                    break
+                if not self.is_paid(y, m):
+                    return False
+        return True
+
+
+class PaymentStats(object):
+    def __init__(self, year, payments, histories):
+        self.year = year
+        self.payments = payments
+        self.histories = histories
+
+    def rate_of_payments(self):
+        total = 0
+        paid = 0
+        now = datetime.now()
+        for m in seasons():
+            if now >= datetime(self.year, m, 1):
+                total += len(self.payments)
+            paid += sum([1 for p in self.payments if p.is_paid(self.year, m)])
+        return paid / float(total)
+
+    def __iter__(self):
+        return self.Iter(self)
+
+    def is_latest(self):
+        return self.year == datetime.now().year
+
+    class Iter(object):
+        def __init__(self, stats):
+            self.stats = stats
+            self.idx = 0
+            self.season = datetime.now().month if stats.is_latest() else 12
+
+        def next(self):
+            payments = self.stats.payments
+            if self.idx == len(payments):
+                raise StopIteration()
+
+            p = payments[self.idx]
+            self.idx += 1
+            return (p.user_id,
+                    p.name,
+                    p.season_status(self.stats.year, self.season))
+
 
 def find_all():
     taxes = g.db.execute("""
         SELECT User.name,
                Tax.user_id,
                Tax.year,
-               Tax.paid_first,
-               Tax.paid_second
+               Tax.season
           FROM User
-               INNER JOIN Tax ON
+               LEFT OUTER JOIN Tax ON
                  User.id = Tax.user_id
-      ORDER BY Tax.year DESC, User.sex, User.id""").fetchall()
-    histories = g.db.execute("""
-        SELECT User.name,
-               Updater.name AS updater,
-               TaxPaymentHistory.year,
-               TaxPaymentHistory.season,
-               TaxPaymentHistory.action,
-               TaxPaymentHistory.when_
-          FROM TaxPaymentHistory
-               INNER JOIN User ON
-                 User.id = TaxPaymentHistory.user_id
-               INNER JOIN User AS Updater ON
-                 Updater.id = TaxPaymentHistory.updater_user_id
-      ORDER BY TaxPaymentHistory.year DESC,
-               TaxPaymentHistory.when_ DESC
-         LIMIT 10""").fetchall()
+      ORDER BY User.sex, User.id""").fetchall()
 
-    payments_by_year = OrderedDict()
-    for year, payments in groupby(taxes, lambda e: e['year']):
-        payments_by_year[year] = [list(payments), []]
-    for year, hists in groupby(histories, lambda e: e['year']):
-        payments_by_year[year][1] = list(hists)
+    payments = []
+    id_and_name = lambda x: (x['user_id'], x['name'])
+    for (user_id, name), paid_seasons in groupby(taxes, id_and_name):
+        p = Payment(user_id, name)
+        for paid_season in paid_seasons:
+            p.pay(paid_season['year'], paid_season['season'])
+        payments.append(p)
 
-    return payments_by_year
+    stats = []
+    for y in years():
+        histories = g.db.execute("""
+            SELECT User.name,
+                   Updater.name AS updater,
+                   TaxPaymentHistory.year,
+                   TaxPaymentHistory.season,
+                   TaxPaymentHistory.action,
+                   TaxPaymentHistory.when_
+              FROM TaxPaymentHistory
+                   INNER JOIN User ON
+                     User.id = TaxPaymentHistory.user_id
+                   INNER JOIN User AS Updater ON
+                     Updater.id = TaxPaymentHistory.updater_user_id
+             WHERE TaxPaymentHistory.year = ?
+          ORDER BY TaxPaymentHistory.when_ DESC
+             LIMIT 10""", (y, )).fetchall()
+        stats.append(PaymentStats(y, payments, histories))
+
+    return stats
 
 
 def insert_for_new_year():
