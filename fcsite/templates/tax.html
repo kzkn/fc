@@ -58,7 +58,7 @@
             {% for payment in stat.payments %}
             {% set isok = payment.status_summary(stat.year) %}
             <div class="accordion-group">
-              <div class="accordion-heading" style="background: #{{ 'D9EDF7' if isok else 'FCF8E3' }};">
+              <div class="accordion-heading"{% if not isok %} style="background: #F2DEDE;"{% endif %}>
                 <a class="accordion-toggle"
                    data-toggle="collapse"
                    data-parent="#payments-{{ stat.year }}"
