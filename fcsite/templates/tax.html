@@ -39,7 +39,11 @@
       </div>
 
       {% if is_god() %}
-      支払い状況を更新するには、どうすんの
+      <div class="alert alert-info">
+        <strong>支払い状況を更新するには... </strong>
+        各メンバーが部費を支払った月にチェックを入れて、更新ボタンを押してください。
+        更新はメンバー単位に行います。更新履歴はこのページで参照できます。
+      </div>
       {% endif %}
 
       {% for stat in payment_stats %}
