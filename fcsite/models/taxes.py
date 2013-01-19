@@ -53,14 +53,10 @@ class PaymentStats(object):
         self.histories = histories
 
     def rate_of_payments(self):
-        total = 0
         paid = 0
-        now = datetime.now()
         for m in seasons():
-            if now >= datetime(self.year, m, 1):
-                total += len(self.payments)
             paid += sum([1 for p in self.payments if p.is_paid(self.year, m)])
-        return paid / float(total)
+        return paid / float(12 * len(self.payments))
 
 
 def find_by_year(year):
