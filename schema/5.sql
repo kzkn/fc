@@ -19,7 +19,7 @@ CREATE TABLE TaxPaymentHistory (
   action INTEGER NOT NULL,
   updater_user_id INTEGER NOT NULL,
   when_ TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id, year, season) REFERENCES Tax(user_id, year, season),
+  FOREIGN KEY (user_id) REFERENCES User(id),
   FOREIGN KEY (updater_user_id) REFERENCES User(id),
   CHECK (season > 0),
   CHECK (action IN (1, 2)) /* 1: x -> o, 2: o -> x */

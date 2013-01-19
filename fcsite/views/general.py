@@ -258,7 +258,8 @@ def tax_list():
 @mod.route('/update_payments/<int:year>/<int:user_id>', methods=['POST'])
 @requires_permission(users.PERM_ADMIN_GOD)
 def update_payments(year, user_id):
-    print year, user_id, request.form
+    new_paid_seasons = [int(x) for x in request.form.getlist('seasons')]
+    taxes.update_payments(year, user_id, new_paid_seasons)
     return redirect(url_for('general.tax_list'))
 
 
