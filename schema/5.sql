@@ -111,7 +111,7 @@ INSERT INTO Years VALUES (2012);
 INSERT INTO Years VALUES (2013);
 
 INSERT INTO Tax
-     SELECT User.user_id AS user_id,
+     SELECT User.id AS user_id,
             Years.year AS year,
             (SELECT CASE WHEN COUNT(*) > 0 THEN 1
                     ELSE 0 END
