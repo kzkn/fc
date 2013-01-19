@@ -61,10 +61,8 @@
 
         <div class="span5">
           <h3>
-            {{ stat.year }} 年
-            {% if is_god() %}<small>(集金率: {{ '%.2f' % (100 * stat.rate_of_payments()) }}%)</small>{% endif %}
+            支払い状況 <small>(集金率: {{ '%.2f' % (100 * stat.rate_of_payments()) }}%)</small>
           </h3>
-          {% if is_god() %}<h4>状況</h4>{% endif %}
           <div class="accordion" id="payments-{{ stat.year }}">
             {% for payment in stat.payments %}
             {% set isok = payment.status_summary(stat.year) %}
@@ -97,9 +95,8 @@
             {% endfor %}
           </div>
         </div>
-        {% if is_god() %}
         <div class="span4 visible-desktop">
-          <h4>履歴</h4>
+          <h3>履歴</h3>
           {{ payment_histories_list(stat.year, stat.histories) }}
         </div>
         <div class="span4 hidden-desktop">
@@ -118,12 +115,10 @@
             </div>
           </div>
         </div>
-        {% endif %}
       </div>
 {% endblock %}
 
 {% block script %}
-    {% if is_god() %}
     <script>
     (function() {
       var makeHistoryDom = function(history) {
@@ -161,5 +156,4 @@
       });
     })();
     </script>
-    {% endif %}
 {% endblock %}

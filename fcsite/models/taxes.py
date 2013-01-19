@@ -97,7 +97,7 @@ def find_by_year(year):
                  Updater.id = TaxPaymentHistory.updater_user_id
          WHERE TaxPaymentHistory.year = ?
       ORDER BY TaxPaymentHistory.when_ DESC
-         LIMIT 10""", (year, )).fetchall()
+         LIMIT 20""", (year, )).fetchall()
     return PaymentStats(year, payments, histories)
 
 

@@ -286,7 +286,7 @@ TAX_HISTORIES_STEP = 5
 
 
 @mod.route('/tax_histories/<int:year>/<int:page>')
-@requires_permission(users.PERM_ADMIN_GOD)
+@requires_login
 def tax_histories(year, page):
     begin = (page - 1) * TAX_HISTORIES_STEP
     hists = taxes.find_histories(year, begin, TAX_HISTORIES_STEP)
