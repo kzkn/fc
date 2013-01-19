@@ -81,7 +81,7 @@
                     <fieldset style="padding-bottom: 8px;">
                       {% for month, paid in payment.statuses_of_year(stat.year) %}
                       <label class="checkbox inline">
-                        <input type="checkbox" name="seasons" value="{{ month }}"{% if paid %} checked{% endif %}{% if not is_god() %} readonly{% endif %}> {{ month }}
+                        <input type="checkbox" name="seasons" value="{{ month }}"{% if paid %} checked{% endif %}{% if not is_god() %} onclick="return false;"{% endif %}> {{ month }}
                       </label>
                       {% endfor %}
                     </fieldset>
