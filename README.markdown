@@ -16,13 +16,19 @@ python 2.6 系、または 2.7 系での動作確認は取れています。他�
 ## 環境構築 ##
 
  1. [Python](http://www.python.org) をインストール
- 2. [pip](http://pypi.python.org/pypi/pip) をインストール
- 3. [virtualenv](http://pypi.python.org/pypi/virtualenv) をインストール
- 4. 以下、コマンドラインにて:
+ 2. [virtualenv](http://pypi.python.org/pypi/virtualenv) をインストール
+ 3. 以下、コマンドラインにて:
 
         $ git clone リポジトリ fc
         $ virtualenv env
         $ . env/bin/activate
         $ pip install -r fc/libs.txt
         $ cd fc
+        $ python gensecret.py  # 1回やればOK
         $ python run.py
+
+## コード書きたい方は ##
+
+[本リポジトリ](https://github.com/kzkn/fc/) を fork して、その
+リポジトリ上で あれこれ試すのがいいかと思います。開発が一段落したら、
+Pull-Request ください。メインラインにマージします。
