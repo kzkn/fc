@@ -255,12 +255,11 @@ def tax_list():
     return render_template('tax.html', payment_stats=ts)
 
 
-@mod.route('/switch_payment/<int:year>/<int:season>/<int:user_id>')
+@mod.route('/tax_list/<int:year>/<int:user_id>')
 @requires_permission(users.PERM_ADMIN_GOD)
-def switch_payment(year, season, user_id):
-    newpayments, history = taxes.switch_payment(year, season, user_id)
-    newhistory = history_to_dict(history)
-    return json.dumps({'paid': newpayments, 'newHistory': newhistory})
+def payment(year, user_id):
+    ts = taxes.find_user_payments_of_year(year, user_id)
+    return render_template('tax_detail.html', payments=ts)
 
 
 def history_to_dict(history):

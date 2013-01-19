@@ -87,7 +87,7 @@ class PaymentStats(object):
 def find_all():
     taxes = g.db.execute("""
         SELECT User.name,
-               Tax.user_id,
+               User.id AS user_id,
                Tax.year,
                Tax.season
           FROM User

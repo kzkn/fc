@@ -62,9 +62,9 @@
                 <td style="background: #{{ 'D9EDF7' if paid else 'FCF8E3' }};">
                   <i class="icon-{{ 'ok' if paid else 'remove' }}"></i>
                   &nbsp;
-                  <a class="open-payment" data-year="{{ stat.year }}" data-user-id="{{ user_id }}">
+                  {% if is_god() %}<a href="{{ url_for('general.payment', year=stat.year, user_id=user_id) }}">{% endif %}
                     {{ name }}
-                  </a>
+                  {% if is_god() %}</a>{% endif %}
                 </td>
               </tr>
               {% endfor %}
@@ -101,18 +101,6 @@
     {% if is_god() %}
     <script>
     (function() {
-      var updatePayment = function(id, isPaid) {
-        if (isPaid) {
-          $('#' + id).text('○')
-                     .removeClass('badge-important')
-                     .addClass('badge-success');
-        } else {
-          $('#' + id).text('×')
-                     .removeClass('badge-success')
-                     .addClass('badge-important');
-        }
-      }
-
       var makeHistoryDom = function(history) {
         return '<tr>' +
                  '<td>' + history.when + '</td>' +
@@ -121,32 +109,6 @@
                  '<td>' + history.updater + '</td>' +
                '</tr>';
       }
-
-      var performing = [];
-
-      $('.badge').click(function(e) {
-        e.preventDefault();
-
-        var id = $(this).attr('id');
-        if (performing.indexOf(id) != -1)
-          return;
-
-        performing.push(id);
-        var year = $(this).attr('data-year');
-        var season = $(this).attr('data-season');
-        var userId = $(this).attr('data-user-id');
-        var histId = $(this).attr('data-hist-id');
-        var url = '{{ url_for('general.switch_payment', year=718347183, season='_season_', user_id=23415678) }}';
-        url = url.replace('718347183', year);
-        url = url.replace('_season_', season);
-        url = url.replace('23415678', userId);
-        $.get(url, function(data) {
-          performing.splice(performing.indexOf(id), 1); // id を削除する
-          var data = JSON.parse(data)
-          updatePayment(id, data.paid === 1);
-          $('.' + histId).prepend(makeHistoryDom(data.newHistory));
-        });
-      });
 
       $('.more-history').click(function(e) {
         e.preventDefault();
