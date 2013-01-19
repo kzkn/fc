@@ -2,10 +2,6 @@
 
 from itertools import groupby
 from datetime import datetime
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 from flask import g
 
 MINIMUM_YEAR = 2012
