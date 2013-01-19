@@ -63,46 +63,42 @@ class PaymentStats(object):
         return paid / float(total)
 
 
-def find_all():
+def find_by_year(year):
     taxes = g.db.execute("""
         SELECT User.name,
                User.id AS user_id,
                Tax.year,
                Tax.season
           FROM User
-               LEFT OUTER JOIN Tax ON
+               LEFT OUTER JOIN (SELECT * FROM Tax WHERE year = ?) AS Tax ON
                  User.id = Tax.user_id
          WHERE User.id <> -1
-      ORDER BY User.sex, User.id""").fetchall()
+      ORDER BY User.sex, User.id""", (year, )).fetchall()
 
     payments = []
     id_and_name = lambda x: (x['user_id'], x['name'])
     for (user_id, name), paid_seasons in groupby(taxes, id_and_name):
         p = Payment(user_id, name)
         for paid_season in paid_seasons:
-            p.pay(paid_season['year'], paid_season['season'])
+            p.pay(year, paid_season['season'])
         payments.append(p)
 
-    stats = []
-    for y in reversed(years()):
-        histories = g.db.execute("""
-            SELECT User.name,
-                   Updater.name AS updater,
-                   TaxPaymentHistory.year,
-                   TaxPaymentHistory.season,
-                   TaxPaymentHistory.action,
-                   TaxPaymentHistory.when_
-              FROM TaxPaymentHistory
-                   INNER JOIN User ON
-                     User.id = TaxPaymentHistory.user_id
-                   INNER JOIN User AS Updater ON
-                     Updater.id = TaxPaymentHistory.updater_user_id
-             WHERE TaxPaymentHistory.year = ?
-          ORDER BY TaxPaymentHistory.when_ DESC
-             LIMIT 10""", (y, )).fetchall()
-        stats.append(PaymentStats(y, payments, histories))
-
-    return stats
+    histories = g.db.execute("""
+        SELECT User.name,
+               Updater.name AS updater,
+               TaxPaymentHistory.year,
+               TaxPaymentHistory.season,
+               TaxPaymentHistory.action,
+               TaxPaymentHistory.when_
+          FROM TaxPaymentHistory
+               INNER JOIN User ON
+                 User.id = TaxPaymentHistory.user_id
+               INNER JOIN User AS Updater ON
+                 Updater.id = TaxPaymentHistory.updater_user_id
+         WHERE TaxPaymentHistory.year = ?
+      ORDER BY TaxPaymentHistory.when_ DESC
+         LIMIT 10""", (year, )).fetchall()
+    return PaymentStats(year, payments, histories)
 
 
 def update_payments(year, user_id, new_paid):

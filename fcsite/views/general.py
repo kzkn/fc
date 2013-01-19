@@ -2,6 +2,7 @@
 
 import re
 import json
+from datetime import datetime
 from flask import render_template, session, redirect, request, \
     url_for, g, abort
 from fcsite import check_forced_registration_blueprint
@@ -249,10 +250,17 @@ def add_rule():
 
 
 @mod.route('/tax_list')
+@mod.route('/tax_list/<int:year>')
 @requires_login
-def tax_list():
-    ts = taxes.find_all()
-    return render_template('tax.html', payment_stats=ts)
+def tax_list(year=None):
+    now = datetime.now()
+    if not year:
+        year = now.year
+    if year < taxes.MINIMUM_YEAR or year > now.year:
+        abort(404)
+    stat = taxes.find_by_year(year)
+    return render_template('tax.html',
+            stat=stat, current_year=year, years=reversed(taxes.years()))
 
 
 @mod.route('/update_payments/<int:year>/<int:user_id>', methods=['POST'])

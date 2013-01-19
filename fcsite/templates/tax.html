@@ -46,9 +46,20 @@
       </div>
       {% endif %}
 
-      {% for stat in payment_stats %}
       <div class="row">
-        <div class="span8">
+        <div class="span3">
+          <div class="well" style="padding: 8px;">
+            <ul class="nav nav-list">
+              {% for year in years %}
+              <li{% if year == current_year %} class="active"{% endif %}>
+                <a href="{{ url_for('general.tax_list', year=year) }}">{{ year }} 年</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <div class="span5">
           <h3>
             {{ stat.year }} 年
             {% if is_god() %}<small>(集金率: {{ '%.2f' % (100 * stat.rate_of_payments()) }}%)</small>{% endif %}
@@ -109,7 +120,6 @@
         </div>
         {% endif %}
       </div>
-      {% endfor %}
 {% endblock %}
 
 {% block script %}
