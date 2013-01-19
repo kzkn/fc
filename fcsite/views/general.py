@@ -2,6 +2,7 @@
 
 import re
 import json
+from datetime import datetime
 from flask import render_template, session, redirect, request, \
     url_for, g, abort
 from fcsite import check_forced_registration_blueprint
@@ -249,25 +250,25 @@ def add_rule():
 
 
 @mod.route('/tax_list')
+@mod.route('/tax_list/<int:year>')
 @requires_login
-def tax_list():
-    ts = taxes.find_all()
-    return render_template('tax.html', taxes=ts)
+def tax_list(year=None):
+    now = datetime.now()
+    if not year:
+        year = now.year
+    if year < taxes.MINIMUM_YEAR or year > now.year:
+        abort(404)
+    stat = taxes.find_by_year(year)
+    return render_template('tax.html',
+            stat=stat, current_year=year, years=reversed(taxes.years()))
 
 
-@mod.route('/tax_for_new_year')
-def tax_for_new_year():
-    taxes.insert_for_new_year()
-    return 'thanks'
-
-
-@mod.route('/switch_payment/<int:year>/<string:season>/<int:user_id>')
+@mod.route('/update_payments/<int:year>/<int:user_id>', methods=['POST'])
 @requires_permission(users.PERM_ADMIN_GOD)
-def switch_payment(year, season, user_id):
-    newpayments, history = \
-            taxes.switch_payment(year, season == 'first', user_id)
-    newhistory = history_to_dict(history)
-    return json.dumps({'paid': newpayments, 'newHistory': newhistory})
+def update_payments(year, user_id):
+    new_paid_seasons = [int(x) for x in request.form.getlist('seasons')]
+    taxes.update_payments(year, user_id, new_paid_seasons)
+    return redirect(url_for('general.tax_list'))
 
 
 def history_to_dict(history):
@@ -285,7 +286,7 @@ TAX_HISTORIES_STEP = 5
 
 
 @mod.route('/tax_histories/<int:year>/<int:page>')
-@requires_permission(users.PERM_ADMIN_GOD)
+@requires_login
 def tax_histories(year, page):
     begin = (page - 1) * TAX_HISTORIES_STEP
     hists = taxes.find_histories(year, begin, TAX_HISTORIES_STEP)

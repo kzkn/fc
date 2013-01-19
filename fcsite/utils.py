@@ -189,7 +189,7 @@ def format_date_str(s):
 
 
 def format_season_action(season, action):
-    season = u'前期' if season == 1 else u'後期'
+    season = u'%d月' % season
     action = u'→ ○' if action == 1 else u'→ ×'
     return season + ' ' + action
 

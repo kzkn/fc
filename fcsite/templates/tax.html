@@ -1,19 +1,6 @@
 {% extends 'layout.html' %}
 {% set active_page = 'other' %}
 
-{% macro paid_mark(i, year, user_id, paid, season) %}
-<a href="#" style="color: white; text-decoration: none;">
-  <span id="tax-badge-{{ i }}"
-        class="badge badge-{% if paid %}success{% else %}important{% endif %}"
-        data-year="{{ year }}"
-        data-season="{{ season }}"
-        data-user-id="{{ user_id }}"
-        data-hist-id="{{ 'payment-histories-%d-rows' % year }}">
-    {% if paid %}○{% else %}×{% endif %}
-  </span>
-</a>
-{% endmacro %}
-
 {% macro payment_histories_list(year, payment_histories) %}
 {% set id = 'payment-histories-%d-rows' % year %}
 <table class="table table-striped">
@@ -52,79 +39,88 @@
       </div>
 
       {% if is_god() %}
-      支払い状況を更新するには、<span class="badge badge-success">○</span>
-      や <span class="badge badge-important">×</span> をクリックしてください。
+      <div class="alert alert-info">
+        <strong>支払い状況を更新するには... </strong>
+        各メンバーが部費を支払った月にチェックを入れて、更新ボタンを押してください。
+        更新はメンバー単位に行います。更新履歴はこのページで参照できます。
+      </div>
       {% endif %}
 
-      {% set i = 0 %}
-      {% for year, (payments, payment_histories) in taxes.iteritems() %}
       <div class="row">
-        <h3>{{ year }} 年</h3>
-        <div class="span8">
-          {% if is_god() %}<h4>状況</h4>{% endif %}
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>名前</th>
-                <th>前期</th>
-                <th>後期</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for payment in payments %}
-              <tr>
-                <td>{{ payment.name }}</td>
-                <td>{{ paid_mark(i, year, payment.user_id, payment.paid_first, 'first') }}</td>
-                {% set i = i + 1 %}
-                <td>{{ paid_mark(i, year, payment.user_id, payment.paid_second, 'second') }}</td>
-                {% set i = i + 1 %}
-              </tr>
+        <div class="span3">
+          <div class="well" style="padding: 8px;">
+            <ul class="nav nav-list">
+              {% for year in years %}
+              <li{% if year == current_year %} class="active"{% endif %}>
+                <a href="{{ url_for('general.tax_list', year=year) }}">{{ year }} 年</a>
+              </li>
               {% endfor %}
-            </tbody>
-          </table>
+            </ul>
+          </div>
         </div>
-        {% if is_god() %}
+
+        <div class="span5">
+          <h3>
+            支払い状況 <small>(集金率: {{ '%.2f' % (100 * stat.rate_of_payments()) }}%)</small>
+          </h3>
+          <div class="accordion" id="payments-{{ stat.year }}">
+            {% for payment in stat.payments %}
+            {% set isok = payment.status_summary(stat.year) %}
+            <div class="accordion-group">
+              <div class="accordion-heading"{% if not isok %} style="background: #F2DEDE;"{% endif %}>
+                <a class="accordion-toggle"
+                   data-toggle="collapse"
+                   data-parent="#payments-{{ stat.year }}"
+                   href="#payments-{{ stat.year }}-{{ payment.user_id }}">
+                  <i class="icon-{{ 'ok' if isok else 'remove' }}"></i>&nbsp;{{ payment.name }}
+                </a>
+              </div>
+              <div id="payments-{{ stat.year }}-{{ payment.user_id }}" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <form action="{{ url_for('general.update_payments', year=stat.year, user_id=payment.user_id) }}" method="post" class="well well-small">
+                    <fieldset style="padding-bottom: 8px;">
+                      {% for month, paid in payment.statuses_of_year(stat.year) %}
+                      <label class="checkbox inline">
+                        <input type="checkbox" name="seasons" value="{{ month }}"{% if paid %} checked{% endif %}{% if not is_god() %} onclick="return false;"{% endif %}> {{ month }}
+                      </label>
+                      {% endfor %}
+                    </fieldset>
+                    {% if is_god() %}
+                    <input class="btn btn-primary" type="submit" value="更新"></input>
+                    {% endif %}
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
         <div class="span4 visible-desktop">
-          <h4>履歴</h4>
-          {{ payment_histories_list(year, payment_histories) }}
+          <h3>履歴</h3>
+          {{ payment_histories_list(stat.year, stat.histories) }}
         </div>
         <div class="span4 hidden-desktop">
-          <div class="accordion" id="payment-histories-{{ year }}">
+          <div class="accordion" id="payment-histories-{{ stat.year }}">
             <div class="accordion-group">
               <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#payment-histories-{{ year }}" href="#payment-histories-{{ year }}-list">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#payment-histories-{{ stat.year }}" href="#payment-histories-{{ stat.year }}-list">
                   履歴
                 </a>
               </div>
-              <div id="payment-histories-{{ year }}-list" class="accordion-body collapse">
+              <div id="payment-histories-{{ stat.year }}-list" class="accordion-body collapse">
                 <div class="accordion-inner">
-                  {{ payment_histories_list(year, payment_histories) }}
+                  {{ payment_histories_list(stat.year, stat.histories) }}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {% endif %}
       </div>
-      {% endfor %}
 {% endblock %}
 
 {% block script %}
-    {% if is_god() %}
     <script>
     (function() {
-      var updatePayment = function(id, isPaid) {
-        if (isPaid) {
-          $('#' + id).text('○')
-                     .removeClass('badge-important')
-                     .addClass('badge-success');
-        } else {
-          $('#' + id).text('×')
-                     .removeClass('badge-success')
-                     .addClass('badge-important');
-        }
-      }
-
       var makeHistoryDom = function(history) {
         return '<tr>' +
                  '<td>' + history.when + '</td>' +
@@ -133,32 +129,6 @@
                  '<td>' + history.updater + '</td>' +
                '</tr>';
       }
-
-      var performing = [];
-
-      $('.badge').click(function(e) {
-        e.preventDefault();
-
-        var id = $(this).attr('id');
-        if (performing.indexOf(id) != -1)
-          return;
-
-        performing.push(id);
-        var year = $(this).attr('data-year');
-        var season = $(this).attr('data-season');
-        var userId = $(this).attr('data-user-id');
-        var histId = $(this).attr('data-hist-id');
-        var url = '{{ url_for('general.switch_payment', year=718347183, season='_season_', user_id=23415678) }}';
-        url = url.replace('718347183', year);
-        url = url.replace('_season_', season);
-        url = url.replace('23415678', userId);
-        $.get(url, function(data) {
-          performing.splice(performing.indexOf(id), 1); // id を削除する
-          var data = JSON.parse(data)
-          updatePayment(id, data.paid === 1);
-          $('.' + histId).prepend(makeHistoryDom(data.newHistory));
-        });
-      });
 
       $('.more-history').click(function(e) {
         e.preventDefault();
@@ -186,5 +156,4 @@
       });
     })();
     </script>
-    {% endif %}
 {% endblock %}
