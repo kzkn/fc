@@ -105,10 +105,6 @@ def find_all():
     return stats
 
 
-def insert_for_new_year():
-    pass
-
-
 def update_payments(year, user_id, new_paid):
     records = g.db.execute("""
         SELECT Tax.season
