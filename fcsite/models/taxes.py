@@ -20,9 +20,9 @@ def seasons():
 
 
 class Payment(object):
-    def __init__(self, name, user_id):
-        self.name = name
+    def __init__(self, user_id, name):
         self.user_id = user_id
+        self.name = name
         self.paid_seasons = []
 
     def pay(self, year, season):
@@ -31,17 +31,19 @@ class Payment(object):
     def is_paid(self, year, season):
         return (year, season) in self.paid_seasons
 
-    def season_status(self, year, season):
-        last = datetime(year, season, 1)
-        for y in years():
-            if y != year:
-                continue
-            for m in seasons():
-                if datetime(y, m, 1) > last:
-                    break
-                if not self.is_paid(y, m):
-                    return False
+    def status_summary(self, year):
+        now = datetime.now()
+        month = now.month if now.year == year else 12
+        last = datetime(year, month, 1)
+        for m in seasons():
+            if datetime(year, m, 1) > last:
+                break
+            if not self.is_paid(year, m):
+                return False
         return True
+
+    def statuses_of_year(self, year):
+        return [(m, self.is_paid(year, m)) for m in seasons()]
 
 
 class PaymentStats(object):
@@ -59,29 +61,6 @@ class PaymentStats(object):
                 total += len(self.payments)
             paid += sum([1 for p in self.payments if p.is_paid(self.year, m)])
         return paid / float(total)
-
-    def __iter__(self):
-        return self.Iter(self)
-
-    def is_latest(self):
-        return self.year == datetime.now().year
-
-    class Iter(object):
-        def __init__(self, stats):
-            self.stats = stats
-            self.idx = 0
-            self.season = datetime.now().month if stats.is_latest() else 12
-
-        def next(self):
-            payments = self.stats.payments
-            if self.idx == len(payments):
-                raise StopIteration()
-
-            p = payments[self.idx]
-            self.idx += 1
-            return (p.user_id,
-                    p.name,
-                    p.season_status(self.stats.year, self.season))
 
 
 def find_all():

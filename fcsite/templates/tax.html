@@ -50,26 +50,37 @@
             {% if is_god() %}<small>(集金率: {{ '%.2f' % (100 * stat.rate_of_payments()) }}%)</small>{% endif %}
           </h3>
           {% if is_god() %}<h4>状況</h4>{% endif %}
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>名前</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for name, user_id, paid in stat %}
-              <tr>
-                <td style="background: #{{ 'D9EDF7' if paid else 'FCF8E3' }};">
-                  <i class="icon-{{ 'ok' if paid else 'remove' }}"></i>
-                  &nbsp;
-                  {% if is_god() %}<a href="{{ url_for('general.payment', year=stat.year, user_id=user_id) }}">{% endif %}
-                    {{ name }}
-                  {% if is_god() %}</a>{% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          <div class="accordion" id="payments-{{ stat.year }}">
+            {% for payment in stat.payments %}
+            {% set isok = payment.status_summary(stat.year) %}
+            <div class="accordion-group">
+              <div class="accordion-heading" style="background: #{{ 'D9EDF7' if isok else 'FCF8E3' }};">
+                <a class="accordion-toggle"
+                   data-toggle="collapse"
+                   data-parent="#payments-{{ stat.year }}"
+                   href="#payments-{{ stat.year }}-{{ payment.user_id }}">
+                  <i class="icon-{{ 'ok' if isok else 'remove' }}"></i>&nbsp;{{ payment.name }}
+                </a>
+              </div>
+              <div id="payments-{{ stat.year }}-{{ payment.user_id }}" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <form action="{{ url_for('general.update_payments', year=stat.year, user_id=payment.user_id) }}" method="post" class="well well-small">
+                    <fieldset style="padding-bottom: 8px;">
+                      {% for month, paid in payment.statuses_of_year(stat.year) %}
+                      <label class="checkbox inline">
+                        <input type="checkbox" name="seasons" value="{{ month }}"{% if paid %} checked{% endif %}{% if not is_god() %} readonly{% endif %}> {{ month }}
+                      </label>
+                      {% endfor %}
+                    </fieldset>
+                    {% if is_god() %}
+                    <input class="btn btn-primary" type="submit" value="更新"></input>
+                    {% endif %}
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
         </div>
         {% if is_god() %}
         <div class="span4 visible-desktop">

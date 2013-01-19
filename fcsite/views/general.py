@@ -255,11 +255,11 @@ def tax_list():
     return render_template('tax.html', payment_stats=ts)
 
 
-@mod.route('/tax_list/<int:year>/<int:user_id>')
+@mod.route('/update_payments/<int:year>/<int:user_id>', methods=['POST'])
 @requires_permission(users.PERM_ADMIN_GOD)
-def payment(year, user_id):
-    ts = taxes.find_user_payments_of_year(year, user_id)
-    return render_template('tax_detail.html', payments=ts)
+def update_payments(year, user_id):
+    print year, user_id, request.form
+    return redirect(url_for('general.tax_list'))
 
 
 def history_to_dict(history):
