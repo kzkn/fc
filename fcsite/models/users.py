@@ -5,7 +5,6 @@ from random import randint
 from itertools import groupby
 from sqlite3 import IntegrityError
 from hashlib import sha1
-from datetime import datetime
 from flask import g
 from fcsite.models import schedules as scheds
 from fcsite.utils import sanitize_html
@@ -181,11 +180,6 @@ def insert(name, password, sex, permission):
     cursor.execute('''
         INSERT INTO User (name, password, sex, permission)
         VALUES (?, ?, ?, ?)''', (name, password, sex, permission))
-
-    newid = cursor.lastrowid
-    cursor.execute('''
-        INSERT INTO Tax (user_id, year, paid_first, paid_second)
-             VALUES (?, ?, ?, ?)''', (newid, datetime.now().year, 0, 0))
 
     g.db.commit()
 
