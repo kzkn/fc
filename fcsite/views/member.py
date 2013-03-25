@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from flask import render_template, request, g, redirect, url_for
+from flask.ext.wtf import Form
+from wtforms import TextField, TextAreaField, SelectField, DateField
 from fcsite import check_forced_registration_blueprint
 from fcsite.models import users
 from fcsite.auth import requires_login
@@ -32,15 +34,23 @@ def member(id=None):
                            selected_user=selected)
 
 
+class ProfileForm(Form):
+    name = TextField(u'名前')
+    password = TextField(u'パスワード')
+    sex = SelectField(u'性別', choices=[('male', u'男性'), ('female', u'女性')])
+    email = TextField(u'メールアドレス')
+    birthday = DateField(u'生年月日')
+    home = TextField(u'住まい')
+    car = TextField(u'車')
+    comment = TextAreaField(u'一言')
+
+
 @mod.route('/profile', methods=['GET', 'POST'])
 @requires_login
 def profile():
-    if request.method == 'GET':
-        return render_template('profile.html')
-    try:
-        validate_profile()
-    except ValueError, e:
-        return render_template('profile.html', errors=e.errors)
+    form = ProfileForm()
+    if form.validate_on_submit():
+        users.update_profile(g.user.id, request.form)  # TODO request.form やめたい
+        return redirect(url_for('member.profile'))
 
-    users.update_profile(g.user.id, request.form)
-    return redirect(url_for('member.profile'))
+    return render_template('profile.html', form=form)

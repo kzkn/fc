@@ -2,39 +2,35 @@
 {% extends 'mysettings_layout.html' %}
 {% set active_settings_page = 'profile' %}
 
+{% macro render_field(field) %}
+{{ field.label }}
+{% if field.errors %}
+<span class="help-block">
+  <span class="label label-important">エラー</span>
+  {% for error in field.errors %}
+    {{ error }}
+  {% endfor %}
+</span>
+{% endif %}
+{{ field(**kwargs) | safe }}
+{% endmacro %}
+
 {% block settingscontent %}
           <h2>プロフィール設定</h2>
           <form action="{{ url_for('member.profile') }}" method="post" class="well">
-            <label>名前</label>
-            {{ error_message('name', errors) }}
-            <input type="text" name="name" value="{{ g.user.name }}" readonly></input>
-            <label>パスワード</label>
-            {{ error_message('password', errors) }}
-            <input type="text" name="password" value="{{ g.user.password }}"></input>
+            {{ form.csrf_token }}
+            {{ render_field(form.name, value=g.user.name, readonly=true) }}
+            {{ render_field(form.password, value=g.user.password) }}
             <span class="help-block"><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</span>
-            <label>性別</label>
-            {{ error_message('sex', errors) }}
-            <select name="sex">
-              <option{% if g.user.is_male() %} selected{% endif %}>男性</option>
-              <option{% if g.user.is_female() %} selected{% endif %}>女性</option>
-            </select>
-            <label>メールアドレス</label>
-            {{ error_message('email', errors) }}
-            <input type="text" name="email" value="{{ g.user.email }}"></input>
-            <label>生年月日</label>
-            {{ error_message('birthday', errors) }}
-            <input type="date" name="birthday" value="{{ g.user.birthday }}" placeholder="年-月-日"></input>
-            <label>住まい</label>
-            {{ error_message('home', errors) }}
-            <input type="text" name="home" value="{{ g.user.home }}"></input>
-            <label>車</label>
-            {{ error_message('car', errors) }}
-            <input type="text" name="car" value="{{ g.user.car }}"></input>
-            <label>一言</label>
+            {{ render_field(form.sex) }}  {# TODO 選択値 #}
+            {{ render_field(form.email, value=g.user.email) }}
+            {{ render_field(form.birthday, value=g.user.birthday, placeholder="年-月-日") }}
+            {{ render_field(form.home, value=g.user.home) }}
+            {{ render_field(form.car, value=g.user.car) }}
+            {{ render_field(form.comment, style="width: 80%; height: 100px;") }}  {# TODO コメントの値 #}
             {{ you_can_use_tags() }}
-            {{ error_message('comment', errors) }}
-            <textarea name="comment" style="width: 80%; height: 100px;">{{ g.user.comment }}</textarea>
             <span class="help-block"><strong>Note: </strong>一言と言わず、思いの丈をたくさんつづってください。</span>
+
             <br>
             <input type="submit" class="btn" value="登録"></input>
           </form>
