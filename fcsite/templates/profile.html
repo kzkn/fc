@@ -22,12 +22,12 @@
             {{ render_field(form.name, value=g.user.name, readonly=true) }}
             {{ render_field(form.password, value=g.user.password) }}
             <span class="help-block"><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</span>
-            {{ render_field(form.sex) }}  {# TODO 選択値 #}
+            {{ render_field(form.sex) }}
             {{ render_field(form.email, value=g.user.email) }}
             {{ render_field(form.birthday, value=g.user.birthday, placeholder="年-月-日") }}
             {{ render_field(form.home, value=g.user.home) }}
             {{ render_field(form.car, value=g.user.car) }}
-            {{ render_field(form.comment, style="width: 80%; height: 100px;") }}  {# TODO コメントの値 #}
+            {{ render_field(form.comment, style="width: 80%; height: 100px;") }}
             {{ you_can_use_tags() }}
             <span class="help-block"><strong>Note: </strong>一言と言わず、思いの丈をたくさんつづってください。</span>
 

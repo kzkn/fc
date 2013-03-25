@@ -239,7 +239,7 @@ def get_or_gen_password(form):
 
 
 def sex_atoi(sex):
-    return SEX_MALE if sex == u'男性' else SEX_FEMALE
+    return SEX_MALE if sex == 'male' else SEX_FEMALE
 
 
 def permission_atoi(form):
