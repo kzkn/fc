@@ -7,16 +7,9 @@ from wtforms import TextField, TextAreaField, SelectField
 from fcsite import check_forced_registration_blueprint
 from fcsite.models import users
 from fcsite.auth import requires_login
-from fcsite.utils import do_validate, check_date
 
 mod = check_forced_registration_blueprint('member', __name__,
         url_prefix='/member')
-
-
-def validate_profile():
-    validators = {}
-    validators['birthday'] = [check_date]
-    do_validate(request.form, validators)
 
 
 @mod.route('/')
