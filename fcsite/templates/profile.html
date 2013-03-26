@@ -1,19 +1,6 @@
-{% from 'macros.html' import you_can_use_tags, error_message %}
+{% from 'macros.html' import you_can_use_tags, render_field %}
 {% extends 'mysettings_layout.html' %}
 {% set active_settings_page = 'profile' %}
-
-{% macro render_field(field) %}
-{{ field.label }}
-{% if field.errors %}
-<span class="help-block">
-  <span class="label label-important">エラー</span>
-  {% for error in field.errors %}
-    {{ error }}
-  {% endfor %}
-</span>
-{% endif %}
-{{ field(**kwargs) | safe }}
-{% endmacro %}
 
 {% block settingscontent %}
           <h2>プロフィール設定</h2>

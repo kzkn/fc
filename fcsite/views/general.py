@@ -5,6 +5,8 @@ import json
 from datetime import datetime
 from flask import render_template, session, redirect, request, \
     url_for, g, abort
+from flask.ext.wtf import Form
+from wtforms import TextField, SelectField, TextAreaField, validators
 from fcsite import check_forced_registration_blueprint
 from fcsite.models import notices
 from fcsite.models import joins
@@ -13,7 +15,7 @@ from fcsite.models import rules
 from fcsite.models import taxes
 from fcsite.models import reports
 from fcsite.utils import error_message, info_message, check_required, \
-        check_in, do_validate, format_date, format_season_action
+        do_validate, format_date, format_season_action
 from fcsite.utils import sanitize_html, pagination, sanitize_markdown
 from fcsite.auth import do_login, requires_login, requires_permission
 
@@ -21,24 +23,6 @@ ignores = [(['POST'], re.compile('/login')),
            (['GET'], re.compile('/logout'))]
 mod = check_forced_registration_blueprint('general', __name__,
         ignore_patterns=ignores)
-
-
-def validate_join_request():
-    validators = {}
-    validators['name'] = [check_required]
-    validators['home'] = [check_required]
-    validators['email'] = [check_required]
-    validators['sex'] = [check_required, check_in(u'男性', u'女性')]
-    validators['age'] = [check_required, check_in('18-20', '21-23', '24-26',
-        '27-29', '30-32', '33-35', '36-38', '39-41', '42-')]
-    validators['car'] = [check_required, check_in(u'あり', u'なし')]
-    validators['has_racket'] = [check_required, check_in(u'あり', u'なし')]
-    validators['holiday'] = [check_required, check_in(u'土日', u'日',
-        u'不定期')]
-    validators['experience'] = [check_required, check_in(u'初心者',
-        u'初級', u'中級', u'上級', u'神、いわゆるゴッド')]
-    validators['comment'] = [check_required]
-    do_validate(request.form, validators)
 
 
 def validate_report():
@@ -180,32 +164,52 @@ def album(albumId):
     return render_template('album.html', albumId=albumId)
 
 
+class JoinForm(Form):
+    name = TextField(u'名前 or ニックネーム', [validators.Required()])
+    home = TextField(u'住まい', [validators.Required()])
+    email = TextField(u'メールアドレス', [validators.Required()])
+    sex = SelectField(u'性別', default=u'男性',
+            choices=[(u'男性', u'男性'), (u'女性', u'女性')])
+    age = SelectField(u'年齢', default='18-20',
+            choices=[('18-20', '18-20'), ('21-23', '21-23'),
+                     ('24-26', '24-26'), ('27-29', '27-29'),
+                     ('30-32', '30-32'), ('33-35', '33-35'),
+                     ('36-38', '36-38'), ('39-41', '39-41'),
+                     ('42-',   '42-')])
+    car = SelectField(u'車の有無', default=u'あり',
+            choices=[(u'あり', u'あり'), (u'なし', u'なし')])
+    has_racket = SelectField(u'ラケットの有無', default=u'あり',
+            choices=[(u'あり', u'あり'), (u'なし', u'なし')])
+    holiday = SelectField(u'休日', default=u'土日',
+            choices=[(u'土日', u'土日'), (u'日', u'日'), (u'不定期', u'不定期')])
+    experience = SelectField(u'テニス歴', default=u'初心者',
+            choices=[(u'初心者', u'初心者'), (u'初級', u'初級'),
+                     (u'中級', u'中級'), (u'上級', u'上級'),
+                     (u'神、いわゆるゴッド', u'神、いわゆるゴッド')])
+    comment = TextAreaField(u'一言', [validators.Required()])
+
+
 @mod.route('/join', methods=['GET', 'POST'])
 def join():
-    if request.method == 'GET':
-        return render_template('join.html')
+    form = JoinForm()
+    if form.validate_on_submit():
+        name = request.form['name']
+        home = request.form['home']
+        email = request.form['email']
+        sex = request.form['sex']
+        age = request.form['age']
+        car = request.form['car']
+        has_racket = request.form['has_racket']
+        holiday = request.form['holiday']
+        experience = request.form['experience']
+        comment = request.form['comment']
+        joins.insert(name, home, email, sex, age, car, has_racket, holiday,
+                experience, comment)
+        info_message(message=u'後日、サークルのものから折り返し連絡します。',
+                title=u'応募ありがとうございます！')
+        return redirect(url_for('general.index'))
 
-    try:
-        validate_join_request()
-    except ValueError, e:
-        return render_template('join.html', errors=e.errors)
-
-    name = request.form['name']
-    home = request.form['home']
-    email = request.form['email']
-    sex = request.form['sex']
-    age = request.form['age']
-    car = request.form['car']
-    has_racket = request.form['has_racket']
-    holiday = request.form['holiday']
-    experience = request.form['experience']
-    comment = request.form['comment']
-    joins.insert(name, home, email, sex, age, car, has_racket, holiday,
-            experience, comment)
-
-    info_message(message=u'後日、サークルのものから折り返し連絡します。',
-            title=u'応募ありがとうございます！')
-    return redirect(url_for('general.index'))
+    return render_template('join.html', form=form)
 
 
 @mod.route('/new_join_requests')
