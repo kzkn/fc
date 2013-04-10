@@ -28,15 +28,21 @@ class Payment(object):
         return (year, season) in self.paid_seasons
 
     def status_summary(self, year):
+        # 0: 支払い済み
+        # 1: 過去の未払い
+        # 2: 現在月の未払い
         now = datetime.now()
+        if now.year == year and not self.is_paid(year, now.month):
+            return 2
+
         month = now.month if now.year == year else 12
         last = datetime(year, month, 1)
         for m in seasons():
             if datetime(year, m, 1) > last:
                 break
             if not self.is_paid(year, m):
-                return False
-        return True
+                return 1
+        return 0
 
     def statuses_of_year(self, year):
         return [(m, self.is_paid(year, m)) for m in seasons()]

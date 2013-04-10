@@ -65,14 +65,18 @@
           </h3>
           <div class="accordion" id="payments-{{ stat.year }}">
             {% for payment in stat.payments %}
-            {% set isok = payment.status_summary(stat.year) %}
+            {% set status = payment.status_summary(stat.year) %}
             <div class="accordion-group">
-              <div class="accordion-heading"{% if not isok %} style="background: #F2DEDE;"{% endif %}>
+              <div class="accordion-heading"
+                {% if status == 1 %} style="background: #FCF8E3;"{% endif -%}
+                {% if status == 2 %} style="background: #F2DEDE;"{% endif %}>
                 <a class="accordion-toggle"
                    data-toggle="collapse"
                    data-parent="#payments-{{ stat.year }}"
                    href="#payments-{{ stat.year }}-{{ payment.user_id }}">
-                  <i class="icon-{{ 'ok' if isok else 'remove' }}"></i>&nbsp;{{ payment.name }}
+                   <i class="icon-{%- if status == 0 %}ok{% endif -%}
+                                  {%  if status == 1 %}warning-sign{% endif -%}
+                                  {%  if status == 2 %}remove{% endif -%}"></i>&nbsp;{{ payment.name }}
                 </a>
               </div>
               <div id="payments-{{ stat.year }}-{{ payment.user_id }}" class="accordion-body collapse">
