@@ -3,6 +3,7 @@
 import os
 import re
 import sqlite3
+import codecs
 from datetime import datetime
 from hashlib import sha1
 from contextlib import closing
@@ -10,9 +11,18 @@ from contextlib import closing
 EVOLUTIONS_DIR = './evolutions'
 
 
+def utf8(string):
+    if isinstance(string, unicode):
+        return string.encode('utf-8')
+    if isinstance(string, str):
+        return unicode(string, 'utf-8').encode('utf-8')
+    return utf8(str(string))
+
+
 def new_connection(db_uri):
     conn = sqlite3.connect(db_uri)
     conn.row_factory = sqlite3.Row
+    conn.text_factory = utf8
     return conn
 
 
@@ -21,8 +31,8 @@ def exists_directory(path):
 
 
 def read_file_content(path):
-    with closing(open(path)) as f:
-        return f.read()
+    with closing(codecs.open(path, encoding='utf-8')) as f:
+        return utf8(f.read())
 
 
 class Evolution(object):
@@ -93,7 +103,7 @@ def apply_script(db_uri, evolutions_dir=EVOLUTIONS_DIR):
                 "update evolutions set last_problem = ? where id = ?",
                 (e.message, applying))
             conn.commit()
-            return False
+            raise e
     return True
 
 
@@ -169,8 +179,10 @@ def list_db_evolutions(db_uri):
             cur = conn.execute(
                 "select id, apply_script, revert_script from evolutions")
             for r in cur.fetchall():
-                e = Evolution(
-                    r['id'], r['apply_script'], r['revert_script'], False)
+                e = Evolution(r['id'],
+                              utf8(r['apply_script']),
+                              utf8(r['revert_script']),
+                              False)
                 evolutions.append(e)
         else:
             conn.execute("""
