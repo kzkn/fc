@@ -22,8 +22,8 @@ python 2.6 系、または 2.7 系での動作確認は取れています。他�
         $ git clone リポジトリ fc
         $ virtualenv env
         $ . env/bin/activate
-        $ pip install -r fc/libs.txt
         $ cd fc
+        $ pip install -r requirements.txt
         $ python gensecret.py  # 1回やればOK
         $ python run.py
 
