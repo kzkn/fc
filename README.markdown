@@ -1,9 +1,9 @@
-# このプロジェクトは？ #
+# Fight Club [![Build Status](https://travis-ci.org/kzkn/fc.png)](https://travis-ci.org/kzkn/fc) #
 
 Fight Club という福岡で活動するテニスサークルのホームページを
 制作するプロジェクトです。
 
-# 動作環境 #
+## 動作環境 ##
 
 python 2.6 系、または 2.7 系での動作確認は取れています。他の
 バージョンではおそらく動きません。動くようにしてもらうのは大
