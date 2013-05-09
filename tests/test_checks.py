@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from nose.tools import ok_, raises
 from fcsite import utils
 

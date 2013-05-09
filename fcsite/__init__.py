@@ -167,5 +167,8 @@ def select_random_saying():
         return sayings.select_random_public()
 
 
-import locale
-locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')
+try:
+    import locale
+    locale.setlocale(locale.LC_ALL, 'ja_JP.UTF-8')
+except:
+    pass
