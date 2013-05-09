@@ -35,3 +35,15 @@ def test_check_time():
     ok_(not _(utils.check_time, "0:"))
     ok_(not _(utils.check_time, ":0"))
     ok_(not _(utils.check_time, "0:0:0"))
+
+
+def test_check_number():
+    ok_(_(utils.check_number, "0"))
+    ok_(_(utils.check_number, "10"))
+    ok_(not _(utils.check_number, "-1"))
+    ok_(not _(utils.check_number, "-0"))
+    ok_(not _(utils.check_number, "+1"))
+    ok_(not _(utils.check_number, "+0"))
+    ok_(not _(utils.check_number, ""))
+    ok_(not _(utils.check_number, "a"))
+    ok_(not _(utils.check_number, "10A"))
