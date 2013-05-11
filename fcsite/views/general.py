@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 from flask import render_template, session, redirect, request, \
     url_for, g, abort
-from fcsite import check_forced_registration_blueprint
+from fcsite import check_forced_registration_blueprint, app
 from fcsite.models import notices
 from fcsite.models import joins
 from fcsite.models import users
@@ -13,7 +13,7 @@ from fcsite.models import rules
 from fcsite.models import taxes
 from fcsite.models import reports
 from fcsite.utils import error_message, info_message, check_required, \
-        check_in, do_validate, format_date, format_season_action
+        check_in, do_validate, format_date, format_season_action, safe_email
 from fcsite.utils import sanitize_html, pagination, sanitize_markdown
 from fcsite.auth import do_login, requires_login, requires_permission
 
@@ -62,12 +62,24 @@ def notice_to_message(notice):
     return u'%s:%s' % (notice['title'], notice['body'])
 
 
-@mod.route('/login', methods=['POST'])
+@mod.route('/login', methods=['GET', 'POST'])
 def login():
-    passwd = request.form['password']
-    if not do_login(passwd):
-        error_message(u'ログインできません。パスワードが間違っています。')
-    return redirect(url_for('general.index'))
+    if request.method == 'GET':
+        return render_template('login.html')
+
+    btn = request.form['btn']
+    if btn == 'login':
+        passwd = request.form['password']
+        if do_login(passwd):
+            return redirect(url_for('general.index'))
+        else:
+            error_message(u'ログインできません。パスワードが間違っています。')
+            return redirect(url_for('general.login'))
+    elif btn == 'forgot':
+        return u'管理人 (%s) にメールしてください。' % \
+            safe_email(app.config['ADMIN_EMAIL'])
+    else:
+        abort(400)
 
 
 @mod.route('/logout')

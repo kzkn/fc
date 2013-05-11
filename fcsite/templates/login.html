@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block maincontent %}
+      <div class="row">
+        <div class="span3 hidden-phone"></div>
+        <div class="span6" id="form-login">
+          <form class="form-horizontal well" action="{{ url_for('general.login') }}" method="post" >
+            <fieldset>
+              <legend>ログインフォーム</legend>
+              <div class="control-group">
+                <div class="control-label">
+                  <label>パスワード</label>
+                </div>
+                <div class="controls">
+                  <input type="password" name="password" class="input-large">
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn btn-primary" name="btn" value="login">ログイン</button>
+                  <button type="submit" class="btn btn-secondary" name="btn" value="forgot">パスワードを忘れた</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="span3 hidden-phone"></div>
+      </div>
+{% endblock %}

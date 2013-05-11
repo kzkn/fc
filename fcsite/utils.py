@@ -123,6 +123,10 @@ def age_of_fc():
     return now.year - 2005 + 1
 
 
+def safe_email(plain_email):
+    return plain_email.replace('@', u'あっとまーく')
+
+
 #############
 # HTML SANITIZER
 #############
