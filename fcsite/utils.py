@@ -117,6 +117,12 @@ def pagination(page, pages):
     return (begin, end)
 
 
+def age_of_fc():
+    now = datetime.now()
+    # 何年目かを表示するので +1
+    return now.year - 2005 + 1
+
+
 #############
 # HTML SANITIZER
 #############

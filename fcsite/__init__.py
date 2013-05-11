@@ -158,6 +158,8 @@ app.jinja_env.globals['is_paid_tax_for_current_season'] = \
     lambda user_id: taxes.is_paid_tax_for_current_season(user_id)
 app.jinja_env.globals['is_entried'] = \
     lambda sched, user_id: scheds.is_entried(sched, user_id)
+app.jinja_env.globals['age_of_fc'] = \
+    utils.age_of_fc
 
 
 def select_random_saying():
