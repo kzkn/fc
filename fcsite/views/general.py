@@ -13,7 +13,7 @@ from fcsite.models import rules
 from fcsite.models import taxes
 from fcsite.models import reports
 from fcsite.utils import error_message, info_message, check_required, \
-        check_in, do_validate, format_date, format_season_action, safe_email
+        check_in, do_validate, format_date, format_season_action
 from fcsite.utils import sanitize_html, pagination, sanitize_markdown
 from fcsite.auth import do_login, requires_login, requires_permission
 
@@ -75,9 +75,6 @@ def login():
         else:
             error_message(u'ログインできません。パスワードが間違っています。')
             return redirect(url_for('general.login'))
-    elif btn == 'forgot':
-        return u'管理人 (%s) にメールしてください。' % \
-            safe_email(app.config['ADMIN_EMAIL'])
     else:
         abort(400)
 
