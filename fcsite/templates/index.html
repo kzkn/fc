@@ -1,5 +1,13 @@
 {% extends 'layout.html' %}
 {% set active_page = 'index' %}
+{% set description = 'Fight Club は福岡市周辺で活動するテニスサークルです。今年で設立8年目。初心者から上級者まで幅広く在籍し、みんなでワイワイ楽しくやってます！' %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="Slurp" content="NOYDIR">
+    <meta name="keywords" content="Fight Club,テニス,テニスサークル,福岡">
+    <meta name="robots" content="index,nofollow">
+{% endblock %}
 
 {% block maincontent %}
       <div class="hero-unit">
@@ -7,7 +15,7 @@
           <div class="span7">
             <h2>Fight Club へようこそ！</h2>
             <p>
-              Fight Club は福岡市周辺で活動するテニスサークルです。今年で設立8年目。初心者から上級者まで幅広く在籍し、みんなでワイワイ楽しくやってます！
+              {{ description }}
             </p>
             <p>
               <a class="btn btn-primary btn-large" href="{{ url_for('general.introduction') }}">サークル紹介 &raquo;</a>
