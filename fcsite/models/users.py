@@ -21,6 +21,18 @@ PERM_ADMIN_GOD = PERM_ADMIN_SCHEDULE | PERM_ADMIN_MEMBER | PERM_ADMIN_NOTICE
 PROFILE_FIELDS = ['email', 'home', 'car', 'comment', 'birthday']
 
 
+__db = None
+
+def set_db(db):
+    global __db
+    __db = db
+
+
+def db():
+    global __db
+    return __db if __db else g.db
+
+
 class User(object):
     def __init__(self, row):
         self.id = row['id']
@@ -60,7 +72,7 @@ class User(object):
         return self.sex == SEX_FEMALE
 
     def is_registered(self, schedule):
-        cur = g.db.execute("""
+        cur = db().execute("""
             SELECT Schedule.id,
                    Schedule.type,
                    Schedule.body,
@@ -85,7 +97,7 @@ class User(object):
         return scheds.is_deadline_overred(body)
 
     def is_entered(self, schedule):
-        cur = g.db.execute("""
+        cur = db().execute("""
             SELECT user_id
               FROM Entry
              WHERE user_id = ?
@@ -94,7 +106,7 @@ class User(object):
         return cur.fetchone() is not None
 
     def has_not_registered_schedule_yet(self):
-        cur = g.db.execute("""
+        cur = db().execute("""
             SELECT Schedule.id
               FROM Schedule
                    LEFT OUTER JOIN (SELECT *
@@ -114,20 +126,20 @@ def from_row(row):
 
 
 def find_by_id(uid):
-    cur = g.db.execute('SELECT * FROM User WHERE id = ?', (uid, ))
+    cur = db().execute('SELECT * FROM User WHERE id = ?', (uid, ))
     return from_row(cur.fetchone())
 
 
 def find_by_password(password):
     # 特殊ユーザ (id=-1) はログインさせないように無視する
-    cur = g.db.execute('SELECT * FROM User WHERE password = ? AND id <> -1',
+    cur = db().execute('SELECT * FROM User WHERE password = ? AND id <> -1',
                        (password, ))
     return from_row(cur.fetchone())
 
 
 def find_group_by_sex():
     # 特殊ユーザ (id=-1) は一覧上に表示させないように無視する
-    users = g.db.execute('''
+    users = db().execute('''
         SELECT *
           FROM User
          WHERE id <> -1
@@ -139,7 +151,7 @@ def find_group_by_sex():
 
 
 def is_valid_session_id(uid, sid):
-    cur = g.db.execute("""
+    cur = db().execute("""
         SELECT user_id
           FROM MobileSession
          WHERE user_id = ?
@@ -151,7 +163,7 @@ def is_valid_session_id(uid, sid):
 def issue_new_session_id(uid):
     for sid in generate_session_id(6):
         try:
-            with g.db:
+            with db():
                 do_issue_new_session_id(uid, sid)
                 return sid
         except IntegrityError:
@@ -167,31 +179,31 @@ def generate_session_id(length):
 
 
 def do_issue_new_session_id(uid, sid):
-    g.db.execute("""
+    db().execute("""
         DELETE FROM MobileSession
               WHERE user_id = ?""", (uid, ))
-    g.db.execute("""
+    db().execute("""
         INSERT INTO MobileSession (user_id, session_id, expire)
              VALUES (?, ?, datetime('now', '+1 month'))""", (uid, sid))
 
 
 def insert(name, password, sex, permission):
-    cursor = g.db.cursor()
+    cursor = db().cursor()
     cursor.execute('''
         INSERT INTO User (name, password, sex, permission)
         VALUES (?, ?, ?, ?)''', (name, password, sex, permission))
 
-    g.db.commit()
+    db().commit()
 
 
 def update(id, password, sex, permission):
-    g.db.execute('''
+    db().execute('''
         UPDATE User
            SET password = ?,
                sex = ?,
                permission = ?
          WHERE id = ?''', (password, sex, permission, id))
-    g.db.commit()
+    db().commit()
 
 
 def update_profile(id, form):
@@ -209,18 +221,18 @@ def update_profile(id, form):
         'car': car,
         'comment': comment
         })
-    g.db.execute('''
+    db().execute('''
         UPDATE User
            SET password = ?,
                sex = ?,
                profile = ?
          WHERE id = ?''', (password, sex, profile, id))
-    g.db.commit()
+    db().commit()
 
 
 def delete_by_id(id):
-    g.db.execute('DELETE FROM User WHERE id = ?', (id, ))
-    g.db.commit()
+    db().execute('DELETE FROM User WHERE id = ?', (id, ))
+    db().commit()
 
 
 def make_obj(form, id=-9999):

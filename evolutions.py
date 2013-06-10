@@ -9,6 +9,17 @@ from hashlib import sha1
 from contextlib import closing
 
 EVOLUTIONS_DIR = './evolutions'
+CREATE_EVOLUTIONS_TABLE = """
+   create table evolutions (
+      id int primary key,
+      hash varchar(255) not null,
+      applied_at timestamp not null,
+      apply_script clob,
+      revert_script clob,
+      state varchar(255),
+      last_problem clob
+)"""
+
 
 
 def utf8(string):
@@ -185,14 +196,34 @@ def list_db_evolutions(db_uri):
                               False)
                 evolutions.append(e)
         else:
-            conn.execute("""
-                create table evolutions (
-                    id int primary key,
-                    hash varchar(255) not null,
-                    applied_at timestamp not null,
-                    apply_script clob,
-                    revert_script clob,
-                    state varchar(255),
-                    last_problem clob)""")
+            conn.execute(CREATE_EVOLUTIONS_TABLE)
     evolutions.sort()
     return evolutions
+
+
+def apply_script_for_unittest(db, evolutions_dir=EVOLUTIONS_DIR):
+    # create evolutions table
+    db.execute(CREATE_EVOLUTIONS_TABLE)
+    # apply all evolution scripts
+    for evolution in list_app_evolutions(evolutions_dir):
+        db.execute(
+            "insert into evolutions values (?, ?, ?, ?, ?, ?, ?)",
+            (evolution.revision,
+             evolution.hash,
+             datetime.now(),
+             evolution.sql_up,
+             evolution.sql_down,
+             'applying_up',
+             ''))
+
+        # execute script
+        for sql in evolution.sql_seqs():
+            if sql:
+                db.execute(sql)
+
+        # insert into logs (result)
+        db.execute("""
+            update evolutions
+               set state = 'applied'
+             where id = ?""", (evolution.revision, ))
+        db.commit()

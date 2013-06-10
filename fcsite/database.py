@@ -15,13 +15,13 @@ def connect_db():
 def initialize():
     db = connect_db()
     with db:
-        force_insert(db, """
+        __force_insert(db, """
             INSERT INTO User (id, name, password, sex)
                  VALUES (-1, '---', '!@#$%^&*()', 1)""")
     db.close()
 
 
-def force_insert(db, sql):
+def __force_insert(db, sql):
     try:
         db.execute(sql)
     except IntegrityError:
