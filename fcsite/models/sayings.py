@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from flask import g
 from itertools import groupby
+from fcsite import models
 
 
 def find_all_group_by_publication():
-    sayings = g.db.execute("""
+    sayings = models.db().execute("""
         SELECT *
           FROM Saying
       ORDER BY private""").fetchall()
@@ -20,23 +20,23 @@ def find_all_group_by_publication():
 
 
 def delete(id):
-    g.db.execute("""
+    models.db().execute("""
         DELETE FROM Saying WHERE id = ?""", (id, ))
-    g.db.commit()
+    models.db().commit()
 
 
 def insert(who, body, private):
-    g.db.execute("""
+    models.db().execute("""
         INSERT INTO Saying (who, body, private) VALUES (?, ?, ?)""",
         (who, body, private))
-    g.db.commit()
+    models.db().commit()
 
 
 def select_random():
-    return g.db.execute("""
+    return models.db().execute("""
         SELECT * FROM Saying ORDER BY RANDOM()""").fetchone()
 
 
 def select_random_public():
-    return g.db.execute("""
+    return models.db().execute("""
         SELECT * FROM Saying WHERE private = 0 ORDER BY RANDOM()""").fetchone()

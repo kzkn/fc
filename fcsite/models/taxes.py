@@ -3,6 +3,7 @@
 from itertools import groupby
 from datetime import datetime
 from flask import g
+from fcsite import models
 
 MINIMUM_YEAR = 2012
 
@@ -62,7 +63,7 @@ class PaymentStats(object):
 
 
 def find_by_year(year):
-    taxes = g.db.execute("""
+    taxes = models.db().execute("""
         SELECT User.name,
                User.id AS user_id,
                Tax.year,
@@ -81,7 +82,7 @@ def find_by_year(year):
             p.pay(year, paid_season['season'])
         payments.append(p)
 
-    histories = g.db.execute("""
+    histories = models.db().execute("""
         SELECT User.name,
                Updater.name AS updater,
                TaxPaymentHistory.year,
@@ -100,7 +101,7 @@ def find_by_year(year):
 
 
 def update_payments(year, user_id, new_paid):
-    records = g.db.execute("""
+    records = models.db().execute("""
         SELECT Tax.season
           FROM Tax
          WHERE Tax.year = ?
@@ -111,10 +112,10 @@ def update_payments(year, user_id, new_paid):
     deletions = [s for s in curr_paid if s not in new_paid]
 
     # Tax テーブルの更新
-    g.db.executemany("""
+    models.db().executemany("""
         INSERT INTO Tax (year, user_id, season) VALUES (?, ?, ?)""",
         [(year, user_id, s) for s in insertions])
-    g.db.executemany("""
+    models.db().executemany("""
         DELETE FROM Tax
          WHERE year = ?
            AND user_id = ?
@@ -123,7 +124,7 @@ def update_payments(year, user_id, new_paid):
     # TaxPaymentHistory テーブルの更新
     def insert_payment_histories(action, seasons):
         updater = g.user.id
-        g.db.executemany("""
+        models.db().executemany("""
             INSERT INTO TaxPaymentHistory (
                     year, user_id, season, action, updater_user_id)
                  VALUES (?, ?, ?, ?, ?)""",
@@ -131,14 +132,14 @@ def update_payments(year, user_id, new_paid):
 
     insert_payment_histories(1, insertions)
     insert_payment_histories(2, deletions)
-    g.db.commit()
+    models.db().commit()
 
 
 def is_paid_tax_for_current_season(user_id):
     now = datetime.now()
     year = now.year
     season = now.month
-    ret = g.db.execute("""
+    ret = models.db().execute("""
         SELECT COUNT(user_id)
           FROM Tax
          WHERE user_id = ?
@@ -148,7 +149,7 @@ def is_paid_tax_for_current_season(user_id):
 
 
 def find_histories(year, begin, count):
-    return g.db.execute("""
+    return models.db().execute("""
         SELECT TaxPaymentHistory.when_ AS when_,
                User.name AS user_name,
                Updater.name AS updater_name,

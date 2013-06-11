@@ -2,13 +2,13 @@
 
 from datetime import datetime
 from flask import g
-from fcsite import app
+from fcsite import app, models
 from fcsite.utils import sanitize_html
 
 
 def find_posts(begin):
     records = app.config['BBS_PER_PAGE']
-    return g.db.execute("""
+    return models.db().execute("""
         SELECT User.name AS user_name,
                BBS.when_,
                BBS.body
@@ -19,16 +19,16 @@ def find_posts(begin):
 
 
 def count_posts():
-    return g.db.execute("SELECT COUNT(*) FROM BBS").fetchone()[0]
+    return models.db().execute("SELECT COUNT(*) FROM BBS").fetchone()[0]
 
 
 def post(body):
-    g.db.execute("""
+    models.db().execute("""
         INSERT INTO BBS (user_id, when_, body) VALUES (?, ?, ?)""", (
             g.user.id,
             datetime.now(),
             sanitize_html(body)))
-    g.db.commit()
+    models.db().commit()
 
 
 def find_posts_on_page(page):

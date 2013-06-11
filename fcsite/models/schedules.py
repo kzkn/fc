@@ -5,6 +5,7 @@ from itertools import groupby
 from time import strptime
 from datetime import datetime, timedelta
 from flask import g
+from fcsite import models
 from fcsite.utils import sanitize_html
 
 
@@ -14,7 +15,7 @@ TYPE_EVENT = 3
 
 
 def find(type):
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT Schedule.id,
                Schedule.type,
                Schedule.when_,
@@ -57,7 +58,7 @@ def find(type):
 
 
 def find_by_id(sid, with_entry=True):
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT *
           FROM Schedule
          WHERE id = ?""", (sid, ))
@@ -80,14 +81,14 @@ def find_by_id(sid, with_entry=True):
 
 
 def find_my_entry(sid):
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT COUNT(*) FROM Entry
         WHERE user_id = ? AND schedule_id = ?""", (g.user.id, sid))
     return cur.fetchone()[0] > 0
 
 
 def find_non_registered(uid, type):
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT Schedule.id AS id,
                Schedule.type AS type,
                Schedule.when_ AS when_,
@@ -110,48 +111,48 @@ def find_non_registered(uid, type):
 
 
 def update_entry(sid, comment, entry):
-    g.db.execute("""
+    models.db().execute("""
         UPDATE Entry
            SET is_entry = ?,
                comment = ?,
                when_ = CURRENT_TIMESTAMP
          WHERE user_id = ?
            AND schedule_id = ?""", (entry, comment, g.user.id, sid))
-    g.db.commit()
+    models.db().commit()
 
 
 def insert_entry(sid, comment, entry):
-    g.db.execute("""
+    models.db().execute("""
         INSERT INTO Entry (user_id, schedule_id, is_entry, comment)
         VALUES (?, ?, ?, ?)""", (g.user.id, sid, entry, comment))
-    g.db.commit()
+    models.db().commit()
 
 
 def insert(type, when_, body):
-    g.db.execute("""
+    models.db().execute("""
         INSERT INTO Schedule (type, when_, body)
         VALUES (?, ?, ?)""", (type, when_, body))
-    g.db.commit()
+    models.db().commit()
 
 
 def update(sid, when_, body):
-    g.db.execute("""
+    models.db().execute("""
         UPDATE Schedule
            SET when_ = ?,
                body = ?
          WHERE id = ?""", (when_, body, sid))
-    g.db.commit()
+    models.db().commit()
 
 
 def delete_by_id(sid):
-    g.db.execute("""
+    models.db().execute("""
         DELETE FROM Schedule
          WHERE id = ?""", (sid, ))
-    g.db.commit()
+    models.db().commit()
 
 
 def find_practice_locations():
-    cur = g.db.execute(
+    cur = models.db().execute(
         "SELECT body FROM Schedule WHERE type = ?", (TYPE_PRACTICE, ))
     bodies = cur.fetchall()
     return list(set([loads(body[0])['loc'] for body in bodies]))
@@ -167,7 +168,7 @@ def is_deadline_overred(schedule_body):
 
 
 def count_schedules(type):
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT COUNT(*)
           FROM Schedule
          WHERE type = ?

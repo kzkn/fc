@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
-from flask import g
+from fcsite import models
 from fcsite.utils import sanitize_html
 
 
@@ -26,7 +26,7 @@ def is_showing(notice):
 
 
 def find_by_id(id):
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT *
           FROM NOTICE
          WHERE id = ?""", (id, ))
@@ -34,7 +34,7 @@ def find_by_id(id):
 
 
 def find_scheduled():
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT *
           FROM Notice
          WHERE end_show >= date('now', 'localtime')
@@ -43,7 +43,7 @@ def find_scheduled():
 
 
 def find_showing():
-    cur = g.db.execute("""
+    cur = models.db().execute("""
         SELECT *
           FROM Notice
          WHERE begin_show <= date('now', 'localtime')
@@ -53,29 +53,29 @@ def find_showing():
 
 
 def insert(title, begin_show, end_show, body):
-    g.db.execute("""
+    models.db().execute("""
         INSERT INTO Notice (title, begin_show, end_show, body)
              VALUES (?, ?, ?, ?)""",
              (title, begin_show, end_show, body))
-    g.db.commit()
+    models.db().commit()
 
 
 def update(id, title, begin_show, end_show, body):
-    g.db.execute("""
+    models.db().execute("""
         UPDATE Notice
            SET title = ?,
                begin_show = ?,
                end_show = ?,
                body = ?
          WHERE id = ?""", (title, begin_show, end_show, body, id))
-    g.db.commit()
+    models.db().commit()
 
 
 def delete_by_id(id):
-    g.db.execute("""
+    models.db().execute("""
         DELETE FROM Notice
               WHERE id = ?""", (id, ))
-    g.db.commit()
+    models.db().commit()
 
 
 def make_obj(form):

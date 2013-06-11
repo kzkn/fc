@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import g
-from fcsite import app
+from fcsite import app, models
 from fcsite.utils import sanitize_markdown
 
 
@@ -26,7 +26,7 @@ class Report(object):
         if self._older_id_gotten:
             return self._older_id
 
-        older = g.db.execute("""
+        older = models.db().execute("""
             SELECT id
               FROM Report
              WHERE when_ < ?
@@ -40,7 +40,7 @@ class Report(object):
         if self._newer_id_gotten:
             return self._newer_id
 
-        newer = g.db.execute("""
+        newer = models.db().execute("""
             SELECT id
               FROM Report
              WHERE when_ > ?
@@ -52,7 +52,7 @@ class Report(object):
     def update(self, title, feature_image_url, description, body):
         desc_html = sanitize_markdown(description)
         body_html = sanitize_markdown(body)
-        g.db.execute("""
+        models.db().execute("""
             UPDATE Report
                SET when_ = datetime('now', 'localtime'),
                    title = ?,
@@ -63,7 +63,7 @@ class Report(object):
                    body_html = ?
              WHERE id = ?""", (title, feature_image_url,
                  description, desc_html, body, body_html, self.id))
-        g.db.commit()
+        models.db().commit()
 
         self.title = title
         self.description = description
@@ -75,14 +75,14 @@ class Report(object):
         return user and (user.is_god() or user.id == self.author_id)
 
     def delete(self):
-        g.db.execute("""
+        models.db().execute("""
             DELETE FROM Report WHERE id = ?""", (self.id, ))
-        g.db.commit()
+        models.db().commit()
 
 
 def find_reports(begin, records=None):
     records = records if records else app.config['REPORTS_PER_PAGE']
-    recs = g.db.execute("""
+    recs = models.db().execute("""
         SELECT Report.id,
                Report.when_,
                Report.author_id,
@@ -102,7 +102,7 @@ def find_reports(begin, records=None):
 
 
 def count_reports():
-    return g.db.execute("SELECT COUNT(*) FROM Report").fetchone()[0]
+    return models.db().execute("SELECT COUNT(*) FROM Report").fetchone()[0]
 
 
 def find_reports_on_page(page):
@@ -124,7 +124,7 @@ def recent():
 
 
 def find_by_id(id):
-    rec = g.db.execute("""
+    rec = models.db().execute("""
         SELECT Report.id,
                Report.when_,
                Report.author_id,
@@ -143,15 +143,15 @@ def find_by_id(id):
 
 
 def insert(title, feature_image_url, description, body):
-    with g.db:
-        g.db.execute("""
+    with models.db():
+        models.db().execute("""
             INSERT INTO Report (when_, author_id, title, feature_image_url,
                                 description, description_html, body, body_html)
                  VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?, ?, ?)""",
                  (g.user.id, title, feature_image_url,
                      description, sanitize_markdown(description),
                      body, sanitize_markdown(body)))
-        return g.db.execute("""
+        return models.db().execute("""
             SELECT id
               FROM Report
              WHERE when_ = (SELECT MAX(when_) FROM Report)""").fetchone()[0]

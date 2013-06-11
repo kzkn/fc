@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from flask import g
+from fcsite import models
 
 
 def find_all():
-    return g.db.execute("""
+    return models.db().execute("""
         SELECT *
           FROM Rule
       ORDER BY id""").fetchall()
 
 
 def delete(id):
-    g.db.execute("""
+    models.db().execute("""
         DELETE FROM Rule WHERE id = ?""", (id, ))
-    g.db.commit()
+    models.db().commit()
 
 
 def insert(body):
-    g.db.execute("""
+    models.db().execute("""
         INSERT INTO Rule (body) VALUES (?)""", (body, ))
-    g.db.commit()
+    models.db().commit()
