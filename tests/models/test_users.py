@@ -7,7 +7,6 @@ from tests.models import getdb
 
 
 def setup_module(module):
-    users.set_db(getdb())
     getdb().execute("DELETE FROM User")
 
 
