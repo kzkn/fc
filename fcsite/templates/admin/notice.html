@@ -17,7 +17,7 @@
                   </a>{% if n.is_showing %} <span class="label label-info">表示中</span>{% endif %}
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_notice', id=n.id) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_notice', id=n.id) }}"><i class="icon-white icon-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}

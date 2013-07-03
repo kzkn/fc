@@ -17,7 +17,7 @@
                 <td>{{ s.who }}</td>
                 <td>{{ s.body }}</td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_saying', id=s.id) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_saying', id=s.id) }}"><i class="icon-white icon-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}

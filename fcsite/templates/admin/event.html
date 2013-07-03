@@ -13,7 +13,7 @@
                   <a href="{{ url_for('admin.edit_event', id=e.id) }}">{{ e.name }} @{{ e.loc }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_event', id=e.id) }}"><i class="icon-white icon-trash"></i> 削除</a>
+                  <a class="btn btn-danger" href="{{ url_for('admin.delete_event', id=e.id) }}"><i class="icon-white icon-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}
