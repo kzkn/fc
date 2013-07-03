@@ -123,7 +123,7 @@ def update_payments(year, user_id, new_paid):
 
     # TaxPaymentHistory テーブルの更新
     def insert_payment_histories(action, seasons):
-        updater = g.user.id
+        updater = models.user().id
         models.db().executemany("""
             INSERT INTO TaxPaymentHistory (
                     year, user_id, season, action, updater_user_id)

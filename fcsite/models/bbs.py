@@ -25,7 +25,7 @@ def count_posts():
 def post(body):
     models.db().execute("""
         INSERT INTO BBS (user_id, when_, body) VALUES (?, ?, ?)""", (
-            g.user.id,
+            models.user().id,
             datetime.now(),
             sanitize_html(body)))
     models.db().commit()

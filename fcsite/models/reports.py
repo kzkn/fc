@@ -148,7 +148,7 @@ def insert(title, feature_image_url, description, body):
             INSERT INTO Report (when_, author_id, title, feature_image_url,
                                 description, description_html, body, body_html)
                  VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?, ?, ?)""",
-                 (g.user.id, title, feature_image_url,
+                 (models.user().id, title, feature_image_url,
                      description, sanitize_markdown(description),
                      body, sanitize_markdown(body)))
         return models.db().execute("""

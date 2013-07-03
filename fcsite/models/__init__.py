@@ -13,3 +13,15 @@ def set_db(db):
 def db():
     global __db
     return __db if __db else g.db
+
+
+__user = None
+
+def set_user(user):
+    global __user
+    __user = user
+
+
+def user():
+    global __user
+    return __user if __user else g.user
