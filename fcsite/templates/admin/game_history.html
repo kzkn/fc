@@ -1,0 +1,25 @@
+{% extends 'admin/layout_schedule_history.html' %}
+{% set active_tab = 'game' %}
+
+{% block tabcontent %}
+          <table class="table table-striped" style="margin-top: 12px;">
+            <thead>
+              <tr>
+                <th></th>
+                <th>参加</th>
+                <th>不参加</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ga in games %}
+              <tr>
+                <td>
+                  <a href="{{ url_for('admin.show_game', id=ga.id) }}">{{ ga.when_ | dateformat }} {{ ga.name }} @{{ ga.loc }}</a>
+                </td>
+                <td><span class="badge badge-success">{{ ga.entry_count }}</span></td>
+                <td><span class="badge badge-important">{{ ga.not_entry_count }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+{% endblock %}

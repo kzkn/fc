@@ -15,6 +15,18 @@ TYPE_EVENT = 3
 
 
 def find(type):
+    return find_future_or_past(type,
+                               "when_ >= date('now', 'localtime')",
+                               "when_")
+
+
+def find_dones(type):
+    return find_future_or_past(type,
+                               "when_ < date('now', 'localtime')",
+                               "when_ DESC")
+
+
+def find_future_or_past(type, condition, order):
     cur = models.db().execute("""
         SELECT Schedule.id,
                Schedule.type,
@@ -23,11 +35,15 @@ def find(type):
                (SELECT COUNT(*)
                   FROM Entry
                  WHERE schedule_id = Schedule.id
-                   AND is_entry) AS entry_count
+                   AND is_entry) AS entry_count,
+               (SELECT COUNT(*)
+                  FROM Entry
+                 WHERE schedule_id = Schedule.id
+                   AND NOT is_entry) AS not_entry_count
           FROM Schedule
          WHERE type = ?
-           AND when_ >= date('now', 'localtime')
-      ORDER BY when_""", (type, ))
+           AND %s
+      ORDER BY %s""" % (condition, order), (type, ))
 
     # Row -> dict for `entries'
     schedules = [dict(r) for r in cur.fetchall()]

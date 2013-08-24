@@ -1,0 +1,47 @@
+{% extends 'admin/layout_schedule_history.html' %}
+{% set active_tab = 'game' %}
+
+{% block tabcontent %}
+          <table class="table table-bordered" style="margin-top: 12px;">
+            <thead>
+              <tr>
+                <th>詳細</th>
+                <th>状況</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <dl>
+                    <dt>試合名</dt>
+                    <dd>{{ schedule.name }}</dd>
+                    <dt>場所</dt>
+                    <dd>{{ schedule.loc }}</dd>
+                    <dt>開催日</dt>
+                    <dd>{{ schedule.when_ | dateformat }}</dd>
+                    <dt>ジャンル</dt>
+                    <dd>{{ schedule.genre }}</dd>
+                    <dt>締め切り</dt>
+                    <dd>{{ schedule.deadline }}</dd>
+                    <dt>試合代</dt>
+                    <dd>{{ schedule.price }}円</dd>
+                    <dt>受付開始</dt>
+                    <dd>{{ schedule.begin_acceptance }}</dd>
+                    <dt>試合開始</dt>
+                    <dd>{{ schedule.begin_game }}</dd>
+                    <dt>備考</dt>
+                    <dd>{{ schedule.note | nl2br | safe }}</dd>
+                  </dl>
+                </td>
+                <td>
+                  <dl>
+                    {% for e in schedule.entries %}
+                    <dt class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.user_name }}</dt>
+                    <dd class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.comment }}</dd>
+                    {% endfor %}
+                  </dl>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+{% endblock %}

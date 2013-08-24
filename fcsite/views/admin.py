@@ -122,6 +122,48 @@ def member():
                            males=males, females=females)
 
 
+@mod.route('/practice_history')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
+def practice_history():
+    ps = [scheds.from_row(s) for s in scheds.find_dones(scheds.TYPE_PRACTICE)]
+    return render_template('admin/practice_history.html', practices=ps)
+
+
+@mod.route('/game_history')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
+def game_history():
+    gs = [scheds.from_row(s) for s in scheds.find_dones(scheds.TYPE_GAME)]
+    return render_template('admin/game_history.html', games=gs)
+
+
+@mod.route('/event_history')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
+def event_history():
+    es = [scheds.from_row(s) for s in scheds.find_dones(scheds.TYPE_EVENT)]
+    return render_template('admin/event_history.html', events=es)
+
+
+@mod.route('/practice/<int:id>')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
+def show_practice(id):
+    s = scheds.from_row(scheds.find_by_id(id))
+    return render_template("admin/show_practice.html", schedule=s)
+
+
+@mod.route('/game/<int:id>')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
+def show_game(id):
+    s = scheds.from_row(scheds.find_by_id(id))
+    return render_template("admin/show_game.html", schedule=s)
+
+
+@mod.route('/event/<int:id>')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
+def show_event(id):
+    s = scheds.from_row(scheds.find_by_id(id))
+    return render_template("admin/show_event.html", schedule=s)
+
+
 def is_yes(name='action'):
     return request.form[name] == u'はい'
 
@@ -409,6 +451,7 @@ def get_navigation_list(user):
     navs = []
     if user.is_schedule_admin():
         navs.append(('admin.practice', 'practice', 'icon-calendar', u'活動予定'))
+        navs.append(('admin.practice_history', 'practice_history', 'icon-time', u'過去の活動実績'))
     if user.is_member_admin():
         navs.append(('admin.member', 'member', 'icon-user', u'メンバー'))
     if user.is_notice_admin():

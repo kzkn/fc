@@ -1,0 +1,41 @@
+{% extends 'admin/layout_schedule_history.html' %}
+{% set active_tab = 'practice' %}
+
+{% block tabcontent %}
+          <table class="table table-bordered" style="margin-top: 12px;">
+            <thead>
+              <tr>
+                <th>詳細</th>
+                <th>状況</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <dl>
+                    <dt>日程</dt>
+                    <dd>{{ schedule.when_ | datetimeformat }}-{{ schedule.end }}</dd>
+                    <dt>場所</dt>
+                    <dd>{{ schedule.loc }}</dd>
+                    <dt>コート</dt>
+                    <dd>{{ schedule.court }}</dd>
+                    <dt>予約番号</dt>
+                    <dd>{{ schedule.no }}</dd>
+                    <dt>コート代</dt>
+                    <dd>{{ schedule.price }}円</dd>
+                    <dt>備考</dt>
+                    <dd>{{ schedule.note | nl2br | safe }}</dd>
+                  </dl>
+                </td>
+                <td>
+                  <dl>
+                    {% for e in schedule.entries %}
+                    <dt class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.user_name }}</dt>
+                    <dd class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.comment }}</dd>
+                    {% endfor %}
+                  </dl>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+{% endblock %}

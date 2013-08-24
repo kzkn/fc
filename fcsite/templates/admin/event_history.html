@@ -1,0 +1,25 @@
+{% extends 'admin/layout_schedule_history.html' %}
+{% set active_tab = 'event' %}
+
+{% block tabcontent %}
+          <table class="table table-striped" style="margin-top: 12px;">
+            <thead>
+              <tr>
+                <th></th>
+                <th>参加</th>
+                <th>不参加</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in events %}
+              <tr>
+                <td>
+                  <a href="{{ url_for('admin.show_event', id=e.id) }}">{{ e.when_ | dateformat }} {{ e.name }} @{{ e.loc }}</a>
+                </td>
+                <td><span class="badge badge-success">{{ e.entry_count }}</span></td>
+                <td><span class="badge badge-important">{{ e.not_entry_count }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'admin/layout.html' %}
+{% set active_admin_page = 'practice_history' %}
+{% set active_tab = active_tab | default('') %}
+
+{% block admincontent %}
+          <h2>活動実績</h2>
+          <ul class="nav nav-tabs">
+            {% set admin_schedules_navs = [
+                   ('admin.practice_history', 'practice', '練習'),
+                   ('admin.game_history', 'game', '試合'),
+                   ('admin.event_history', 'event', 'イベント')
+               ]
+            %}
+            {% for view, id, caption in admin_schedules_navs %}
+            <li{% if active_tab == id %} class="active"{% endif %}>
+              <a href="{{ url_for(view) }}"> {{ caption }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% block tabcontent %}
+          {% endblock %}
+{% endblock %}
