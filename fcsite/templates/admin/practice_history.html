@@ -2,6 +2,8 @@
 {% set active_tab = 'practice' %}
 
 {% block tabcontent %}
+          {% for y in years %}
+          <h3>{{ y }} 年</h3>
           <table class="table table-striped" style="margin-top: 12px;">
             <thead>
               <tr>
@@ -11,7 +13,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for p in practices %}
+              {% for p in practices[y] %}
               <tr>
                 <td>
                   <a href="{{ url_for('admin.show_practice', id=p.id) }}">{{ p.when_ | datetimeformat }}-{{ p.end }} @{{ p.loc }}</a>
@@ -22,4 +24,5 @@
               {% endfor %}
             </tbody>
           </table>
+          {% endfor %}
 {% endblock %}

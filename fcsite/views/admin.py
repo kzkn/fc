@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from itertools import groupby
 try:
     from collections import OrderedDict
 except ImportError:
@@ -126,21 +127,33 @@ def member():
 @requires_permission(users.PERM_ADMIN_SCHEDULE)
 def practice_history():
     ps = [scheds.from_row(s) for s in scheds.find_dones(scheds.TYPE_PRACTICE)]
-    return render_template('admin/practice_history.html', practices=ps)
+    ys, ps = schedules_group_by_year(ps)
+    return render_template('admin/practice_history.html', years=ys, practices=ps)
 
 
 @mod.route('/game_history')
 @requires_permission(users.PERM_ADMIN_SCHEDULE)
 def game_history():
     gs = [scheds.from_row(s) for s in scheds.find_dones(scheds.TYPE_GAME)]
-    return render_template('admin/game_history.html', games=gs)
+    ys, gs = schedules_group_by_year(gs)
+    return render_template('admin/game_history.html', years=ys, games=gs)
 
 
 @mod.route('/event_history')
 @requires_permission(users.PERM_ADMIN_SCHEDULE)
 def event_history():
     es = [scheds.from_row(s) for s in scheds.find_dones(scheds.TYPE_EVENT)]
-    return render_template('admin/event_history.html', events=es)
+    ys, es = schedules_group_by_year(es)
+    return render_template('admin/event_history.html', years=ys, events=es)
+
+
+def schedules_group_by_year(schedules):
+    years = []
+    scheds_by_years = {}
+    for y, ss in groupby(schedules, lambda s: s['when_'].year):
+        years.append(y)
+        scheds_by_years[y] = list(ss)
+    return reversed(sorted(years)), scheds_by_years
 
 
 @mod.route('/practice/<int:id>')
