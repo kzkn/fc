@@ -72,18 +72,18 @@
               </li>
               {% endif %}
               {% endfor %}
+              {% if g.user and count_joins_has_not_handled() > 0 %}
+              <li{% if active_page == 'join_req' %} class="active"{% endif %}>
+                <a href="{{ url_for('general.show_join_reqs') }}">
+                  <i class="icon-heart icon-white"></i> 応募者 <span class="label label-info">new!</span>
+                </a>
+              </li>
+              {% endif %}
               <li class="dropdown{% if active_page == 'other' %} active{% endif %}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   その他 <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                  {% if g.user %}
-                  <li>
-                    <a href="{{ url_for('general.show_join_reqs') }}">
-                      {% if count_joins_has_not_handled() > 0 %}<span class="label label-info">new!</span> {% endif %}応募者リスト
-                    </a>
-                  </li>
-                  {% endif %}
                   {% if g.user %}
                   <li>
                     <a href="{{ url_for('general.rule') }}">Fight Club メンバー規約</a>
