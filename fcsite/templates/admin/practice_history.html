@@ -18,8 +18,8 @@
                 <td>
                   <a href="{{ url_for('admin.show_practice', id=p.id) }}">{{ p.when_ | datetimeformat }}-{{ p.end }} @{{ p.loc }}</a>
                 </td>
-                <td><span class="badge badge-success">{{ p.entry_count }}</span></td>
-                <td><span class="badge badge-important">{{ p.not_entry_count }}</span></td>
+                <td>{{ p.entry_count }}</td>
+                <td>{{ p.not_entry_count }}</td>
               </tr>
               {% endfor %}
             </tbody>

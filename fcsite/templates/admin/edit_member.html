@@ -5,34 +5,54 @@
 {% block admincontent %}
           <h2>メンバー管理</h2>
           <form action="{% if user %}{{ url_for('admin.edit_member', id=user.id) }}{% else %}{{ url_for('admin.new_member') }}{% endif %}" method="post" class="well">
-            <label>名前</label>
-            {{ error_message('name', errors) }}
-            <input type="text" name="name" {% if user %}value="{{ user.name }}" readonly{% else %}required{% endif %}></input>
-            <label>パスワード</label>
-            {{ error_message('password', errors) }}
-            <input type="text" name="password"{% if user %} value="{{ user.password }}"{% endif %}></input>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>名前</label>
+                {{ error_message('name', errors) }}
+                <input class="form-control" type="text" name="name" {% if user %}value="{{ user.name }}" readonly{% else %}required{% endif %}></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>パスワード</label>
+                {{ error_message('password', errors) }}
+                <input class="form-control" type="text" name="password"{% if user %} value="{{ user.password }}"{% endif %}></input>
+              </div>
+            </div>
             <span class="help-block"><strong>Note: </strong>何も設定せずに登録すると、パスワードを自動生成しますよ</span>
-            <label>性別</label>
-            {{ error_message('sex', errors) }}
-            <select name="sex">
-              <option{% if user and user.is_male() %} selected{% endif %}>男性</option>
-              <option{% if user and user.is_female() %} selected{% endif %}>女性</option>
-            </select>
-            <label>権限</label>
-            {{ error_message('permissions', errors) }}
-            <label class="checkbox">
-              <input type="checkbox" name="permissions" value="schedule"{% if user and user.is_schedule_admin() %} checked{% endif %}>
-              予定
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" name="permissions" value="member"{% if user and user.is_member_admin() %} checked{% endif %}>
-              メンバー
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" name="permissions" value="notice"{% if user and user.is_notice_admin() %} checked{% endif %}>
-              告知
-            </label>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>性別</label>
+                {{ error_message('sex', errors) }}
+                <select class="form-control" name="sex">
+                  <option{% if user and user.is_male() %} selected{% endif %}>男性</option>
+                  <option{% if user and user.is_female() %} selected{% endif %}>女性</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>権限</label>
+              {{ error_message('permissions', errors) }}
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="permissions" value="schedule"{% if user and user.is_schedule_admin() %} checked{% endif %}>
+                  予定
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="permissions" value="member"{% if user and user.is_member_admin() %} checked{% endif %}>
+                  メンバー
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="permissions" value="notice"{% if user and user.is_notice_admin() %} checked{% endif %}>
+                  告知
+                </label>
+              </div>
+            </div>
             <br>
-            <button type="submit" class="btn">登録</button>
+            <button type="submit" class="btn btn-default">登録</button>
           </form>
 {% endblock %}

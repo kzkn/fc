@@ -2,10 +2,8 @@
 {% set active_admin_page = 'member' %}
 
 {% block admincontent %}
-          <h2>メンバー管理</h2>
-          <p style="text-align: center;">
-            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('admin.new_member') }}">新規登録</a>
-          </p>
+          <h2 style="margin-bottom: 19px;">メンバー管理</h2>
+          <a class="btn btn-primary btn-block" href="{{ url_for('admin.new_member') }}">新規登録</a>
           <h3>男性</h3>
           <table class="table table-striped" style="margin-top: 12px;">
             <tbody>
@@ -15,7 +13,7 @@
                   <a href="{{ url_for('admin.edit_member', id=u.id) }}">{{ u.name }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u.id) }}"><i class="icon-white icon-trash"></i></a>
+                  <a class="btn btn-default btn-danger" href="{{ url_for('admin.delete_member', id=u.id) }}"><i class="glyphicon glyphicon-white glyphicon-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}
@@ -30,7 +28,7 @@
                   <a href="{{ url_for('admin.edit_member', id=u.id) }}">{{ u.name }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_member', id=u.id) }}"><i class="icon-white icon-trash"></i></a>
+                  <a class="btn btn-default btn-danger" href="{{ url_for('admin.delete_member', id=u.id) }}"><i class="glyphicon glyphicon-white glyphicon-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}

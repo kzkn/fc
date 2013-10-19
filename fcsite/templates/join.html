@@ -11,91 +11,121 @@
 {% endmacro %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h2>応募</h2>
         <p class="lead">
           応募はこちらから！
         </p>
       </div>
       <div class="row">
-        <div class="span3">
-          <div class="well" style="padding: 8px;">
-            <ul class="nav nav-list">
-              <li><a href="#desc">募集要項</a></li>
-              <li><a href="#form">応募フォーム</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="span9">
+        <div class="col-md-12">
           {{ anchored_header('募集要項', 'desc') }}
           <p>
             こんな人がいいなぁ。
           </p>
           {{ anchored_header('応募フォーム', 'form') }}
           <form action="{{ url_for('general.join') }}" method="post" class="well">
-            <label>名前 or ニックネーム</label>
-            {{ error_message('name', errors) }}
-            <input type="text" name="name" required></input>
-            <label>住まい</label>
-            {{ error_message('home', errors) }}
-            <input type="text" name="home" required></input>
-            <span class="help-block"><strong>例: </strong>東区、城南区、大野城市 ... etc</span>
-            <label>メールアドレス</label>
-            {{ error_message('email', errors) }}
-            <input type="text" name="email" required></input>
-            <span class="help-block">間違えると折り返しの連絡ができません。</span>
-            <label>性別</label>
-            {{ error_message('sex', errors) }}
-            <select name="sex">
-              <option selected>男性</option>
-              <option>女性</option>
-            </select>
-            <label>年齢</label>
-            {{ error_message('age', errors) }}
-            <select name="age">
-              <option selected>18-20</option>
-              <option>21-23</option>
-              <option>24-26</option>
-              <option>27-29</option>
-              <option>30-32</option>
-              <option>33-35</option>
-              <option>36-38</option>
-              <option>39-41</option>
-              <option>42-</option>
-            </select>
-            <label>車の有無</label>
-            {{ error_message('car', errors) }}
-            <select name="car">
-              <option selected>あり</option>
-              <option>なし</option>
-            </select>
-            <label>ラケットの有無</label>
-            {{ error_message('has_racket', errors) }}
-            <select name="has_racket">
-              <option selected>あり</option>
-              <option>なし</option>
-            </select>
-            <label>休日</label>
-            {{ error_message('holiday', errors) }}
-            <select name="holiday">
-              <option selected>土日</option>
-              <option>日</option>
-              <option>不定期</option>
-            </select>
-            <label>テニス歴</label>
-            {{ error_message('experience', errors) }}
-            <select name="experience">
-              <option selected>初心者</option>
-              <option>初級</option>
-              <option>中級</option>
-              <option>上級</option>
-              <option>神、いわゆるゴッド</option>
-            </select>
-            <label>一言</label>
-            {{ error_message('comment', errors) }}
-            <textarea name="comment" style="width: 80%; height: 100px;" required></textarea>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>名前 or ニックネーム</label>
+                {{ error_message('name', errors) }}
+                <input class="form-control" type="text" name="name" required></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>住まい</label>
+                {{ error_message('home', errors) }}
+                <input class="form-control" type="text" name="home" required></input>
+                <span class="help-block"><strong>例: </strong>東区、城南区、大野城市 ... etc</span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>メールアドレス</label>
+                {{ error_message('email', errors) }}
+                <input class="form-control" type="text" name="email" required></input>
+                <span class="help-block">間違えると折り返しの連絡ができません。</span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>性別</label>
+                {{ error_message('sex', errors) }}
+                <select class="form-control" name="sex">
+                  <option selected>男性</option>
+                  <option>女性</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>年齢</label>
+                {{ error_message('age', errors) }}
+                <select class="form-control" name="age">
+                  <option selected>18-20</option>
+                  <option>21-23</option>
+                  <option>24-26</option>
+                  <option>27-29</option>
+                  <option>30-32</option>
+                  <option>33-35</option>
+                  <option>36-38</option>
+                  <option>39-41</option>
+                  <option>42-</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>車の有無</label>
+                {{ error_message('car', errors) }}
+                <select class="form-control" name="car">
+                  <option selected>あり</option>
+                  <option>なし</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>ラケットの有無</label>
+                {{ error_message('has_racket', errors) }}
+                <select class="form-control" name="has_racket">
+                  <option selected>あり</option>
+                  <option>なし</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>休日</label>
+                {{ error_message('holiday', errors) }}
+                <select class="form-control" name="holiday">
+                  <option selected>土日</option>
+                  <option>日</option>
+                  <option>不定期</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>テニス歴</label>
+                {{ error_message('experience', errors) }}
+                <select class="form-control" name="experience">
+                  <option selected>初心者</option>
+                  <option>初級</option>
+                  <option>中級</option>
+                  <option>上級</option>
+                  <option>神、いわゆるゴッド</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>一言</label>
+              {{ error_message('comment', errors) }}
+              <textarea class="form-control" name="comment" style="width: 80%; height: 100px;" required></textarea>
+            </div>
             <br>
-            <button type="submit" class="btn">送信</button>
+            <button type="submit" class="btn btn-default">送信</button>
           </form>
         </div>
       </div>

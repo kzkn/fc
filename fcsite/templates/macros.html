@@ -12,25 +12,29 @@
 {% endmacro %}
 
 {% macro report_sidebar(recent_reports, user, current_report=None) %}
-        <div class="span4">
+        <div class="col-md-4">
           {% if user %}
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">活動記録の管理</li>
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">活動記録の管理</h3>
+            </div>
+            <div class="list-group">
               {% if current_report and current_report.can_edit_by(user) %}
-              <li><a href="{{ url_for('general.edit_report', id=current_report.id) }}"><i class="icon-pencil"></i> 編集</a></li>
+              <a class="list-group-item" href="{{ url_for('general.edit_report', id=current_report.id) }}"><i class="glyphicon glyphicon-pencil"></i> 編集</a>
               {% endif %}
-              <li><a href="{{ url_for('general.edit_report') }}"><i class="icon-plus"></i> 新規追加</a></li>
-            </ul>
+              <a class="list-group-item" href="{{ url_for('general.edit_report') }}"><i class="glyphicon glyphicon-plus"></i> 新規追加</a>
+            </div>
           </div>
           {% endif %}
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">最近の投稿</li>
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">最近の投稿</h3>
+            </div>
+            <div class="list-group">
               {% for report in recent_reports %}
-              <li><a href="{{ url_for('general.report', id=report.id) }}">{{ report.title }}</a></li>
+              <a class="list-group-item" href="{{ url_for('general.report', id=report.id) }}">{{ report.title }}</a>
               {% endfor %}
-            </ul>
+            </div>
           </div>
         </div>
 {% endmacro %}

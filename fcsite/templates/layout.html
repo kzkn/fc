@@ -1,6 +1,15 @@
-{% set active_page = active_page | default('') %}
+{% set active_page = active_page | default('') -%}
+{#-
+  bootstrap.min.css, bootstrap.min.js, style.css, script.js を更新
+  したら、それぞれに対応する以下のバージョン番号も変更すること。値は
+  なんでもいい。
+-#}
+{% set bootstrap_css_version = '7819743891345' -%}
+{% set bootstrap_js_version = '1347857179001' -%}
+{% set style_css_version = '5121341469021' -%}
+{% set script_js_version = '3413417589310' -%}
 
-{% macro show_notice_messages(category, class, direct_msgs) %}
+{%- macro show_notice_messages(category, class, direct_msgs) %}
   {% with msgs = get_flashed_messages(category_filter=[category]) %}
     {% if direct_msgs or msgs %}
       {% for msg in (direct_msgs + msgs) %}
@@ -11,7 +20,7 @@
       {% endfor %}
     {% endif %}
   {% endwith %}
-{% endmacro %}
+{% endmacro -%}
 
 <!doctype html>
 <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
@@ -24,12 +33,12 @@
     <title>Fight Club</title>
     {% block meta %}
     {% endblock %}
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') + '?ver=' + bootstrap_css_version }}" media="screen">
     <style>
       body {
-          padding-top: 60px;
+          padding-top: 70px;
           padding-bottom: 40px;
       }
 
@@ -37,89 +46,89 @@
           font-size: 15px;
       }
     </style>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap-responsive.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') + '?ver=' + style_css_version }}">
     {% block css %}
     {% endblock %}
 
     <script src="{{ url_for('static', filename='js/libs/modernizr-2.5.3-respond-1.1.0.min.js') }}"></script>
   </head>
   <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="{{ url_for('general.index') }}">Fight Club{% if g.user %}<span class="username"> - {{ g.user.name }}</span>{% endif %}</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              {% set navigations = [
-                     ('general.index', 'index', 'icon-home', 'ホーム', False),
-                     ('schedule.schedule', 'schedule', 'icon-calendar', '活動予定', True),
-                     ('member.member', 'member', 'icon-user', 'メンバー', False),
-                     ('bbs.index', 'bbs', 'icon-list-alt', '掲示板', True)
-                 ]
-              %}
-              {% for view, id, icon, caption, require_login in navigations %}
-              {% if not require_login or (require_login and g.user) %}
-              <li{% if active_page == id %} class="active"{% endif %}>
-                <a href="{{ url_for(view) }}">
-                  <i class="{{ icon }} icon-white"></i> {{ caption }}
-                </a>
-              </li>
-              {% endif %}
-              {% endfor %}
-              {% if g.user and count_joins_has_not_handled() > 0 %}
-              <li{% if active_page == 'join_req' %} class="active"{% endif %}>
-                <a href="{{ url_for('general.show_join_reqs') }}">
-                  <i class="icon-heart icon-white"></i> 応募者 <span class="label label-info">new!</span>
-                </a>
-              </li>
-              {% endif %}
-              <li class="dropdown{% if active_page == 'other' %} active{% endif %}">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  その他 <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  {% if g.user %}
-                  <li>
-                    <a href="{{ url_for('general.rule') }}">Fight Club メンバー規約</a>
-                  </li>
-                  {% endif %}
-                  {% if g.user %}
-                  <li>
-                    <a href="{{ url_for('general.tax_list') }}">部費</a>
-                  </li>
-                  {% endif %}
-                </ul>
-              </li>
-            </ul>
-            <ul class="nav pull-right">
-              {% if g.user %}
-              <li{% if active_page == 'mysettings' %} class="active"{% endif %}>
-                <a href="{{ url_for('member.profile') }}">個人設定</a>
-              </li>
-              {% endif %}
-              {% if is_admin() %}
-              <li{% if active_page == 'admin' %} class="active"{% endif %}>
-                <a href="{{ url_for('admin.index') }}">管理</a>
-              </li>
-              {% endif %}
-              <li>
+          </button>
+          <a class="navbar-brand" href="{{ url_for('general.index') }}">Fight Club{% if g.user %}<span class="username"> - {{ g.user.name }}</span>{% endif %}</a>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            {% set navigations = [
+                   ('general.index', 'index', 'glyphicon-home', 'ホーム', False),
+                   ('schedule.schedule', 'schedule', 'glyphicon-calendar', '活動予定', True),
+                   ('member.member', 'member', 'glyphicon-user', 'メンバー', False),
+                   ('bbs.index', 'bbs', 'glyphicon-list-alt', '掲示板', True)
+               ]
+            %}
+            {% for view, id, icon, caption, require_login in navigations %}
+            {% if not require_login or (require_login and g.user) %}
+            <li{% if active_page == id %} class="active"{% endif %}>
+              <a href="{{ url_for(view) }}">
+                <i class="glyphicon {{ icon }} glyphicon-white"></i> {{ caption }}
+              </a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if g.user and count_joins_has_not_handled() > 0 %}
+            <li{% if active_page == 'join_req' %} class="active"{% endif %}>
+              <a href="{{ url_for('general.show_join_reqs') }}">
+                <i class="glyphicon glyphicon-heart glyphicon-white"></i> 応募者 <span class="label label-info">new!</span>
+              </a>
+            </li>
+            {% endif %}
+            <li class="dropdown{% if active_page == 'other' %} active{% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                その他 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
                 {% if g.user %}
-                <a href="{{ url_for('general.logout') }}">ログアウト</a>
-                {% else %}
-                <a href="{{ url_for('general.login') }}">ログイン</a>
+                <li>
+                  <a href="{{ url_for('general.rule') }}">Fight Club メンバー規約</a>
+                </li>
                 {% endif %}
-              </li>
-            </ul>
-          </div><!--/.nav-collapse -->
+                {% if g.user %}
+                <li>
+                  <a href="{{ url_for('general.tax_list') }}">部費</a>
+                </li>
+                {% endif %}
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if g.user %}
+            <li{% if active_page == 'mysettings' %} class="active"{% endif %}>
+              <a href="{{ url_for('member.profile') }}">個人設定</a>
+            </li>
+            {% endif %}
+            {% if is_admin() %}
+            <li{% if active_page == 'admin' %} class="active"{% endif %}>
+              <a href="{{ url_for('admin.index') }}">管理</a>
+            </li>
+            {% endif %}
+            <li>
+              {% if g.user %}
+              <a href="{{ url_for('general.logout') }}">ログアウト</a>
+              {% else %}
+              <a href="{{ url_for('general.login') }}">ログイン</a>
+              {% endif %}
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
+    </nav>
 
     <div class="container">
       {{ show_notice_messages('error', 'error', error_msgs if error_msgs is defined else []) }}
@@ -140,9 +149,8 @@
     <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/libs/jquery-1.9.1.min.js') }}"><\/script>')</script>
     <script src="{{ url_for('static', filename='js/libs/jquery.ah-placeholder.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') + '?ver=' + bootstrap_js_version }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') + '?ver=' + script_js_version }}"></script>
     {% block script %}
     {% endblock %}
   </body>

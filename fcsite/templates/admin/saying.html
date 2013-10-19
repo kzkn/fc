@@ -17,7 +17,7 @@
                 <td>{{ s.who }}</td>
                 <td>{{ s.body }}</td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_saying', id=s.id) }}"><i class="icon-white icon-trash"></i></a>
+                  <a class="btn btn-default btn-danger" href="{{ url_for('admin.delete_saying', id=s.id) }}"><i class="glyphicon glyphicon-white glyphicon-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}
@@ -27,22 +27,33 @@
 
 {% block admincontent %}
           <h2>名言管理 <small>画面下に出るアレです</small></h2>
-          <div class="accordion" id="post">
-            <div class="accordion-group">
-              <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">新規登録</a>
+          <div class="panel-group" id="post" style="margin-top: 20px; margin-bottom: 20px;">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">新規登録</a>
+                </h4>
               </div>
-              <div id="post-form" class="accordion-body collapse">
-                <div class="accordion-inner">
+              <div class="panel-collapse collapse" id="post-form">
+                <div class="panel-body">
                   <form action="{{ url_for('admin.new_saying') }}" method="post">
-                    {{ error_message('who', errors) }}
-                    <input class="input-small" type="text" name="who" placeholder="発言者" required></input><br>
-                    <label class="checkbox">
-                      <input type="checkbox" name="private" value="private">非公開</input>
-                    </label>
-                    {{ error_message('body', errors) }}
-                    <input class="input-xlarge" type="text" name="body" placeholder="内容" required></input><br>
-                    <input class="btn" type="submit" name="submit" value="登録"></input>
+                    <div class="form-group row">
+                      <div class="col-lg-4">
+                        {{ error_message('who', errors) }}
+                        <input class="form-control" type="text" name="who" placeholder="発言者" required></input>
+                      </div>
+                    </div>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="private" value="private">非公開</input>
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      {{ error_message('body', errors) }}
+                      <input class="form-control" type="text" name="body" placeholder="内容" required></input>
+                    </div>
+                    <br>
+                    <input class="btn btn-default" type="submit" name="submit" value="登録"></input>
                   </form>
                 </div>
               </div>

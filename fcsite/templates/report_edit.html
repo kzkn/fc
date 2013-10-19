@@ -3,7 +3,7 @@
 {% set active_page = 'index' %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>活動記録 - 編集</h1>
         <p class="lead">
           書いちゃってください。
@@ -12,25 +12,33 @@
 
       {% set report_id = report.id if report else None %}
       <form action="{{ url_for('general.edit_report', id=report_id) }}" method="post" class="well">
-        <label>タイトル</label>
-        {{ error_message('title', errors) }}
-        <input type="text" name="title" {% if report %}value="{{ report.title }}"{% endif %} required></input>
-        <label>画像 URL</label>
-        <span class="help-block">一覧に表示される画像です。Picasa の<a href="http://support.google.com/picasa/bin/answer.py?hl=ja&answer=66969">この写真へのリンク (画像)</a>を使うといいよ</span>
-        {{ error_message('feature_image_url', errors) }}
-        <input type="text" name="feature_image_url" {% if report %}value="{{ report.feature_image_url }}"{% endif %}></input>
-        <label>概要</label>
-        <span class="help-block">一覧に表示される文章です。<a href="http://blog.2310.net/archives/6">markdown 記法</a> なるものが使えまっせ</span>
-        {{ error_message('description', errors) }}
-        <textarea name="description" style="width: 80%; height: 100px;" required>{% if report %}{{ report.description | safe }}{% endif %}</textarea>
-        <label>本文</label>
-        <span class="help-block">一覧には表示されない文章です。<a href="http://blog.2310.net/archives/6">markdown 記法</a> なるものが使えまっせ</span>
-        {{ error_message('body', errors) }}
-        <textarea name="body" style="width: 80%; height: 100px;" required>{% if report %}{{ report.body | safe }}{% endif %}</textarea>
+        <div class="form-group">
+          <label>タイトル</label>
+          {{ error_message('title', errors) }}
+          <input class="form-control" type="text" name="title" {% if report %}value="{{ report.title }}"{% endif %} required></input>
+        </div>
+        <div class="form-group">
+          <label>画像 URL</label>
+          <span class="help-block">一覧に表示される画像です。Picasa の<a href="http://support.google.com/picasa/bin/answer.py?hl=ja&answer=66969">この写真へのリンク (画像)</a>を使うといいよ</span>
+          {{ error_message('feature_image_url', errors) }}
+          <input class="form-control" type="text" name="feature_image_url" {% if report %}value="{{ report.feature_image_url }}"{% endif %}></input>
+        </div>
+        <div class="form-group">
+          <label>概要</label>
+          <span class="help-block">一覧に表示される文章です。<a href="http://blog.2310.net/archives/6">markdown 記法</a> なるものが使えまっせ</span>
+          {{ error_message('description', errors) }}
+          <textarea class="form-control" name="description" rows="3" required>{% if report %}{{ report.description | safe }}{% endif %}</textarea>
+        </div>
+        <div class="form-group">
+          <label>本文</label>
+          <span class="help-block"><a href="http://blog.2310.net/archives/6">markdown 記法</a> なるものが使えまっせ</span>
+          {{ error_message('body', errors) }}
+          <textarea class="form-control" name="body" rows="5" required>{% if report %}{{ report.body | safe }}{% endif %}</textarea>
+        </div>
         <br>
-        <input type="submit" name="action" class="btn" value="投稿"></input>
+        <input type="submit" name="action" class="btn btn-default" value="投稿"></input>
         {% if report %}
-        <input type="submit" name="action" class="btn btn-danger" value="削除"></input>
+        <input type="submit" name="action" class="btn btn-default btn-danger" value="削除"></input>
         {% endif %}
       </form>
 {% endblock %}

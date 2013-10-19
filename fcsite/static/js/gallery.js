@@ -11,28 +11,27 @@ var appendThumbnailFor = function(thumbnails, makers) {
         /*
          * Build DOM:
          *
-         * ul class="thumbnails"
-         *   li class="span2"
-         *     div class="thumbnail"
-         *       a href="..."
-         *         img src="..." title="..." alt="..."
-         *       p class="desc"
+         * div class="row"
+         *   div class="col-sm-6 col-md-3"
+         *     a href="..." class="thumbnail"
+         *      img src="..." title="..." alt="..."
+         *      div class="caption"
+         *        p
          */
         thumbnails
-          .append($('<li/>').addClass('span2')
-            .append($('<div/>').addClass('thumbnail')
-              .append($('<a/>').attr('href', href)
-                .append($('<img/>').attr('src', thumbnailUrl)
-                                   .attr('title', title)
-                                   .attr('alt', title)))
-              .append($('<p/>').addClass('desc')
-                               .text(title))));
+          .append($('<div/>').addClass('col-sm-6 col-md-3')
+            .append($('<a/>').addClass('thumbnail').attr('href', href)
+              .append($('<img/>').attr('src', thumbnailUrl)
+                                 .attr('title', title)
+                                 .attr('alt', title))
+              .append($('<div/>').addClass('caption')
+                .append($('<p/>').text(title)))));
     };
 }
 
 var onGetAlbum = function(response) {
     if (response.feed && response.feed.entry) {
-        var thumbnails = $('<ul/>').attr('class', 'thumbnails')
+        var thumbnails = $('<div/>').attr('class', 'row')
         $('#gallery').append(thumbnails);
         $.each(response.feed.entry, appendThumbnailFor(thumbnails, {
             urlMaker: function(item) { return ALBUM_BASE_URL.replace('1732847819758319743', item.gphoto$id.$t); },
@@ -43,7 +42,7 @@ var onGetAlbum = function(response) {
 
 var onGetPhoto = function(response) {
     if (response.feed && response.feed.entry) {
-        var thumbnails = $('<ul/>').attr('class', 'thumbnails')
+        var thumbnails = $('<div/>').attr('class', 'row')
         $('#gallery')
           .append($('<h2/>').text(response.feed.title.$t + ' ')
             .append($('<small/>').text(response.feed.subtitle.$t)))

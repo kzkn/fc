@@ -2,17 +2,25 @@
 {% set active_page = 'member' %}
 
 {% macro member_list() %}
-<div class="well" style="padding: 8px;">
-  <ul class="nav nav-list">
-    <li class="nav-header">男性</li>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">男性</h3>
+  </div>
+  <div class="list-group">
     {% for u in males %}
-    <li class="{{ 'active' if selected_user and u.id == selected_user.id else '' }}"><a href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a></li>
+    <a class="list-group-item{{ ' active' if selected_user and u.id == selected_user.id else '' }}" href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a>
     {% endfor %}
-    <li class="nav-header">女性</li>
+  </div>
+</div>
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title">女性</h3>
+  </div>
+  <div class="list-group">
     {% for u in females %}
-    <li class="{{ 'active' if selected_user and u.id == selected_user.id else '' }}"><a href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a></li>
+    <a class="list-group-item{{ ' active' if selected_user and u.id == selected_user.id else '' }}" href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a>
     {% endfor %}
-  </ul>
+  </div>
 </div>
 {% endmacro %}
 
@@ -25,7 +33,7 @@
 </style>
 {% endblock %}
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>メンバー</h1>
         <p class="lead">
           これがファイトクラブの面々です・・・！！
@@ -33,10 +41,10 @@
       </div>
 
       <div class="row">
-        <div class="span3 hidden-phone">
+        <div class="col-md-3 hidden-xs">
           {{ member_list() }}
         </div>
-        <div class="span9">
+        <div class="col-md-9">
           {% if selected_user %}
           <h2>{{ selected_user.name }}</h2>
           <dl id="profile" class="dl">
@@ -57,7 +65,7 @@
           </dl>
           {% endif %}
         </div>
-        <div class="span3 visible-phone">
+        <div class="col-md-3 visible-xs">
           {{ member_list() }}
         </div>
       </div>

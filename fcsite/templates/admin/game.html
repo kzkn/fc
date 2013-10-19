@@ -2,9 +2,7 @@
 {% set active_tab = 'game' %}
 
 {% block tabcontent %}
-          <p style="text-align: center;">
-            <a class="btn btn-primary" style="width: 80%; height: 22px; font-size: 13px;" href="{{ url_for('admin.new_game') }}">新規登録</a>
-          </p>
+          <a class="btn btn-primary btn-block" href="{{ url_for('admin.new_game') }}">新規登録</a>
           <table class="table table-striped" style="margin-top: 12px;">
             <tbody>
               {% for ga in games %}
@@ -13,7 +11,7 @@
                   <a href="{{ url_for('admin.edit_game', id=ga.id) }}">{{ ga.name }} @{{ ga.loc }}</a>
                 </td>
                 <td>
-                  <a class="btn btn-danger" href="{{ url_for('admin.delete_game', id=ga.id) }}"><i class="icon-white icon-trash"></i></a>
+                  <a class="btn btn-default btn-danger" href="{{ url_for('admin.delete_game', id=ga.id) }}"><i class="glyphicon glyphicon-white glyphicon-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}

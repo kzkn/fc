@@ -3,24 +3,28 @@
 {% set active_page = 'bbs' %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>掲示板</h1>
         <p class="lead">
           「ハッキング」から「今晩のおかず」まで手広くカバー。
         </p>
       </div>
 
-      <div class="accordion" id="post">
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">書き込む</a>
+      <div class="panel-group" id="post">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">書き込む</a>
+            </h4>
           </div>
-          <div id="post-form" class="accordion-body collapse">
-            <div class="accordion-inner">
+          <div id="post-form" class="panel-collapse collapse">
+            <div class="panel-body">
               <form action="{{ url_for('bbs.post') }}" method="post">
-                <textarea name="body" style="width: 100%; height: 100px;"></textarea><br>
-                {{ you_can_use_tags() }}
-                <input class="btn" type="submit" name="submit" value="投稿"></input>
+                <div class="form-group">
+                  <textarea class="form-control" name="body" rows="3"></textarea><br>
+                  {{ you_can_use_tags() }}
+                </div>
+                <input class="btn btn-default" type="submit" name="submit" value="投稿"></input>
               </form>
             </div>
           </div>
@@ -30,7 +34,7 @@
       {% for post in posts %}
       <hr>
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
           <p>
             <strong>{{ post.user_name }}</strong>
             <small>{{ post.when_ | datetimeformat }}</small>
@@ -41,8 +45,8 @@
         </div>
       </div>
       {% endfor %}
-      <div class="pagination pagination-centered">
-        <ul>
+      <div style="text-align: center;">
+        <ul class="pagination">
           <li {% if page == 1 %}class="disabled"{% endif %}>
             <a href="{{ '#' if page == 1 else url_for('bbs.index', page=page-1) }}">&laquo;</a>
           </li>

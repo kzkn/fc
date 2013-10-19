@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>活動記録</h1>
         <p class="lead">
           こんなことやってます！
@@ -21,7 +21,7 @@
       </div>
 
       <div class="row">
-        <div class="span8">
+        <div class="col-md-8">
           <h2>{{ report.title }}</h2>
           <div class="post-meta">{{ report.when | datetimeformat }} by {{ report.author_name }}</div>
           <p>
@@ -34,8 +34,8 @@
         {{ report_sidebar(recent_reports, g.user, report) }}
       </div>
 
-      <div class="pagination pagination-centered">
-        <ul>
+      <div style="text-align: center;">
+        <ul class="pagination">
           <li {% if not report.newer_id %}class="disabled"{% endif %}>
             <a href="{{ '#' if not report.newer_id else url_for('general.report', id=report.newer_id) }}">&laquo; 新しい投稿へ</a>
           </li>

@@ -3,7 +3,7 @@
 {% set active_page = 'other' %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>Fight Club メンバー規約</h1>
         <p class="lead">
           Fight Club メンバーが死んでも守らなければならない鉄の掟。
@@ -11,7 +11,7 @@
       </div>
 
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
           <table class="table table-striped">
             {% set i = 1 %}
             {% for rule in rules %}
@@ -19,7 +19,7 @@
               <td>{{ i }}</td>
               <td>{{ rule.body | nl2br | safe }}</td>
               {% if is_god() %}
-              <td><a class="btn btn-danger" onclick="if (confirm('この規約を削除しますか？')) { location.href='{{ url_for("general.delete_rule", id=rule.id) }}'; } else { return false; }" href="#"><i class="icon-white icon-trash"></i></a></td>
+              <td><a class="btn btn-default btn-danger" onclick="if (confirm('この規約を削除しますか？')) { location.href='{{ url_for("general.delete_rule", id=rule.id) }}'; } else { return false; }" href="#"><i class="glyphicon glyphicon-white glyphicon-trash"></i></a></td>
               {% endif %}
             </tr>
             {% set i = i + 1 %}
@@ -29,17 +29,21 @@
       </div>
 
       {% if is_god() %}
-      <div class="accordion" id="post">
-        <div class="accordion-group">
-          <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">規約を追加する</a>
+      <div class="panel-group" id="post">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#post" href="#post-form">規約を追加する</a>
+            </h4>
           </div>
-          <div id="post-form" class="accordion-body collapse">
-            <div class="accordion-inner">
+          <div id="post-form" class="panel-collapse collapse">
+            <div class="panel-body">
               <form action="{{ url_for('general.add_rule') }}" method="post">
-                <textarea name="body" style="width: 90%; height: 100px;"></textarea><br>
-                {{ you_can_use_tags() }}
-                <input class="btn" type="submit" name="submit" value="追加"></input>
+                <div class="form-group">
+                  <textarea class="form-control" name="body" rows="2"></textarea>
+                  {{ you_can_use_tags() }}
+                </div>
+                <input class="btn btn-default" type="submit" name="submit" value="追加"></input>
               </form>
             </div>
           </div>

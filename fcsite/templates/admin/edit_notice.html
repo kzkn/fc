@@ -5,20 +5,34 @@
 {% block admincontent %}
           <h2>告知管理</h2>
           <form action="{% if notice %}{{ url_for('admin.edit_notice', id=notice.id) }}{% else %}{{ url_for('admin.new_notice') }}{% endif %}" method="post" class="well">
-            <label>タイトル</label>
-            {{ error_message('title', errors) }}
-            <input type="text" name="title"{% if notice %} value="{{ notice.title }}"{% endif %} required></input>
-            <label>表示開始</label>
-            {{ error_message('begin_show', errors) }}
-            <input type="date" name="begin_show"{% if notice %} value="{{ notice.begin_show }}"{% endif %} placeholder="年-月-日" required></input>
-            <label>表示終了</label>
-            {{ error_message('end_show', errors) }}
-            <input type="date" name="end_show"{% if notice %} value="{{ notice.end_show }}"{% endif %} placeholder="年-月-日" required></input>
-            <label>内容</label>
-            {{ you_can_use_tags() }}
-            {{ error_message('body', errors) }}
-            <textarea name="body" style="width: 80%; height: 100px;" required>{% if notice %}{{ notice.body | safe }}{% endif %}</textarea>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>タイトル</label>
+                {{ error_message('title', errors) }}
+                <input class="form-control" type="text" name="title"{% if notice %} value="{{ notice.title }}"{% endif %} required></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>表示開始</label>
+                {{ error_message('begin_show', errors) }}
+                <input class="form-control" type="date" name="begin_show"{% if notice %} value="{{ notice.begin_show }}"{% endif %} placeholder="年-月-日" required></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-4">
+                <label>表示終了</label>
+                {{ error_message('end_show', errors) }}
+                <input class="form-control" type="date" name="end_show"{% if notice %} value="{{ notice.end_show }}"{% endif %} placeholder="年-月-日" required></input>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>内容</label>
+              {{ you_can_use_tags() }}
+              {{ error_message('body', errors) }}
+              <textarea class="form-control" name="body" style="width: 80%; height: 100px;" required>{% if notice %}{{ notice.body | safe }}{% endif %}</textarea>
+            </div>
             <br>
-            <button type="submit" class="btn">登録</button>
+            <button type="submit" class="btn btn-default">登録</button>
           </form>
 {% endblock %}

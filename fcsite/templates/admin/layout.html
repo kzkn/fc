@@ -3,7 +3,7 @@
 {% set active_admin_page = active_admin_page | default('') %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>管理</h1>
         <p class="lead">
           がんばろう。
@@ -11,20 +11,23 @@
       </div>
 
       <div class="row">
-        <div class="span3">
-          <div class="well" style="padding: 8px;">
-            <ul class="nav nav-list">
-              <li class="nav-header">管理メニュー</li>
+        <div class="col-md-3">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">管理メニュー</h3>
+            </div>
+            <div class="list-group">
               {% for view, id, icon, caption in admin_navigation_list() %}
               {% set is_active = active_admin_page == id %}
-              <li{% if is_active %} class="active"{% endif %}>
-              <a href="{{ url_for(view) }}"><i class="{{ icon }}{% if is_active %} icon-white{% endif %}"></i> {{ caption }}</a>
-              </li>
+              <a class="list-group-item{% if is_active %} active{% endif %}" href="{{ url_for(view) }}">
+                <i class="glyphicon {{ icon }}{% if is_active %} glyphicon-white{% endif %}"></i>
+                {{ caption }}
+              </a>
               {% endfor %}
-            </ul>
+            </div>
           </div>
         </div>
-        <div class="span9">
+        <div class="col-md-9">
           {% block admincontent %}
           {% endblock %}
         </div>

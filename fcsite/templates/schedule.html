@@ -2,7 +2,7 @@
 {% set active_page = 'schedule' %}
 
 {% macro entries_list(schedule, show_payment_status=False) %}
-<h5><i class="icon-ok-circle"></i> 参加</h5>
+<h5><i class="glyphicon glyphicon-ok-circle"></i> 参加</h5>
 <dl>
   {% for e in schedule.entries %}
     {% if e.is_entry %}
@@ -12,7 +12,7 @@
     {% endif %}
   {% endfor %}
 </dl>
-<h5><i class="icon-remove-circle"></i> 不参加</h5>
+<h5><i class="glyphicon glyphicon-remove-circle"></i> 不参加</h5>
 <dl>
   {% for e in schedule.entries %}
     {% if not e.is_entry %}
@@ -24,7 +24,7 @@
 {% endmacro %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>活動予定</h1>
         <p class="lead">
           近々の活動予定の一覧です。練習からイベントまで、参加しまくりましょう。
@@ -33,23 +33,27 @@
       </div>
 
       <div class="row">
-        <div class="span4">
+        <div class="col-md-4">
           <h2>練習 <small>やるんダ!</small></h2>
-          <div class="accordion" id="practices">
+          <div class="panel-group" id="practices">
             {% for p in practices %}
-            <div class="accordion-group">
-              <div class="accordion-heading">
+            <div class="panel panel-default">
+              <div class="panel-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#practices" href="#practice{{ p.id }}">
                   {{ p.when_ | datetimeformat }}-{{ p.end }} @{{ p.loc }} ({{ p.entry_count }}人) {% if not g.user.is_registered(p) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
-              <div id="practice{{ p.id }}" class="accordion-body collapse">
-                <div class="accordion-inner">
+              <div id="practice{{ p.id }}" class="panel-collapse collapse">
+                <div class="panel-body">
                   {% if g.user %}
                   <form action="{{ url_for('schedule.entry', sid=p.id) }}" method="post" class="well">
-                    <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
-                    <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
-                    <input class="btn" type="submit" name="action" value="参加しない"></input>
+                    <div class="form-group">
+                      <input class="form-control" type="text" name="comment" placeholder="コメント"></input>
+                    </div>
+                    <div class="form-group">
+                      <input class="btn btn-default btn-primary" type="submit" name="action" value="参加する"></input>
+                      <input class="btn btn-default" type="submit" name="action" value="参加しない"></input>
+                    </div>
                   </form>
                   {% endif %}
                   <table class="table table-bordered">
@@ -81,23 +85,27 @@
             {% endfor %}
           </div>
         </div>
-        <div class="span4">
+        <div class="col-md-4">
           <h2>試合 <small>勝つんダ!</small></h2>
-          <div class="accordion" id="games">
+          <div class="panel-group" id="games">
             {% for ga in games %}
-            <div class="accordion-group">
-              <div class="accordion-heading">
+            <div class="panel panel-default">
+              <div class="panel-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#games" href="#game{{ ga.id }}">
                   {{ ga.when_ | dateformat }} {{ ga.name }} @{{ ga.loc }} ({{ ga.entry_count }}人) {% if not g.user.is_registered(ga) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
-              <div id="game{{ ga.id }}" class="accordion-body collapse">
-                <div class="accordion-inner">
+              <div id="game{{ ga.id }}" class="panel-collapse collapse">
+                <div class="panel-body">
                   {% if g.user and (not ga.deadline_overred or is_entried(ga, g.user.id)) %}
                   <form action="{{ url_for('schedule.entry', sid=ga.id) }}" method="post" class="well">
-                    <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
-                    <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
-                    <input class="btn" type="submit" name="action" value="参加しない"></input>
+                    <div class="form-group">
+                      <input class="form-control" type="text" name="comment" placeholder="コメント"></input>
+                    </div>
+                    <div class="form-group">
+                      <input class="btn btn-default btn-primary" type="submit" name="action" value="参加する"></input>
+                      <input class="btn btn-default" type="submit" name="action" value="参加しない"></input>
+                    </div>
                   </form>
                   {% endif %}
                   <table class="table table-bordered">
@@ -135,23 +143,27 @@
             {% endfor %}
           </div>
         </div>
-        <div class="span4">
+        <div class="col-md-4">
           <h2>イベント <small>遊ぶんダ!</small></h2>
-          <div class="accordion" id="events">
+          <div class="panel-group" id="events">
             {% for e in events %}
-            <div class="accordion-group">
-              <div class="accordion-heading">
+            <div class="panel panel-default">
+              <div class="panel-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#events" href="#event{{ e.id }}">
                   {{ e.when_ | dateformat }} {{ e.name }} @{{ e.loc }} ({{ e.entry_count }}人) {% if not g.user.is_registered(e) %}<span class="label label-info">未登録</span>{% endif %}
                 </a>
               </div>
-              <div id="event{{ e.id }}" class="accordion-body collapse">
-                <div class="accordion-inner">
+              <div id="event{{ e.id }}" class="panel-collapse collapse">
+                <div class="panel-body">
                   {% if g.user and (not e.deadline_overred or is_entried(e, g.user.id)) %}
                   <form action="{{ url_for('schedule.entry', sid=e.id) }}" method="post" class="well">
-                    <input type="text" name="comment" class="input-large" placeholder="コメント"></input>
-                    <input class="btn btn-primary" type="submit" name="action" value="参加する"></input>
-                    <input class="btn" type="submit" name="action" value="参加しない"></input>
+                    <div class="form-group">
+                      <input class="form-control" type="text" name="comment" placeholder="コメント"></input>
+                    </div>
+                    <div class="form-group">
+                      <input class="btn btn-default btn-primary" type="submit" name="action" value="参加する"></input>
+                      <input class="btn btn-default" type="submit" name="action" value="参加しない"></input>
+                    </div>
                   </form>
                   {% endif %}
                   <table class="table table-bordered">

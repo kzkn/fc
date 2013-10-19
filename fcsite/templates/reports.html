@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>活動記録</h1>
         <p class="lead">
           こんなことやってます！
@@ -32,20 +32,20 @@
       </div>
 
       <div class="row">
-        <div class="span8">
+        <div class="col-md-8">
           {% for report in reports %}
           <div class="post">
             <div class="row">
-              <div class="feat-img span2">
-                <img src="{{ report.feature_image_url if report.feature_image_url else url_for('static', filename='img/fc-logo.png') }}">
+              <div class="feat-img col-md-3">
+                <img src="{{ report.feature_image_url if report.feature_image_url else url_for('static', filename='img/fc-logo.png') }}" class="img-responsive">
               </div>
-              <div class="span6">
+              <div class="col-md-9">
                 <h2>{{ report.title }}</h2>
                 <div class="post-meta">{{ report.when | datetimeformat }} by {{ report.author_name }}</div>
                 <p>
                   {{ report.description_html | safe }}
                 </p>
-                <p><a href="{{ url_for('general.report', id=report.id) }}" class="btn pull-right">もっと読む</a></p>
+                <p><a href="{{ url_for('general.report', id=report.id) }}" class="btn btn-default pull-right">もっと読む</a></p>
               </div>
             </div>
           </div>
@@ -54,8 +54,8 @@
         {{ report_sidebar(recent_reports, g.user) }}
       </div>
 
-      <div class="pagination pagination-centered">
-        <ul>
+      <div style="text-align: center;">
+        <ul class="pagination">
           <li {% if page == 1 %}class="disabled"{% endif %}>
             <a href="{{ '#' if page == 1 else url_for('general.report_list', page=page-1) }}">&laquo;</a>
           </li>

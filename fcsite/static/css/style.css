@@ -27,11 +27,11 @@ dd.leave {
     color: #b94a48;
 }
 
-.thumbnail {
+.thumbnail-box {
     text-align: center;
 }
 
-.thumbnail .desc {
+.thumbnail-box .desc {
     color: #211922;
     font-size: 11px;
     padding: 0;

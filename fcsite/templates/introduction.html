@@ -2,29 +2,35 @@
 {% extends 'layout.html' %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h2>サークル紹介</h2>
         <p class="lead">
           Fight Club はこんなサークルです。
         </p>
       </div>
       <div class="row">
-        <div class="span12">
+        <div class="col-md-12">
           <dl>
             <dt>メンバー紹介</dt>
             <dd>総メンバー数: 約60名 (男性: 6割、女性: 4割)</dd>
-            <ul class="thumbnails" style="margin-top: 10px;">
-              <li class="span6">
-                <div class="thumbnail">
-                  <img src="{{ url_for('static', filename='img/gasshuku.jpg') }}">
-                </div>
-              </li>
-              <li class="span6 hidden-phone">
-                <div class="thumbnail">
-                  <img src="{{ url_for('static', filename='img/women-doubles.jpg') }}">
-                </div>
-              </li>
-            </ul>
+          </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div href="#" class="thumbnail">
+            <img src="{{ url_for('static', filename='img/gasshuku.jpg') }}">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div href="#" class="thumbnail">
+            <img src="{{ url_for('static', filename='img/women-doubles.jpg') }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <dl>
             <dt>レベル</dt>
             <dd>レベルは初心者から上級者まで幅広くいます。</dd>
             <dt>年齢層</dt>
@@ -34,18 +40,24 @@
               基本的に毎週土日祝日はすべて開催しています。試合やイベントで参加人数が少なくなる日は開催していません。<br>
               Fight Club では初心者の参加を歓迎しています！月に一度、初心者を対象とした基礎練習を開催しています。
             </dd>
-            <ul class="thumbnails" style="margin-top: 10px;">
-              <li class="span6">
-                <div class="thumbnail">
-                  <img src="{{ url_for('static', filename='img/service.jpg') }}">
-                </div>
-              </li>
-              <li class="span6">
-                <div class="thumbnail hidden-phone">
-                  <img src="{{ url_for('static', filename='img/backhand.jpg') }}">
-                </div>
-              </li>
-            </ul>
+          </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div href="#" class="thumbnail">
+            <img src="{{ url_for('static', filename='img/service.jpg') }}">
+          </div>
+        </div>
+        <div class="col-md-6 hidden-sm">
+          <div href="#" class="thumbnail">
+            <img src="{{ url_for('static', filename='img/backhand.jpg') }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <dl>
             <dt>会費等</dt>
             <dd>
               会費の徴収は2パターンありますのでどちらかを選んで頂くことになります。
@@ -76,19 +88,19 @@
                 <li>Tシャツ、ポロシャツ、短パン、パーカー、ジャージ、エプロン等 Fight Club のロゴ入りユニフォームあり！</li>
               </ol>
             </dd>
-            <ul class="thumbnails" style="margin-top: 10px;">
-              <li class="span6">
-                <div class="thumbnail">
-                  <img src="{{ url_for('static', filename='img/uniform.jpg') }}">
-                </div>
-              </li>
-              <li class="span6 hidden-phone">
-                <div class="thumbnail">
-                  <img src="{{ url_for('static', filename='img/kappa.jpg') }}">
-                </div>
-              </li>
-            </ul>
           </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div href="#" class="thumbnail">
+            <img src="{{ url_for('static', filename='img/uniform.jpg') }}">
+          </div>
+        </div>
+        <div class="col-md-6 hidden-sm">
+          <div href="#" class="thumbnail">
+            <img src="{{ url_for('static', filename='img/kappa.jpg') }}">
+          </div>
         </div>
       </div>
 {% endblock %}

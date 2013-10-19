@@ -463,12 +463,12 @@ def delete_saying(id):
 def get_navigation_list(user):
     navs = []
     if user.is_schedule_admin():
-        navs.append(('admin.practice', 'practice', 'icon-calendar', u'活動予定'))
-        navs.append(('admin.practice_history', 'practice_history', 'icon-time', u'過去の活動実績'))
+        navs.append(('admin.practice', 'practice', 'glyphicon-calendar', u'活動予定'))
+        navs.append(('admin.practice_history', 'practice_history', 'glyphicon-time', u'過去の活動実績'))
     if user.is_member_admin():
-        navs.append(('admin.member', 'member', 'icon-user', u'メンバー'))
+        navs.append(('admin.member', 'member', 'glyphicon-user', u'メンバー'))
     if user.is_notice_admin():
-        navs.append(('admin.notice', 'notice', 'icon-info-sign', u'告知'))
+        navs.append(('admin.notice', 'notice', 'glyphicon-info-sign', u'告知'))
     if user.is_admin():
-        navs.append(('admin.saying', 'saying', 'icon-comment', u'名言'))
+        navs.append(('admin.saying', 'saying', 'glyphicon-comment', u'名言'))
     return navs

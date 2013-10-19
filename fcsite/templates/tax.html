@@ -31,7 +31,7 @@
 {% endmacro %}
 
 {% block maincontent %}
-      <div class="subhead visible-desktop">
+      <div class="subhead visible-lg">
         <h1>部費</h1>
         <p class="lead">
           部費の支払い状況一覧です。
@@ -47,50 +47,47 @@
       {% endif %}
 
       <div class="row">
-        <div class="span3">
-          <div class="well" style="padding: 8px;">
-            <ul class="nav nav-list">
-              {% for year in years %}
-              <li{% if year == current_year %} class="active"{% endif %}>
-                <a href="{{ url_for('general.tax_list', year=year) }}">{{ year }} 年</a>
-              </li>
-              {% endfor %}
-            </ul>
+        <div class="col-md-3">
+          <div class="list-group">
+            {% for year in years %}
+            <a class="list-group-item{% if year == current_year %} active{% endif %}"
+               href="{{ url_for('general.tax_list', year=year) }}">{{ year }} 年</a>
+            {% endfor %}
           </div>
         </div>
 
-        <div class="span5">
+        <div class="col-md-5">
           <h3>
             支払い状況 <small>(集金率: {{ '%.2f' % (100 * stat.rate_of_payments()) }}%)</small>
           </h3>
-          <div class="accordion" id="payments-{{ stat.year }}">
+          <div class="panel-group" id="payments-{{ stat.year }}">
             {% for payment in stat.payments %}
             {% set status = payment.status_summary(stat.year) %}
-            <div class="accordion-group">
-              <div class="accordion-heading"
+            <div class="panel panel-default">
+              <div class="panel-heading"
                 {% if status == 1 %} style="background: #FCF8E3;"{% endif -%}
                 {% if status == 2 %} style="background: #F2DEDE;"{% endif %}>
                 <a class="accordion-toggle"
                    data-toggle="collapse"
                    data-parent="#payments-{{ stat.year }}"
                    href="#payments-{{ stat.year }}-{{ payment.user_id }}">
-                   <i class="icon-{%- if status == 0 %}ok{% endif -%}
-                                  {%  if status == 1 %}warning-sign{% endif -%}
-                                  {%  if status == 2 %}remove{% endif -%}"></i>&nbsp;{{ payment.name }}
+                   <i class="glyphicon glyphicon-{%- if status == 0 %}ok{% endif -%}
+                                                 {%  if status == 1 %}warning-sign{% endif -%}
+                                                 {%  if status == 2 %}remove{% endif -%}"></i>&nbsp;{{ payment.name }}
                 </a>
               </div>
-              <div id="payments-{{ stat.year }}-{{ payment.user_id }}" class="accordion-body collapse">
-                <div class="accordion-inner">
+              <div id="payments-{{ stat.year }}-{{ payment.user_id }}" class="panel-collapse collapse">
+                <div class="panel-body">
                   <form action="{{ url_for('general.update_payments', year=stat.year, user_id=payment.user_id) }}" method="post" class="well well-small">
-                    <fieldset style="padding-bottom: 8px;">
+                    <div class="form-group">
                       {% for month, paid in payment.statuses_of_year(stat.year) %}
-                      <label class="checkbox inline">
+                      <label class="checkbox-inline">
                         <input type="checkbox" name="seasons" value="{{ month }}"{% if paid %} checked{% endif %}{% if not is_god() %} onclick="return false;"{% endif %}> {{ month }}
                       </label>
                       {% endfor %}
-                    </fieldset>
+                    </div>
                     {% if is_god() %}
-                    <input class="btn btn-primary" type="submit" value="更新"></input>
+                    <input class="btn btn-default btn-primary" type="submit" value="更新"></input>
                     {% endif %}
                   </form>
                 </div>
@@ -99,20 +96,20 @@
             {% endfor %}
           </div>
         </div>
-        <div class="span4 visible-desktop">
+        <div class="col-md-4 visible-lg">
           <h3>履歴</h3>
           {{ payment_histories_list(stat.year, stat.histories) }}
         </div>
-        <div class="span4 hidden-desktop">
-          <div class="accordion" id="payment-histories-{{ stat.year }}">
-            <div class="accordion-group">
-              <div class="accordion-heading">
+        <div class="col-md-4 hidden-lg">
+          <div class="panel-group" id="payment-histories-{{ stat.year }}" style="margin-top: 20px;">
+            <div class="panel panel-default">
+              <div class="panel-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#payment-histories-{{ stat.year }}" href="#payment-histories-{{ stat.year }}-list">
                   履歴
                 </a>
               </div>
-              <div id="payment-histories-{{ stat.year }}-list" class="accordion-body collapse">
-                <div class="accordion-inner">
+              <div id="payment-histories-{{ stat.year }}-list" class="panel-collapse collapse">
+                <div class="panel-body">
                   {{ payment_histories_list(stat.year, stat.histories) }}
                 </div>
               </div>
