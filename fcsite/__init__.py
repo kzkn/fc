@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 from imp import load_source
 from flask import Flask, Blueprint, g, session, redirect, url_for, request
 
@@ -8,6 +9,8 @@ app = Flask(__name__)
 app.config.from_object('config')
 secret = load_source('secret', app.config['SECRET_FILE'])
 app.config.update(secret.secrets)
+for h in app.logger.handlers:
+    h.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 
 from fcsite import database
 from fcsite.models import users

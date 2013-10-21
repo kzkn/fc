@@ -3,9 +3,10 @@
 import re
 import time
 from datetime import datetime
-from flask import request, flash, get_flashed_messages, url_for
+from flask import request, flash, get_flashed_messages, url_for, g
 from BeautifulSoup import BeautifulSoup, Comment
 from markdown import markdown
+from fcsite import app
 
 
 #############
@@ -235,3 +236,35 @@ def flash_message(category, title, message):
     msgs = get_flashed_messages(category_filter=[category])
     if msg not in msgs:
         flash(msg, category)
+
+
+#############
+# LOGGING
+#############
+
+def logd(msg, *args, **kwargs):
+    if app.config['DEBUG']:
+        app.logger.debug(logmessage(msg), *args, **kwargs)
+
+
+def logi(msg, *args, **kwargs):
+    app.logger.info(logmessage(msg), *args, **kwargs)
+
+
+def logw(msg, *args, **kwargs):
+    app.logger.warning(logmessage(msg), *args, **kwargs)
+
+
+def loge(msg, *args, **kwargs):
+    app.logger.error(logmessage(msg), *args, **kwargs)
+
+
+def logc(msg, *args, **kwargs):
+    app.logger.critical(logmessage(msg), *args, **kwargs)
+
+
+def logmessage(msg):
+    if g.user:
+        return 'uid=%d - %s' % (g.user.id, msg)
+    else:
+        return msg

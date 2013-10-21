@@ -3,6 +3,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, g
 from fcsite.models import schedules as scheds
 from fcsite.auth import requires_login
+from fcsite.utils import logi
 
 mod = Blueprint('schedule', __name__, url_prefix='/schedule')
 
@@ -30,7 +31,9 @@ def entry(sid):
     action = request.form['action']
     comment = request.form['comment']
     if action == u'参加する':
+        logi('entry to sid=%d, uid=%d', sid, g.user.id)
         scheds.do_entry(sid, comment, entry=True)
     elif action == u'参加しない':
+        logi('exit from sid=%d, uid=%d', sid, g.user.id)
         scheds.do_entry(sid, comment, entry=False)
     return redirect(url_for('schedule.schedule'))

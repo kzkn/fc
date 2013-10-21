@@ -14,7 +14,7 @@ from fcsite.models import schedules as scheds
 from fcsite.models import notices
 from fcsite.models import sayings
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
-    check_required, check_in, check_multiple_number
+    check_required, check_in, check_multiple_number, logi
 from fcsite.auth import requires_permission, requires_admin
 
 mod = Blueprint('admin', __name__, url_prefix='/admin')
@@ -220,15 +220,19 @@ def new_schedule(module):
         today = datetime.today()
         return render_template(module['edit_template'], today=today)
     else:
+        moduletype = module['type']
+        logi('new schedule: type=%d', moduletype)
         try:
             module['validate']()
         except ValueError, e:
+            logi('new schedule: validation error type=%d, errors=%s', moduletype, e.errors.keys())
             today = datetime.today()
             return render_template(module['edit_template'], today=today,
                     errors=e.errors)
 
         obj = module['make_obj'](request.form)
-        scheds.insert(module['type'], obj['when'], obj['body'])
+        logi('new schedule: insert type=%d, when=%s, body=%s', moduletype, obj['when'], obj['body'])
+        scheds.insert(moduletype, obj['when'], obj['body'])
         return redirect(url_for(module['index']))
 
 
@@ -237,14 +241,18 @@ def edit_schedule(id, module):
         s = scheds.from_row(scheds.find_by_id(id, with_entry=False))
         return render_template(module['edit_template'], schedule=s)
     else:
+        moduletype = module['type']
+        logi('edit schedule: type=%d, sid=%d', moduletype, id)
         try:
             module['validate']()
         except ValueError, e:
+            logi('edit schedule: validation error type=%d, sid=%d, errors=%s', moduletype, id, e.errors.keys())
             s = scheds.from_row(scheds.find_by_id(id, with_entry=False))
             return render_template(module['edit_template'], schedule=s,
                     errors=e.errors)
 
         obj = module['make_obj'](request.form)
+        logi('edit schedule: update type=%d, sid=%d, when=%s, body=%s', moduletype, id, obj['when'], obj['body'])
         scheds.update(id, obj['when'], obj['body'])
         return redirect(url_for(module['index']))
 
@@ -255,7 +263,10 @@ def delete_schedule(id, module):
         return render_template(module['delete_template'], schedule=s)
     else:
         if is_yes():
+            logi('delete schedule: type=%d, sid=%d', module['type'], id)
             scheds.delete_by_id(id)
+        else:
+            logi('not delete schedule: type=%d, sid=%d', module['type'], id)
         return redirect(url_for(module['index']))
 
 
@@ -319,12 +330,15 @@ def new_member():
     if request.method == 'GET':
         return render_template('admin/edit_member.html')
     else:
+        logi('new member')
         try:
             validate_member()
         except ValueError, e:
+            logi('new member: validation error errors=%s', e.errors.keys())
             return render_template('admin/edit_member.html', errors=e.errors)
 
         u = users.make_obj(request.form)
+        logi('new member: insert name=%s', u.name)
         users.insert(u.name, u.password, u.sex, u.permission)
         return redirect(url_for('admin.member'))
 
@@ -336,14 +350,17 @@ def edit_member(id):
         user = users.find_by_id(id)
         return render_template('admin/edit_member.html', user=user)
     else:
+        logi('edit member')
         try:
             validate_member()
         except ValueError, e:
             user = users.find_by_id(id)
+            logi('edit member: validation error uid=%d', id)
             return render_template('admin/edit_member.html', user=user,
                     errors=e.errors)
 
         u = users.make_obj(request.form, id)
+        logi('edit member: update uid=%d', id)
         users.update(id, u.password, u.sex, u.permission)
 
         if id != g.user.id:
@@ -365,7 +382,10 @@ def delete_member(id):
         return render_template('admin/delete_member.html', user=user)
     else:
         if is_yes():
+            logi('delete member: uid=%d', id)
             users.delete_by_id(id)
+        else:
+            logi('not delete member: uid=%d', id)
         return redirect(url_for('admin.member'))
 
 
@@ -382,9 +402,11 @@ def new_notice():
     if request.method == 'GET':
         return render_template('admin/edit_notice.html')
     else:
+        logi('new notice')
         try:
             validate_notice()
         except ValueError, e:
+            logi('new notice: validation error')
             return render_template('admin/edit_notice.html', errors=e.errors)
 
         n = notices.make_obj(request.form)
@@ -399,14 +421,17 @@ def edit_notice(id):
         notice = notices.find_by_id(id)
         return render_template('admin/edit_notice.html', notice=notice)
     else:
+        logi('edit notice')
         try:
             validate_notice()
         except ValueError, e:
+            logi('edit notice: validation error errors=%s', e.errors.keys())
             notice = notices.find_by_id(id)
             return render_template('admin/edit_notice.html', notice=notice,
                     errors=e.errors)
 
         n = notices.make_obj(request.form)
+        logi('edit notice: update id=%d, begin_show=%s, end_show=%s', id, n['begin_show'], n['end_show'])
         notices.update(id, n['title'], n['begin_show'], n['end_show'],
                 n['body'])
         return redirect(url_for('admin.notice'))
@@ -420,7 +445,10 @@ def delete_notice(id):
         return render_template('admin/delete_notice.html', notice=notice)
     else:
         if is_yes():
+            logi('delete notice: id=%d', id)
             notices.delete_by_id(id)
+        else:
+            logi('not delete notice: id=%d', id)
         return redirect(url_for('admin.notice'))
 
 
@@ -435,9 +463,11 @@ def saying():
 @mod.route('/saying/new', methods=['POST'])
 @requires_permission(users.PERM_ADMIN)
 def new_saying():
+    logi('new saying')
     try:
         validate_saying()
     except ValueError, e:
+        logi('new saying: validation error errors=%s', e.errors.keys())
         (public, private) = sayings.find_all_group_by_publication()
         return render_template('admin/saying.html', public_saying=public,
                 private_saying=private, errors=e.errors)
@@ -445,6 +475,7 @@ def new_saying():
     who = request.form['who']
     body = request.form['body']
     private = 'private' in request.form.getlist('private')
+    logi('new saying: insert who=%s, body=%s, private=%s', who, body, private)
     sayings.insert(who, body, private)
     return redirect(url_for('admin.saying'))
 
@@ -453,6 +484,7 @@ def new_saying():
 @requires_permission(users.PERM_ADMIN)
 def delete_saying(id):
     sayings.delete(id)
+    logi('delete saying: id=%d', id)
     return redirect(url_for('admin.saying'))
 
 

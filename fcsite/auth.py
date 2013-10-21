@@ -3,6 +3,7 @@
 from functools import wraps
 from flask import g, abort, session
 from fcsite.models import users
+from fcsite.utils import logi
 
 
 #############
@@ -48,6 +49,7 @@ def do_login(password):
     if user:
         session['user_id'] = user.id
         session.permanent = True
+
     return True if user else False
 
 

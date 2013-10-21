@@ -4,7 +4,7 @@ from flask import render_template, request, redirect, url_for, abort
 from fcsite import check_forced_registration_blueprint
 from fcsite.models import bbs
 from fcsite.auth import requires_login
-from fcsite.utils import pagination
+from fcsite.utils import pagination, logi
 
 mod = check_forced_registration_blueprint('bbs', __name__, url_prefix='/bbs')
 
@@ -26,6 +26,7 @@ def index(page=1):
 @mod.route('/post', methods=['POST'])
 @requires_login
 def post():
+    logi('bbs post')
     body = request.form['body']
     bbs.post(body)
     return redirect(url_for('bbs.index'))

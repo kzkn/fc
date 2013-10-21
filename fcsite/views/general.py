@@ -14,7 +14,8 @@ from fcsite.models import taxes
 from fcsite.models import reports
 from fcsite.utils import error_message, info_message, check_required, \
         check_in, do_validate, format_date, format_season_action
-from fcsite.utils import sanitize_html, pagination, sanitize_markdown
+from fcsite.utils import sanitize_html, pagination, sanitize_markdown, \
+        logi
 from fcsite.auth import do_login, requires_login, requires_permission
 
 ignores = [(['POST'], re.compile('/login')),
@@ -71,8 +72,10 @@ def login():
     if btn == 'login':
         passwd = request.form['password']
         if do_login(passwd):
+            logi('login successed')
             return redirect(url_for('general.index'))
         else:
+            logi('login failed')
             error_message(u'ログインできません。パスワードが間違っています。')
             return redirect(url_for('general.login'))
     else:
@@ -81,6 +84,7 @@ def login():
 
 @mod.route('/logout')
 def logout():
+    logi('logout')
     session.pop('user_id')
     return redirect(url_for('general.index'))
 
@@ -146,9 +150,11 @@ def post_report(r):
     description = request.form['description']
     body = request.form['body']
     if r:
+        logi('post report: update id=%d', newid)
         r.update(title, feature_image_url, description, body)
         newid = r.id
     else:
+        logi('post report: insert')
         newid = reports.insert(title, feature_image_url, description, body)
     return redirect(url_for('general.report', id=newid))
 
@@ -209,6 +215,7 @@ def join():
     holiday = request.form['holiday']
     experience = request.form['experience']
     comment = request.form['comment']
+    logi('join request: name=%s', name)
     joins.insert(name, home, email, sex, age, car, has_racket, holiday,
             experience, comment)
 
@@ -276,6 +283,7 @@ def tax_list(year=None):
 @requires_permission(users.PERM_ADMIN_GOD)
 def update_payments(year, user_id):
     new_paid_seasons = [int(x) for x in request.form.getlist('seasons')]
+    logi('update payments: uid=%d, year=%d, seasons=%s', user_id, year, new_paid_seasons)
     taxes.update_payments(year, user_id, new_paid_seasons)
     return redirect(url_for('general.tax_list'))
 
