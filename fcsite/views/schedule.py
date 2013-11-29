@@ -34,6 +34,7 @@ def entry(sid):
     is_guest = request.form.get('is-guest', False)
     if is_guest and is_entering_action(action):
         guest_name = request.form['guest-name']
+        logi('guest entry to sid=%d, name=%s', sid, guest_name)
         entries.do_guest_entry(sid, guest_name, comment)
     else:
         if is_entering_action(action):
