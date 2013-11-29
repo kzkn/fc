@@ -1,3 +1,4 @@
+{% from 'macros.html' import guest_name_with_inviter %}
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
@@ -28,6 +29,11 @@
       <input type="submit" name="submit" value="登録"></input>
     </form>
     <ol>
+    {% for gu in schedule.guests %}
+      <font color="blue">
+        <li>参加 {{ guest_name_with_inviter(gu) }} {{ gu.comment }}</li>
+      </font>
+    {% endfor %}
     {% for e in schedule.entries %}
       {% set is_me = e.user_id == user.id %}
       {% if is_me %}

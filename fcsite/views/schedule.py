@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, render_template, redirect, url_for, request, g
+from flask import Blueprint, render_template, redirect, url_for, request, g, abort
 from fcsite.models import schedules as scheds
+from fcsite.models import entries
 from fcsite.auth import requires_login
-from fcsite.utils import logi
+from fcsite.utils import logi, info_message
 
 mod = Blueprint('schedule', __name__, url_prefix='/schedule')
 
@@ -30,10 +31,42 @@ def schedule():
 def entry(sid):
     action = request.form['action']
     comment = request.form['comment']
-    if action == u'参加する':
-        logi('entry to sid=%d, uid=%d', sid, g.user.id)
-        scheds.do_entry(sid, comment, entry=True)
-    elif action == u'参加しない':
-        logi('exit from sid=%d, uid=%d', sid, g.user.id)
-        scheds.do_entry(sid, comment, entry=False)
+    is_guest = request.form.get('is-guest', False)
+    if is_guest and is_entering_action(action):
+        guest_name = request.form['guest-name']
+        entries.do_guest_entry(sid, guest_name, comment)
+    else:
+        if is_entering_action(action):
+            logi('entry to sid=%d, uid=%d', sid, g.user.id)
+            entries.do_entry(sid, comment, entry=True)
+        elif is_leaving_action(action):
+            logi('exit from sid=%d, uid=%d', sid, g.user.id)
+            entries.do_entry(sid, comment, entry=False)
+    return redirect(url_for('schedule.schedule'))
+
+
+def is_entering_action(action):
+    return action == u'参加する'
+
+
+def is_leaving_action(action):
+    return action == u'参加しない'
+
+
+@mod.route('/remove_guest/<int:guest_id>')
+@requires_login
+def remove_guest(guest_id):
+    gu = entries.find_guest_by_id(guest_id)
+    if not gu:
+        logi('not found guest id: %d', guest_id)
+        return abort(404)
+
+    if not entries.has_permission_to_delete_guest(guest_id):
+        logi('no permission to delete guest: %d', guest_id)
+        return abort(403)
+
+    logi('delete guest: %d', guest_id)
+    entries.delete_guest_by_id(guest_id)
+    info_message(message=u'%s の参加表明を取り消しました。' % gu['name'],
+                 title=u'更新ありがとうございます！')
     return redirect(url_for('schedule.schedule'))

@@ -1,0 +1,14 @@
+{% from 'macros.html' import guest_name_with_inviter %}
+
+{% macro entries_list(schedule) %}
+<dl>
+  {% for gu in schedule.guests %}
+  <dt class="enter">{{ guest_name_with_inviter(gu) }}</dt>
+  <dd class="enter">{{ gu.comment }}</dd>
+  {% endfor %}
+  {% for e in schedule.entries %}
+  <dt class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.user_name }}</dt>
+  <dd class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.comment }}</dd>
+  {% endfor %}
+</dl>
+{% endmacro %}

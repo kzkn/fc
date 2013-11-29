@@ -3,6 +3,7 @@
 from functools import wraps
 from flask import Blueprint, request, render_template, abort, redirect
 from fcsite.models import users
+from fcsite.models import entries
 from fcsite.models import schedules as scheds
 from fcsite.models import bbs as bbsmodel
 from fcsite.models import notices
@@ -147,9 +148,9 @@ def entry(schid):
     action = request.form['action']
     comment = request.form['comment']
     if action == u'参加':
-        scheds.do_entry(schid, comment, entry=True)
+        entries.do_entry(schid, comment, entry=True)
     elif action == u'不参加':
-        scheds.do_entry(schid, comment, entry=False)
+        entries.do_entry(schid, comment, entry=False)
     return redirect(request.form['come_from'])
 
 

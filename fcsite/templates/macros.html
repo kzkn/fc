@@ -38,3 +38,7 @@
           </div>
         </div>
 {% endmacro %}
+
+{% macro guest_name_with_inviter(guest) %}
+{{ guest.name }} (招待者: {{ guest.inviter_name }})
+{% endmacro %}

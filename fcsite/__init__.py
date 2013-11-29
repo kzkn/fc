@@ -18,6 +18,7 @@ from fcsite.models import joins
 from fcsite.models import sayings
 from fcsite.models import taxes
 from fcsite.models import schedules as scheds
+from fcsite.models import entries
 from fcsite.utils import request_from_featurephone, request_for_mobile_page, \
         error_message
 
@@ -163,6 +164,8 @@ app.jinja_env.globals['is_entried'] = \
     lambda sched, user_id: scheds.is_entried(sched, user_id)
 app.jinja_env.globals['age_of_fc'] = \
     utils.age_of_fc
+app.jinja_env.globals['has_permission_to_delete_guest'] = \
+    entries.has_permission_to_delete_guest
 
 
 def select_random_saying():

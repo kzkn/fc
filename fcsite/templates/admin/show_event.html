@@ -1,3 +1,4 @@
+{% from 'admin/macros.html' import entries_list %}
 {% extends 'admin/layout_schedule_history.html' %}
 {% set active_tab = 'event' %}
 
@@ -28,12 +29,7 @@
                   </dl>
                 </td>
                 <td>
-                  <dl>
-                    {% for e in schedule.entries %}
-                    <dt class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.user_name }}</dt>
-                    <dd class="{{ 'enter' if e.is_entry else 'leave' }}">{{ e.comment }}</dd>
-                    {% endfor %}
-                  </dl>
+                  {{ entries_list(schedule) }}
                 </td>
               </tr>
             </tbody>

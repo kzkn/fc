@@ -1,9 +1,39 @@
+{% from 'macros.html' import guest_name_with_inviter %}
 {% extends 'layout.html' %}
 {% set active_page = 'schedule' %}
+
+{% macro entry_form(sid, deadline_overred=False) %}
+<form id="entry-form-{{ sid }}" action="{{ url_for('schedule.entry', sid=sid) }}" method="post" class="well">
+  {% if not deadline_overred %}
+  <div class="form-group">
+    <label class="checkbox-inline">
+      <input type="checkbox" class="is-guest-checkbox" name="is-guest" value="true" data-schedule-id="{{ sid }}">ゲスト</input>
+    </label>
+  </div>
+  {% endif %}
+  <div class="form-group">
+    {% if not deadline_overred %}<input class="form-control" type="text" name="guest-name" placeholder="お名前" style="margin-bottom: 8px; display: none;"></input>{% endif %}
+    <input class="form-control" type="text" name="comment" placeholder="コメント"></input>
+  </div>
+  <div class="form-group">
+    <input class="btn btn-default btn-primary" type="submit" name="action" value="参加する"></input>
+    <input id="leave-{{ sid }}" class="btn btn-default" type="submit" name="action" value="参加しない"></input>
+  </div>
+</form>
+{% endmacro %}
 
 {% macro entries_list(schedule, show_payment_status=False) %}
 <h5><i class="glyphicon glyphicon-ok-circle"></i> 参加</h5>
 <dl>
+  {% for gu in schedule.guests %}
+  <dt class="enter">
+    {{ guest_name_with_inviter(gu) }}
+    {%- if has_permission_to_delete_guest(gu.guest_id) %}
+    <a style="margin-left: 5px;" onclick="if (confirm('{{ gu.name }}の参加を取り消しますか？')) { location.href='{{ url_for("schedule.remove_guest", guest_id=gu.guest_id) }}'; } else { return false; }" href="#"><i class="glyphicon glyphicon-remove"></i></a>
+    {%- endif -%}
+  </dt>
+  <dd class="enter">{{ gu.comment }}</dd>
+  {% endfor %}
   {% for e in schedule.entries %}
     {% if e.is_entry %}
     {% set enter_class = 'enter_not_paid' if show_payment_status and not is_paid_tax_for_current_season(e.user_id) else 'enter' %}
@@ -16,8 +46,8 @@
 <dl>
   {% for e in schedule.entries %}
     {% if not e.is_entry %}
-  <dt class="leave">{{ e.user_name }}</dt>
-  <dd class="leave">{{ e.comment }}</dd>
+    <dt class="leave">{{ e.user_name }}</dt>
+    <dd class="leave">{{ e.comment }}</dd>
     {% endif %}
   {% endfor %}
 </dl>
@@ -46,15 +76,7 @@
               <div id="practice{{ p.id }}" class="panel-collapse collapse">
                 <div class="panel-body">
                   {% if g.user %}
-                  <form action="{{ url_for('schedule.entry', sid=p.id) }}" method="post" class="well">
-                    <div class="form-group">
-                      <input class="form-control" type="text" name="comment" placeholder="コメント"></input>
-                    </div>
-                    <div class="form-group">
-                      <input class="btn btn-default btn-primary" type="submit" name="action" value="参加する"></input>
-                      <input class="btn btn-default" type="submit" name="action" value="参加しない"></input>
-                    </div>
-                  </form>
+                  {{ entry_form(p.id) }}
                   {% endif %}
                   <table class="table table-bordered">
                     <tbody>
@@ -98,15 +120,7 @@
               <div id="game{{ ga.id }}" class="panel-collapse collapse">
                 <div class="panel-body">
                   {% if g.user and (not ga.deadline_overred or is_entried(ga, g.user.id)) %}
-                  <form action="{{ url_for('schedule.entry', sid=ga.id) }}" method="post" class="well">
-                    <div class="form-group">
-                      <input class="form-control" type="text" name="comment" placeholder="コメント"></input>
-                    </div>
-                    <div class="form-group">
-                      <input class="btn btn-default btn-primary" type="submit" name="action" value="参加する"></input>
-                      <input class="btn btn-default" type="submit" name="action" value="参加しない"></input>
-                    </div>
-                  </form>
+                  {{ entry_form(ga.id, ga.deadline_overred) }}
                   {% endif %}
                   <table class="table table-bordered">
                     <tbody>
@@ -156,15 +170,7 @@
               <div id="event{{ e.id }}" class="panel-collapse collapse">
                 <div class="panel-body">
                   {% if g.user and (not e.deadline_overred or is_entried(e, g.user.id)) %}
-                  <form action="{{ url_for('schedule.entry', sid=e.id) }}" method="post" class="well">
-                    <div class="form-group">
-                      <input class="form-control" type="text" name="comment" placeholder="コメント"></input>
-                    </div>
-                    <div class="form-group">
-                      <input class="btn btn-default btn-primary" type="submit" name="action" value="参加する"></input>
-                      <input class="btn btn-default" type="submit" name="action" value="参加しない"></input>
-                    </div>
-                  </form>
+                  {{ entry_form(e.id, e.deadline_overred) }}
                   {% endif %}
                   <table class="table table-bordered">
                     <tbody>
@@ -196,4 +202,25 @@
           </div>
         </div>
       </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    (function() {
+      $('.is-guest-checkbox').click(function() {
+        var isGuest = $(this).prop('checked');
+        var sid = $(this).attr('data-schedule-id');
+        var form = $('#entry-form-' + sid);
+        var guestNameForm = form.find('input[name=guest-name]');
+        var leaveButton = form.find('#leave-' + sid);
+        if (isGuest) {
+          guestNameForm.attr('required', 'true').show();
+          leaveButton.hide();
+        } else {
+          guestNameForm.removeAttr('required').hide();
+          leaveButton.show();
+        }
+      });
+    })();
+    </script>
 {% endblock %}

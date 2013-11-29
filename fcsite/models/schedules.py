@@ -6,6 +6,7 @@ from time import strptime
 from datetime import datetime, timedelta
 from flask import g
 from fcsite import models
+from fcsite.models import entries
 from fcsite.utils import sanitize_html
 
 
@@ -32,14 +33,10 @@ def find_future_or_past(type, condition, order):
                Schedule.type,
                Schedule.when_,
                Schedule.body,
-               (SELECT COUNT(*)
-                  FROM Entry
-                 WHERE schedule_id = Schedule.id
-                   AND is_entry) AS entry_count,
-               (SELECT COUNT(*)
-                  FROM Entry
-                 WHERE schedule_id = Schedule.id
-                   AND NOT is_entry) AS not_entry_count
+               ((SELECT COUNT(*) FROM Entry WHERE schedule_id = Schedule.id AND is_entry)
+                +
+                (SELECT COUNT(*) FROM GuestEntry WHERE schedule_id = Schedule.id)) AS entry_count,
+               (SELECT COUNT(*) FROM Entry WHERE schedule_id = Schedule.id AND NOT is_entry) AS not_entry_count
           FROM Schedule
          WHERE type = ?
            AND %s
@@ -47,28 +44,25 @@ def find_future_or_past(type, condition, order):
 
     # Row -> dict for `entries'
     schedules = [dict(r) for r in cur.fetchall()]
+    sids = [s['id'] for s in schedules]
 
-    sids = '(%s)' % ','.join([str(s['id']) for s in schedules])
-    cur.execute("""
-        SELECT User.name AS user_name, Entry.user_id, Entry.schedule_id,
-               Entry.comment, Entry.is_entry
-          FROM Entry, User
-         WHERE User.id = Entry.user_id
-           AND Entry.schedule_id IN %s
-      ORDER BY Entry.schedule_id, Entry.when_ DESC""" % sids)
+    es_by_sch, gs_by_sch = entries.find_by_schedules(sids)
 
-    entries = cur.fetchall()
-
-    if entries:
+    if es_by_sch or gs_by_sch:
         # make schedule-entry tree
         sid2sc = {}
         for s in schedules:
             sid2sc[s['id']] = s
 
-        for sid, es in groupby(entries, lambda e: e['schedule_id']):
+        for sid, es in es_by_sch:
             schedule = sid2sc.get(sid, None)
             if schedule:
                 schedule['entries'] = list(es)
+
+        for sid, gs in gs_by_sch:
+            schedule = sid2sc.get(sid, None)
+            if schedule:
+                schedule['guests'] = list(gs)
 
     return schedules
 
@@ -82,25 +76,11 @@ def find_by_id(sid, with_entry=True):
     schedule = dict(cur.fetchone())
 
     if with_entry:
-        cur.execute("""
-            SELECT User.name AS user_name, Entry.user_id,
-                   Entry.comment, Entry.is_entry
-              FROM Entry, User
-             WHERE User.id = Entry.user_id
-               AND Entry.schedule_id = ?
-          ORDER BY Entry.when_ DESC""", (sid, ))
-
-        entries = cur.fetchall()
-        schedule['entries'] = entries
+        es, gs = entries.find_by_schedule(sid)
+        schedule['entries'] = es
+        schedule['guests'] = gs
 
     return schedule
-
-
-def find_my_entry(sid):
-    cur = models.db().execute("""
-        SELECT COUNT(*) FROM Entry
-        WHERE user_id = ? AND schedule_id = ?""", (models.user().id, sid))
-    return cur.fetchone()[0] > 0
 
 
 def find_non_registered(uid, type):
@@ -109,10 +89,9 @@ def find_non_registered(uid, type):
                Schedule.type AS type,
                Schedule.when_ AS when_,
                Schedule.body AS body,
-               (SELECT COUNT(*)
-                  FROM Entry
-                 WHERE schedule_id = Schedule.id
-                   AND is_entry) AS entry_count
+               ((SELECT COUNT(*) FROM Entry WHERE schedule_id = Schedule.id AND is_entry)
+                +
+                (SELECT COUNT(*) FROM GuestEntry WHERE schedule_id = Schedule.id)) AS entry_count,
           FROM Schedule
                LEFT OUTER JOIN (SELECT *
                                   FROM Entry
@@ -124,24 +103,6 @@ def find_non_registered(uid, type):
         HAVING COUNT(Entry.user_id) = 0
       ORDER BY Schedule.when_""", (uid, type))
     return cur.fetchall()
-
-
-def update_entry(sid, comment, entry):
-    models.db().execute("""
-        UPDATE Entry
-           SET is_entry = ?,
-               comment = ?,
-               when_ = CURRENT_TIMESTAMP
-         WHERE user_id = ?
-           AND schedule_id = ?""", (entry, comment, models.user().id, sid))
-    models.db().commit()
-
-
-def insert_entry(sid, comment, entry):
-    models.db().execute("""
-        INSERT INTO Entry (user_id, schedule_id, is_entry, comment)
-        VALUES (?, ?, ?, ?)""", (models.user().id, sid, entry, comment))
-    models.db().commit()
 
 
 def insert(type, when_, body):
@@ -201,13 +162,6 @@ def from_row(row):
     schedule.update(body)
     schedule['deadline_overred'] = is_deadline_overred(body)
     return schedule
-
-
-def do_entry(sid, comment, entry):
-    if find_my_entry(sid):
-        update_entry(sid, comment, entry)
-    else:
-        insert_entry(sid, comment, entry)
 
 
 def make_practice_obj(form):

@@ -25,3 +25,7 @@ def set_user(user):
 def user():
     global __user
     return __user if __user else g.user
+
+
+def clauses(vals):
+    return '(' + ','.join('?' * len(vals)) + ')'
