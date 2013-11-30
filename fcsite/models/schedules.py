@@ -29,16 +29,15 @@ def find_dones(type):
 
 def find_future_or_past(type, condition, order):
     cur = models.db().execute("""
-        SELECT Schedule.id,
-               Schedule.type,
-               Schedule.when_,
-               Schedule.body,
-               ((SELECT COUNT(*) FROM Entry WHERE schedule_id = Schedule.id AND is_entry)
-                +
-                (SELECT COUNT(*) FROM GuestEntry WHERE schedule_id = Schedule.id)) AS entry_count,
-               (SELECT COUNT(*) FROM Entry WHERE schedule_id = Schedule.id AND NOT is_entry) AS not_entry_count
-          FROM Schedule
+        SELECT Schedule.id AS id,
+               Schedule.type AS type,
+               Schedule.when_ AS when_,
+               Schedule.body AS body,
+               ScheduleEntryCount.entry_count AS entry_count,
+               ScheduleEntryCount.not_entry_count AS not_entry_count
+          FROM Schedule, ScheduleEntryCount
          WHERE type = ?
+           AND Schedule.id = ScheduleEntryCount.schedule_id
            AND %s
       ORDER BY %s""" % (condition, order), (type, ))
 
@@ -89,16 +88,16 @@ def find_non_registered(uid, type):
                Schedule.type AS type,
                Schedule.when_ AS when_,
                Schedule.body AS body,
-               ((SELECT COUNT(*) FROM Entry WHERE schedule_id = Schedule.id AND is_entry)
-                +
-                (SELECT COUNT(*) FROM GuestEntry WHERE schedule_id = Schedule.id)) AS entry_count,
+               ScheduleEntryCount.entry_count AS entry_count,
           FROM Schedule
                LEFT OUTER JOIN (SELECT *
                                   FROM Entry
                                  WHERE user_id = ?) AS Entry ON
-                 Schedule.id = Entry.schedule_id
+                 Schedule.id = Entry.schedule_id,
+               ScheduleEntryCount
          WHERE Schedule.when_ >= datetime('now', 'localtime')
            AND Schedule.type = ?
+           AND Schedule.id = ScheduleEntryCount.schedule_id
       GROUP BY Schedule.id
         HAVING COUNT(Entry.user_id) = 0
       ORDER BY Schedule.when_""", (uid, type))
