@@ -38,10 +38,10 @@ def entry(sid):
         entries.do_guest_entry(sid, guest_name, comment)
     else:
         if is_entering_action(action):
-            logi('entry to sid=%d, uid=%d', sid, g.user.id)
+            logi('entry to sid=%d', sid)
             entries.do_entry(sid, comment, entry=True)
         elif is_leaving_action(action):
-            logi('exit from sid=%d, uid=%d', sid, g.user.id)
+            logi('exit from sid=%d', sid)
             entries.do_entry(sid, comment, entry=False)
     return redirect(url_for('schedule.schedule'))
 
