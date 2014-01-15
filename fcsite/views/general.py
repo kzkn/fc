@@ -150,7 +150,7 @@ def post_report(r):
     description = request.form['description']
     body = request.form['body']
     if r:
-        logi('post report: update id=%d', newid)
+        logi('post report: update id=%d', r.id)
         r.update(title, feature_image_url, description, body)
         newid = r.id
     else:
