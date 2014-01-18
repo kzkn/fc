@@ -1,0 +1,42 @@
+{% extends 'member.html' %}
+{% set active_member_page = 'list' %}
+
+{% macro member_list(members) %}
+{% for m in members %}
+<tr>
+  <td><span{% if m.is_female() %} class="text-danger"{% endif %}>{{ m.name }}</span></td>
+  <td>{{ m.comment | nl2br | safe }}</td>
+</tr>
+{% endfor %}
+{% endmacro %}
+
+{% block subheader %}
+      <div class="subhead visible-lg">
+        <h1>メンバー一覧</h1>
+        <p class="lead">
+          これがファイトクラブの面々です・・・！！
+        </p>
+      </div>
+
+      {% if g.user and not g.user.comment %}
+      <div class="alert alert-block alert-info">
+        <h4 class="alert-heading">一言コメントを書こう!</h4>
+        メンバー表をみんなの一言で埋めつくそう。個人設定から書けるよ。
+      </div>
+      {% endif %}
+{% endblock %}
+
+{% block membercontent %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>一言</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ member_list(males) }}
+              {{ member_list(females) }}
+            </tbody>
+          </table>
+{% endblock %}

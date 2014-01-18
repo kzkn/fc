@@ -16,20 +16,16 @@ def validate_profile():
     do_validate(request.form, validators)
 
 
-@mod.route('/')
-@mod.route('/<int:id>')
-def member(id=None):
+@mod.route('/list')
+def list():
     males, females = users.find_group_by_sex()
-    selected = users.find_by_id(id) if id is not None else None
+    return render_template('member_list.html', males=males, females=females)
 
-    if not selected:
-        if males:
-            selected = males[0]
-        elif females:
-            selected = females[0]
 
-    return render_template('member.html', males=males, females=females,
-                           selected_user=selected)
+@mod.route('/stats')
+def stats():
+    males, females = users.find_group_by_sex()
+    return render_template('member_list.html', males=males, females=females)
 
 
 @mod.route('/profile', methods=['GET', 'POST'])
