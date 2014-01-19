@@ -4,10 +4,12 @@
 
 {% block maincontent %}
       <div class="subhead visible-lg">
-        {% block subheader %}
-        <h1>メンバー</h1>
+        {% block subhead %}
         {% endblock %}
       </div>
+
+      {% block precontent %}
+      {% endblock %}
 
       <div class="row">
         <div class="col-md-3">
@@ -17,19 +19,21 @@
             </div>
             <div class="list-group">
               {% set local_navs = [
-                     ('member.list', 'list', 'glyphicon-user', 'メンバー一覧')
+                     ('member.list', 'list', 'glyphicon-th-list', '一覧', False),
+                     ('member.stats', 'stats', 'glyphicon-stats', '統計', True)
                  ]
               %}
-              {% for view, id, icon, caption in local_navs %}
+              {% for view, id, icon, caption, requires_login in local_navs %}
+              {% if not requires_login or (requires_login and g.user) %}
               {% set is_active = active_member_page == id %}
               <a class="list-group-item{% if is_active %} active{% endif %}" href="{{ url_for(view) }}"><i class="glyphicon {{ icon }}{% if is_active %} glyphicon-white{% endif %}"></i> {{ caption }}</a>
+              {% endif %}
               {% endfor %}
             </div>
           </div>
         </div>
         <div class="col-md-9">
           {% block membercontent %}
-          <!-- ランキング -->
           {% endblock %}
         </div>
       </div>

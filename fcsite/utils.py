@@ -205,6 +205,14 @@ def format_season_action(season, action):
     return season + ' ' + action
 
 
+def format_percentage(n):
+    return '%.2f %%' % (n * 100)
+
+
+def format_countrate(f):
+    return '%d/%d' % (f.numerator, f.denominator)
+
+
 def mobile_url_for(view, **kwargs):
     user_id = kwargs.pop('uid', request.args.get('uid', None))
     session_id = kwargs.pop('sid', request.args.get('sid', None))
@@ -217,6 +225,11 @@ def mobile_url_for(view, **kwargs):
 
 def nl2br(body):
     return body.replace('\n', '<br>')
+
+
+def sortbyrate(users, year):
+    compbyrate = lambda u1, u2: cmp(u2.get_entry_rate(year), u1.get_entry_rate(year))
+    return sorted(users, cmp=compbyrate)
 
 
 #############

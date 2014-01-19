@@ -23,9 +23,9 @@ def list():
 
 
 @mod.route('/stats')
+@requires_login
 def stats():
-    males, females = users.find_group_by_sex()
-    return render_template('member_list.html', males=males, females=females)
+    return render_template('member_stats.html', members=users.find_all())
 
 
 @mod.route('/profile', methods=['GET', 'POST'])

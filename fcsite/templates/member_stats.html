@@ -1,0 +1,44 @@
+{% extends 'member.html' %}
+{% set active_member_page = 'stats' %}
+
+{% macro ranking(year) %}
+<h3>{{ year }} 年</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>名前</th>
+      <th>参加率</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in members | sortbyrate(year) %}
+    {% if m.is_joined_at(year) %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ m.name }}</td>
+      {% set rate = m.get_entry_rate(year) %}
+      <td>{{ rate.percentage() }} ({{ rate.counts() }})</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% block subhead %}
+      <h1>統計</h1>
+      <p class="lead">
+        参加率とかとか。
+      </p>
+{% endblock %}
+
+{% block membercontent %}
+          <h2>参加率ランキング</h2>
+          {{ ranking(2014) }}
+          {{ ranking(2013) }}
+          {#
+          データとしてイマイチだから消しとく
+          {{ ranking(2012) }}
+          #}
+{% endblock %}

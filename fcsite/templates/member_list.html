@@ -10,17 +10,17 @@
 {% endfor %}
 {% endmacro %}
 
-{% block subheader %}
-      <div class="subhead visible-lg">
-        <h1>メンバー一覧</h1>
-        <p class="lead">
-          これがファイトクラブの面々です・・・！！
-        </p>
-      </div>
+{% block subhead %}
+      <h1>メンバー一覧</h1>
+      <p class="lead">
+        これがファイトクラブの面々です・・・！！
+      </p>
+{% endblock %}
 
+{% block precontent %}
       {% if g.user and not g.user.comment %}
       <div class="alert alert-block alert-info">
-        <h4 class="alert-heading">一言コメントを書こう!</h4>
+        <h4 class="alert-heading">一言コメントを書こう！</h4>
         メンバー表をみんなの一言で埋めつくそう。個人設定から書けるよ。
       </div>
       {% endif %}
