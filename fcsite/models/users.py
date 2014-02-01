@@ -1,5 +1,6 @@
 #! -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
 from json import dumps, loads
 from random import randint
 from itertools import groupby
@@ -7,6 +8,7 @@ from sqlite3 import IntegrityError
 from hashlib import sha1
 from fcsite import models
 from fcsite.models import schedules as scheds
+from fcsite.models import stats
 from fcsite.utils import sanitize_html
 
 SEX_MALE = 1
@@ -28,12 +30,15 @@ class User(object):
         self.password = row['password']
         self.sex = row['sex']
         self.permission = row['permission']
+        self.joined = row['joined']
         profile = loads(row['profile'])
         self.email = profile.get('email', '')
         self.home = profile.get('home', '')
         self.car = profile.get('car', '')
         self.comment = profile.get('comment', '')
         self.birthday = profile.get('birthday', '')
+
+        self.entry_rate_cache = dict()
 
     def has_permission(self, permission):
         return (self.permission & permission) == permission
@@ -108,10 +113,26 @@ class User(object):
             (self.id, scheds.TYPE_PRACTICE))
         return cur.fetchone() is not None
 
+    def is_joined_at(self, year):
+        dt = datetime(year + 1, 1, 1) - timedelta(seconds=1)
+        return self.joined < dt
+
+    def get_entry_rate(self, year):
+        r = self.entry_rate_cache.get(year, None)
+        if not r:
+            r = stats.get_practice_entry_rate_of_year(self, year)
+            self.entry_rate_cache[year] = r
+        return r
+
 
 def from_row(row):
     return User(row) if row else {}
 
+
+def find_all():
+    # 特殊ユーザ以外
+    cur = models.db().execute("SELECT * FROM User WHERE id <> -1")
+    return [from_row(r) for r in cur.fetchall()]
 
 def find_by_id(uid):
     cur = models.db().execute('SELECT * FROM User WHERE id = ?', (uid, ))

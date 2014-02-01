@@ -1,72 +1,40 @@
 {% extends 'layout.html' %}
 {% set active_page = 'member' %}
+{% set active_member_page = active_member_page | default('') %}
 
-{% macro member_list() %}
-<div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">男性</h3>
-  </div>
-  <div class="list-group">
-    {% for u in males %}
-    <a class="list-group-item{{ ' active' if selected_user and u.id == selected_user.id else '' }}" href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a>
-    {% endfor %}
-  </div>
-</div>
-<div class="panel panel-danger">
-  <div class="panel-heading">
-    <h3 class="panel-title">女性</h3>
-  </div>
-  <div class="list-group">
-    {% for u in females %}
-    <a class="list-group-item{{ ' active' if selected_user and u.id == selected_user.id else '' }}" href="{{ url_for('member.member', id=u.id) }}">{{ u.name }}</a>
-    {% endfor %}
-  </div>
-</div>
-{% endmacro %}
-
-{% block css %}
-{{ super() }}
-<style>
-  #profile dt {
-    margin-top: 8px;
-  }
-</style>
-{% endblock %}
 {% block maincontent %}
       <div class="subhead visible-lg">
-        <h1>メンバー</h1>
-        <p class="lead">
-          これがファイトクラブの面々です・・・！！
-        </p>
+        {% block subhead %}
+        {% endblock %}
       </div>
 
+      {% block precontent %}
+      {% endblock %}
+
       <div class="row">
-        <div class="col-md-3 hidden-xs">
-          {{ member_list() }}
+        <div class="col-md-3">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">メニュー</h3>
+            </div>
+            <div class="list-group">
+              {% set local_navs = [
+                     ('member.list', 'list', 'glyphicon-th-list', '一覧', False),
+                     ('member.stats', 'stats', 'glyphicon-stats', '統計', True)
+                 ]
+              %}
+              {% for view, id, icon, caption, requires_login in local_navs %}
+              {% if not requires_login or (requires_login and g.user) %}
+              {% set is_active = active_member_page == id %}
+              <a class="list-group-item{% if is_active %} active{% endif %}" href="{{ url_for(view) }}"><i class="glyphicon {{ icon }}{% if is_active %} glyphicon-white{% endif %}"></i> {{ caption }}</a>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div>
         </div>
         <div class="col-md-9">
-          {% if selected_user %}
-          <h2>{{ selected_user.name }}</h2>
-          <dl id="profile" class="dl">
-            <dt>性別</dt>
-            <dd>{{ '男性' if selected_user.sex == 1 else '女性' }}</dd>
-            {% if g.user %}
-            <dt>メールアドレス</dt>
-            <dd>{{ selected_user.email }}</dd>
-            <dt>生年月日</dt>
-            <dd>{{ selected_user.birthday | strdateformat }}</dd>
-            <dt>住まい</dt>
-            <dd>{{ selected_user.home }}</dd>
-            <dt>車</dt>
-            <dd>{{ selected_user.car }}</dd>
-            {% endif %}
-            <dt>一言</dt>
-            <dd>{{ selected_user.comment | nl2br | safe }}</dd>
-          </dl>
-          {% endif %}
-        </div>
-        <div class="col-md-3 visible-xs">
-          {{ member_list() }}
+          {% block membercontent %}
+          {% endblock %}
         </div>
       </div>
 {% endblock %}
