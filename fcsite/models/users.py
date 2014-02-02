@@ -250,6 +250,7 @@ def make_obj(form, id=-9999):
             'password': get_or_gen_password(form),
             'sex': sex_atoi(form['sex']),
             'permission': permission_atoi(form),
+            'joined': datetime.now(),
             'profile': '{}'}
     return User(dummy_row)
 
