@@ -5,7 +5,7 @@
 {% macro error_message(name, errors) %}
   {% if errors and name in errors %}
 <span class="help-block">
-  <span class="label label-important">エラー</span>
+  <span class="label label-danger">エラー</span>
   {{ errors[name] }}
 </span>
   {% endif %}
