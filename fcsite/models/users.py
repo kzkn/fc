@@ -125,6 +125,11 @@ class User(object):
         return r
 
 
+class NotUniquePassword(Exception):
+    def __init__(self):
+        pass
+
+
 def from_row(row):
     return User(row) if row else {}
 
@@ -196,27 +201,57 @@ def do_issue_new_session_id(uid, sid):
              VALUES (?, ?, datetime('now', '+1 month'))""", (uid, sid))
 
 
-def insert(name, password, sex, permission):
-    cursor = models.db().cursor()
-    cursor.execute('''
-        INSERT INTO User (name, password, sex, permission)
-        VALUES (?, ?, ?, ?)''', (name, password, sex, permission))
+def check_unique_password(password, id=None):
+    db = models.db()
+    if id is not None:
+        cnt = db.execute("""
+            SELECT COUNT(*)
+              FROM User
+             WHERE password = ?
+               AND id <> ?""", (password, id)).fetchone()
+    else:
+        cnt = db.execute("""
+            SELECT COUNT(*)
+              FROM User
+             WHERE password = ?""", (password, )).fetchone()
 
-    models.db().commit()
+    if cnt[0] > 0:
+        raise NotUniquePassword()
+
+
+def insert(name, password, sex, permission):
+    check_unique_password(password)
+    try:
+        db = models.db()
+        c = db.cursor()
+        c.execute("""
+            INSERT INTO User (name, password, sex, permission)
+            VALUES (?, ?, ?, ?)""", (name, password, sex, permission))
+        db.commit()
+        return c.lastrowid
+    except IntegrityError, e:
+        raise NotUniquePassword()  # そうとは限らないけど。。。
 
 
 def update(id, password, sex, permission):
-    models.db().execute('''
-        UPDATE User
-           SET password = ?,
-               sex = ?,
-               permission = ?
-         WHERE id = ?''', (password, sex, permission, id))
-    models.db().commit()
+    check_unique_password(password, id)
+    try:
+        db = models.db()
+        db.execute("""
+            UPDATE User
+               SET password = ?,
+                   sex = ?,
+                   permission = ?
+             WHERE id = ?""", (password, sex, permission, id))
+        db.commit()
+    except IntegrityError, e:
+        raise NotUniquePassword()  # そうとは限らないけど。。。
 
 
 def update_profile(id, form):
     password = get_or_gen_password(form)
+    check_unique_password(password, id)
+
     sex = sex_atoi(form['sex'])
     birthday = form['birthday']
     email = form['email']

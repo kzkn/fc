@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from nose.tools import ok_, with_setup
+from nose.tools import ok_, with_setup, raises
 
 from fcsite.models import users
 from tests.models import getdb
@@ -8,6 +8,10 @@ from tests.models import getdb
 
 def setup_module(module):
     getdb().execute("DELETE FROM User")
+
+
+def nop():
+    pass
 
 
 def setup_testdata():
@@ -19,11 +23,7 @@ def setup_testdata():
 
 
 def teardown_testdata():
-    users.delete_by_id(1)
-    users.delete_by_id(2)
-    users.delete_by_id(3)
-    users.delete_by_id(4)
-    users.delete_by_id(5)
+    getdb().execute("DELETE FROM User")
 
 
 @with_setup(setup_testdata, teardown_testdata)
@@ -178,3 +178,31 @@ def test_permission_atoi():
     assert not (p7 & users.PERM_ADMIN_SCHEDULE)
     assert not (p7 & users.PERM_ADMIN_MEMBER)
     assert not (p7 & users.PERM_ADMIN_NOTICE)
+
+
+@with_setup(nop, teardown_testdata)
+def test_returns_lastrowid():
+    lastid = users.insert("xxx",  "xxx", 1, 0x0)
+    lastid2 = users.insert("yyy", "yyy", 1, 0x0)
+    assert lastid != lastid2
+
+
+@with_setup(nop, teardown_testdata)
+@raises(users.NotUniquePassword)
+def test_insert_raise_not_unique_password():
+    users.insert("xxx", "xxx", 1, 0x0)
+    users.insert("yyy", "xxx", 1, 0x0)
+
+
+@with_setup(nop, teardown_testdata)
+@raises(users.NotUniquePassword)
+def test_update_raise_not_unique_password():
+    users.insert("xxx", "xxx", 1, 0x0)
+    yid = users.insert("yyy", "yyy", 1, 0x0)
+    users.update(yid, "xxx", 1, 0x0)
+
+
+@with_setup(nop, teardown_testdata)
+def test_update_not_raise_exception():
+    xid = users.insert("xxx", "xxx", 1, 0x0)
+    users.update(xid, "xxx", 1, 0x0)

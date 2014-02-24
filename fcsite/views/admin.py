@@ -80,6 +80,10 @@ def validate_saying():
     do_validate(request.form, validations)
 
 
+def not_unique_password_error():
+    return dict(password=u'被ってるっぽいので別のにしてください')
+
+
 @mod.route('/')
 @requires_admin
 def index():
@@ -339,8 +343,13 @@ def new_member():
 
         u = users.make_obj(request.form)
         logi('new member: insert name=%s', u.name)
-        users.insert(u.name, u.password, u.sex, u.permission)
-        return redirect(url_for('admin.member'))
+        try:
+            users.insert(u.name, u.password, u.sex, u.permission)
+            return redirect(url_for('admin.member'))
+        except users.NotUniquePassword:
+            logi('not unique password')
+            return render_template('admin/edit_member.html',
+                    errors=not_unique_password_error())
 
 
 @mod.route('/member/edit/<int:id>', methods=['GET', 'POST'])
@@ -361,17 +370,23 @@ def edit_member(id):
 
         u = users.make_obj(request.form, id)
         logi('edit member: update uid=%d', id)
-        users.update(id, u.password, u.sex, u.permission)
+        try:
+            users.update(id, u.password, u.sex, u.permission)
+        except users.NotUniquePassword:
+            user = users.find_by_id(id)
+            logi('not unique password')
+            return render_template('admin/edit_member.html', user=user,
+                    errors=not_unique_password_error())
 
         if id != g.user.id:
             return redirect(url_for('admin.member'))
+        elif u.is_member_admin():
+            return redirect(url_for('admin.member'))
+        elif u.is_admin():
+            return redirect(url_for('admin.index'))
         else:
-            if u.is_member_admin():
-                return redirect(url_for('admin.member'))
-            elif u.is_admin():
-                return redirect(url_for('admin.index'))
-            else:
-                return redirect(url_for('general.index'))
+            return redirect(url_for('general.index'))
+
 
 
 @mod.route('/member/delete/<int:id>', methods=['GET', 'POST'])

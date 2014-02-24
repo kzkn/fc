@@ -201,10 +201,14 @@ def profile():
 
     try:
         validate_profile()
+        id = get_userid()
+        users.update_profile(id, request.form)
     except ValueError, e:
         return render_template('mobile/profile.html', errors=e.errors)
-    id = get_userid()
-    users.update_profile(id, request.form)
+    except users.NotUniquePassword:
+        return render_template('mobile/profile.html',
+                errors=dict(password=u'被ってるっぽいので別のにしてください'))
+
     return redirect(mobile_url_for('mobile.profile'))
 
 

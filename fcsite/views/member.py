@@ -35,8 +35,11 @@ def profile():
         return render_template('profile.html')
     try:
         validate_profile()
+        users.update_profile(g.user.id, request.form)
     except ValueError, e:
         return render_template('profile.html', errors=e.errors)
+    except users.NotUniquePassword:
+        return render_template('profile.html',
+                errors=dict(password=u'被ってるっぽいので別のにしてください'))
 
-    users.update_profile(g.user.id, request.form)
     return redirect(url_for('member.profile'))
