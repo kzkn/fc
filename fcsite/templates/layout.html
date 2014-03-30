@@ -131,7 +131,7 @@
     </nav>
 
     <div class="container">
-      {{ show_notice_messages('error', 'error', error_msgs if error_msgs is defined else []) }}
+      {{ show_notice_messages('error', 'danger', error_msgs if error_msgs is defined else []) }}
       {{ show_notice_messages('info', 'success', info_msgs if info_msgs is defined else []) }}
 
       {% block maincontent %}
