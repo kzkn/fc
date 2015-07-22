@@ -2,6 +2,7 @@
 *.swp
 *.py[co]
 secret.py
+/.env
 
 # Packages
 *.egg
