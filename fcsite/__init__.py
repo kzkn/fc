@@ -169,6 +169,8 @@ app.jinja_env.globals['age_of_fc'] = \
     utils.age_of_fc
 app.jinja_env.globals['has_permission_to_delete_guest'] = \
     entries.has_permission_to_delete_guest
+app.jinja_env.globals['now'] = \
+    lambda: utils.now()
 
 
 def select_random_saying():

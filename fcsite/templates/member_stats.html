@@ -35,10 +35,8 @@
 
 {% block membercontent %}
           <h2>参加率ランキング</h2>
-          {{ ranking(2014) }}
-          {{ ranking(2013) }}
-          {#
-          データとしてイマイチだから消しとく
-          {{ ranking(2012) }}
-          #}
+          {# 2012 年はデータとしてイマイチなので 2013 年まで #}
+          {% for y in range(now().year, 2012, -1) %}
+          {{ ranking(y) }}
+          {% endfor %}
 {% endblock %}

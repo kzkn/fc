@@ -128,6 +128,10 @@ def safe_email(plain_email):
     return plain_email.replace('@', u'あっとまーく')
 
 
+def now():
+    return datetime.now()
+
+
 #############
 # HTML SANITIZER
 #############
