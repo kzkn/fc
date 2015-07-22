@@ -20,8 +20,8 @@ python 2.6 系、または 2.7 系での動作確認は取れています。他�
  3. 以下、コマンドラインにて:
 
         $ git clone リポジトリ fc
-        $ virtualenv env
-        $ . env/bin/activate
+        $ virtualenv .env
+        $ . .env/bin/activate
         $ cd fc
         $ pip install -r requirements.txt
         $ python gensecret.py  # 1回やればOK
