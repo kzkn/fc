@@ -269,14 +269,17 @@ def add_rule():
 @mod.route('/tax_list/<int:year>')
 @requires_login
 def tax_list(year=None):
-    now = datetime.now()
+    years = taxes.years()
     if not year:
-        year = now.year
-    if year < taxes.MINIMUM_YEAR or year > now.year:
-        abort(404)
+        year = datetime.now().year
+        year = year if year in years else years[-1]
+    else:
+        if year not in years:
+            abort(404)
+
     stat = taxes.find_by_year(year)
     return render_template('tax.html',
-            stat=stat, current_year=year, years=reversed(taxes.years()))
+            stat=stat, current_year=year, years=reversed(years))
 
 
 @mod.route('/update_payments/<int:year>/<int:user_id>', methods=['POST'])

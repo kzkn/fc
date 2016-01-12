@@ -5,11 +5,11 @@ from datetime import datetime
 from flask import g
 from fcsite import models
 
-MINIMUM_YEAR = 2012
-
 
 def years():
-    return range(MINIMUM_YEAR, datetime.now().year + 1)
+    ys = range(2012, 2016)  # 2012-2015
+    # 2016 年以降は練習時のみの徴収
+    return ys
 
 
 def seasons():
@@ -138,6 +138,10 @@ def update_payments(year, user_id, new_paid):
 def is_paid_tax_for_current_season(user_id):
     now = datetime.now()
     year = now.year
+    if year not in years():
+        # 月単位支払いでない年の場合は常に支払い済みとする
+        return True
+
     season = now.month
     ret = models.db().execute("""
         SELECT COUNT(user_id)
