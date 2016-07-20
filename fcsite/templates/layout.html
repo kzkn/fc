@@ -1,13 +1,4 @@
 {% set active_page = active_page | default('') -%}
-{#-
-  bootstrap.min.css, bootstrap.min.js, style.css, script.js を更新
-  したら、それぞれに対応する以下のバージョン番号も変更すること。値は
-  なんでもいい。
--#}
-{% set bootstrap_css_version = '7819743891346' -%}
-{% set bootstrap_js_version = '1347857179002' -%}
-{% set style_css_version = '5121341469022' -%}
-{% set script_js_version = '3413417589311' -%}
 
 {%- macro show_notice_messages(category, class, direct_msgs) %}
   {% with msgs = get_flashed_messages(category_filter=[category]) %}
@@ -35,7 +26,7 @@
     {% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') + '?ver=' + bootstrap_css_version }}" media="screen">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" media="screen">
     <style>
       body {
           padding-top: 70px;
@@ -46,7 +37,7 @@
           font-size: 15px;
       }
     </style>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') + '?ver=' + style_css_version }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block css %}
     {% endblock %}
 
@@ -149,8 +140,8 @@
     <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/libs/jquery-1.9.1.min.js') }}"><\/script>')</script>
     <script src="{{ url_for('static', filename='js/libs/jquery.ah-placeholder.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') + '?ver=' + bootstrap_js_version }}"></script>
-    <script src="{{ url_for('static', filename='js/script.js') + '?ver=' + script_js_version }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     {% block script %}
     {% endblock %}
   </body>
