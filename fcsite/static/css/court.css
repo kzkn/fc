@@ -1,0 +1,86 @@
+.short-place-name {
+  margin-left: 10px;
+  width: 4.5em;
+}
+
+.court-table {
+#  background-color: #F8F8F8;
+#  margin: 1em;
+}
+.date {
+#  background-color: #E0E0E0;
+#  margin: 1em;
+  margin-top: 5px;
+  margin-right: 5px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.place {
+#  background-color: #C8C8C8;
+#  margin: 1em;
+}
+.place-name {
+#  background-color: #B0B0B0;
+#  margin: 1em;
+  margin-bottom: 5px;
+  display: inline-block;
+  vertical-align: top;
+  width: 16em;
+#  border-top: solid thin #D8D8D8;
+}
+.courts {
+#  background-color: #989898;
+#  margin: 1em;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.court {
+#  background-color: #808080;
+#  margin: 1em;
+}
+.court-name {
+#  background-color: #686868;
+#  margin: 1em;
+  display: inline-block;
+  vertical-align: top;
+  width: 4em;
+#  border-top: solid thin #D8D8D8;
+}
+.term {
+#  background-color: MistyRose;
+#  margin: 1em;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.hour {
+  float: left;
+  width: 1.5em;
+  border-top: solid thin #D8D8D8;
+  border-left: solid thin #D8D8D8;
+  text-align: center;
+}
+.hour:last-child {
+  border-right: solid thin #D8D8D8;
+}
+.court:last-child .hour {
+  border-bottom: solid thin #D8D8D8;
+}
+
+.reserved {
+  background-color: #f5f5f5;
+}
+.available {
+  color: white;
+  background-color: #5bc0de;
+}
+.available2 {
+  color: white;
+  background-color: #337ab7;
+}
+.available3 {
+  color: white;
+  background-color: #5cb85c;
+}

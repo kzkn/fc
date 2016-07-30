@@ -1,0 +1,77 @@
+{% extends 'admin/layout.html' %}
+{% set active_admin_page = 'court' %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/court.css') }}">
+{% endblock %}
+
+{% block admincontent %}
+          <h2 style="margin-bottom: 19px;">コート検索</h2>
+
+          <form id="param">
+          <div class="form-group">
+            <label>表示対象コート</label>
+            <div id="display_target_div" >
+              <label class="checkbox-inline" style="margin-left: 10px;">
+                <input type="checkbox" id="displayAvailable2" checked />
+                連続 2 時間以上予約可能
+              </label>
+              <label class="checkbox-inline" style="margin-left: 10px;">
+                <input type="checkbox" id="displayAvailable" checked />
+                1 時間予約可能
+              </label>
+              <label class="checkbox-inline" style="margin-left: 10px;">
+                <input type="checkbox" id="displayReserved" checked />
+                予約済み
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>コート</label>
+            <div id="blds_div">
+              <label class="checkbox-inline short-place-name">
+                <input type="checkbox" id="bldCdsAll" />全て
+              </label>
+              {% for bld in blds %}
+              <label name="placeLabel" class="checkbox-inline short-place-name">
+                <input type="checkbox" name="bldCds" value="{{ bld['bldCd'] }}" />{{ bld['place'] }}
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>曜日</label>
+            <div id="days_div">
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="0" />月</label>
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="1" />火</label>
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="2" />水</label>
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="3" />木</label>
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="4" />金</label>
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="5" checked />土</label>
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="6" checked />日</label>
+              <label class="checkbox-inline" style="margin-left: 10px;"><input type="checkbox" name="days" value="7" checked />祝</label>
+            </div>
+          </div>
+          </form>
+
+          <div style="margin-bottom: 19px;">
+            <a id="search_button" class="btn btn-primary btn-block" href="javascript: void(0)" onclick="search_court('{{ url_for('admin.search_court') }}', 0, '')">検索</a>
+            <a id="cancel_button" class="btn btn-danger btn-block" href="javascript: void(0)" onclick="cancel()" style="display: none">キャンセル</a>
+          </div>
+          <div id="status_panel" style="display: none;">
+            <div id="status" class="alert alert-info" role="alert"></div>
+            <div id="progress" class="progress progress-striped active">
+              <div id="progressbar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                <span id="progressbar_sr" class="sr-only">0%</span>
+              </div>
+            </div>
+          </div>
+          <div id="court_table" class="court-table"></div>
+{% endblock %}
+
+{% block script %}
+  <script src="{{ url_for('static', filename='js/court.js') }}"></script>
+{% endblock %}
+
