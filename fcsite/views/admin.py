@@ -8,9 +8,10 @@ except ImportError:
     from ordereddict import OrderedDict  # NOQA
 
 from flask import Blueprint, request, render_template, redirect, url_for, g, \
-    abort
+    abort, jsonify
 from fcsite.models import users
 from fcsite.models import schedules as scheds
+from fcsite.models import court as crt
 from fcsite.models import notices
 from fcsite.models import sayings
 from fcsite.utils import do_validate, check_date, check_time, check_number, \
@@ -149,6 +150,17 @@ def event_history():
     es = [scheds.from_row(s) for s in scheds.find_dones(scheds.TYPE_EVENT)]
     ys, es = schedules_group_by_year(es)
     return render_template('admin/event_history.html', years=ys, events=es)
+
+
+@mod.route('/court')
+@requires_permission(users.PERM_ADMIN_SCHEDULE)
+def court():
+    return render_template('admin/court.html', blds=crt.get_blds())
+
+
+@mod.route('/search_court', methods=['GET', 'POST'])
+def search_court():
+    return jsonify(crt.search(request.json))
 
 
 def schedules_group_by_year(schedules):
@@ -512,6 +524,7 @@ def get_navigation_list(user):
     if user.is_schedule_admin():
         navs.append(('admin.practice', 'practice', 'glyphicon-calendar', u'活動予定'))
         navs.append(('admin.practice_history', 'practice_history', 'glyphicon-time', u'過去の活動実績'))
+        navs.append(('admin.court', 'court', 'glyphicon-search', u'コート検索'))
     if user.is_member_admin():
         navs.append(('admin.member', 'member', 'glyphicon-user', u'メンバー'))
     if user.is_notice_admin():
