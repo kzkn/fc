@@ -6,6 +6,7 @@ import json
 import re
 import requests
 from BeautifulSoup import BeautifulSoup
+from fcsite.utils import logd
 
 charset = 'Shift_JIS'
 
@@ -49,7 +50,7 @@ def get_blds():
 def search(json):
 	urlWeb = 'https://www.comnet-fukuoka.jp/web/'
 	urlTail = '.do;jsessionid='
-	print('json: ' + str(json))
+	logd('json: ' + str(json))
 	jsessionid = json['jsessionid']
 	s = requests.Session()
 
@@ -91,7 +92,7 @@ def search(json):
 	for day in days:
 		if (day == '1'):
 			activeDaysCount += 1
-	#print('activeDaysCount: ' + str(activeDaysCount) + ', days: ' + str(days))
+	#logd('activeDaysCount: ' + str(activeDaysCount) + ', days: ' + str(days))
 	r = post(s, urlWeb + 'rsvWGetInstSrchInfAction' + urlTail + jsessionid, False, {
 		'displayNo': 'prwbb7000',
 		'selectAreaCd': '0',
@@ -147,14 +148,14 @@ def search(json):
 				continue
 			dates[di]['courts'].extend(date2['courts'])
 	#printPlace2dates(place2dates)
-	#print(json.dumps(place2dates, sort_keys = True, indent = 2, ensure_ascii = False))
+	#logd(json.dumps(place2dates, sort_keys = True, indent = 2, ensure_ascii = False))
 	#with codecs.open('comnet.json', 'w', 'utf-8') as out:
 	#	json.dump(place2dates, out, sort_keys = True, indent = 2, ensure_ascii = False)
 	return { 'jsessionid': jsessionid, 'bldCd': bldCd, 'place': place, 'dates': dates }
 
 def search2(json):
 	bldCd = json['bldCd']
-	print('bldCd: ' + bldCd)
+	logd('bldCd: ' + bldCd)
 	if bldCd == '':
 		bldCd = bldCds[0]
 
@@ -169,36 +170,36 @@ def search2(json):
 			return { 'bldCd': bldCd, 'place': place, 'dates': place2dates[place] }
 
 def get(s, url):
-	print(url + ':')
+	logd(url + ':')
 	r = s.get(url)
 	#printResponse(r)
 
 def post(s, url, shouldPrint, param):
-	print(url)
+	logd(url)
 	r = s.post(url, data = param)
 	if shouldPrint:
 		printResponse(r)
 	return r
 
 def printResponse(r):
-	print('encoding: ' + r.encoding)
-	print('cookies: ' + str(r.cookies))
-	print()
+	logd('encoding: ' + r.encoding)
+	logd('cookies: ' + str(r.cookies))
+	logd()
 	
-	print('cookies:')
+	logd('cookies:')
 	c = r.cookies.items()
 	for k, v in c:
-		print(k + ': ' + v)
-	print()
+		logd(k + ': ' + v)
+	logd()
 	
-	print('content:')
-	print(r.content.decode(charset))
+	logd('content:')
+	logd(r.content.decode(charset))
 
 def toJson(r):
 	soup = BeautifulSoup(r.content.decode(charset))
 	placeTag = soup.find('font', { 'size': '+1' })
 	place = placePattern.match(placeTag.text).group(1)
-	#print('place: [' + place + '], placeTag: ' + str(placeTag))
+	#logd('place: [' + place + '], placeTag: ' + str(placeTag))
 
 	dates = []
 	table = soup.find('table', { 'border': '2' })
@@ -212,19 +213,19 @@ def toJson(r):
 			if ri == 0:
 				date = td.text.strip()
 				dates.append({ 'date': date, 'courts': [] })
-				#print('date: ' + date)
+				#logd('date: ' + date)
 				continue
 			courtIndex = ri - 1
 			if ci == 0:
 				courtName = td.text.strip()
-				#print('court: ' + courtName)
+				#logd('court: ' + courtName)
 				for date in dates:
 					date['courts'].append({ 'name': courtName, 'states': [] })
 				continue
 			dateIndex = ci - 1
 			states = dates[dateIndex]['courts'][courtIndex]['states']
 			termsText = td.text
-			#print('td: [' + termsText + ']')
+			#logd('td: [' + termsText + ']')
 			terms = termPattern.findall(termsText)
 			for i, img in enumerate(td.findAll('img')):
 				reservable = re.search(r'lw_emptybs\.gif', img['src'])
@@ -233,16 +234,16 @@ def toJson(r):
 
 def printPlace2dates(place2dates):
 	for place in sorted(place2dates.keys()):
-		print(place + ': {')
+		logd(place + ': {')
 		for date in place2dates[place]:
-			print('  ' + date['date'] + ': {')
+			logd('  ' + date['date'] + ': {')
 			for court in date['courts']:
-				print('    ' + court['name'] + ': {')
+				logd('    ' + court['name'] + ': {')
 				for state in court['states']:
-					print('      ' + state['term'] + ': ' + str(state['reservable']))
-				print('    }')
-			print('  }')
-		print('}')
+					logd('      ' + state['term'] + ': ' + str(state['reservable']))
+				logd('    }')
+			logd('  }')
+		logd('}')
 
 if __name__ == '__main__':
 	search()
