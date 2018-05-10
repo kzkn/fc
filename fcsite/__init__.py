@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
+import os
 import logging
 from imp import load_source
 from flask import Flask, Blueprint, g, session, redirect, url_for, request
@@ -13,6 +15,12 @@ for h in app.logger.handlers:
     h.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 
 from fcsite import database
+
+if os.environ.get('FLASK_ENV') == 'production':
+    import evolutions
+    evolutions.apply_script(app.config['DATABASE_URI'], 'schema')
+    database.initialize()
+
 from fcsite.models import users
 from fcsite.models import joins
 from fcsite.models import sayings
@@ -47,6 +55,12 @@ def handle_forbidden(e):
 
 @app.before_request
 def before_request():
+    # TODO: この条件は後で消す
+    if os.environ.get('FLASK_ENV') == 'production':
+        if re.match(r'^/newfc', request.path):
+            path = request.path[len('/newfc'):]
+            return redirect(path, code=301)
+
     g.db = database.connect_db()
     if 'user_id' in session:
         g.user = users.find_by_id(session.get('user_id'))
