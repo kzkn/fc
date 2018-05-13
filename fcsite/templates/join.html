@@ -19,11 +19,6 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          {{ anchored_header('募集要項', 'desc') }}
-          <p>
-            こんな人がいいなぁ。
-          </p>
-          {{ anchored_header('応募フォーム', 'form') }}
           <form action="{{ url_for('general.join') }}" method="post" class="well">
             <div class="form-group row">
               <div class="col-lg-4">
@@ -55,6 +50,7 @@
                 <select class="form-control" name="sex">
                   <option selected>男性</option>
                   <option>女性</option>
+                  <option>キッズ</option>
                 </select>
               </div>
             </div>

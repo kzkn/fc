@@ -29,7 +29,7 @@ def validate_join_request():
     validators['name'] = [check_required]
     validators['home'] = [check_required]
     validators['email'] = [check_required]
-    validators['sex'] = [check_required, check_in(u'男性', u'女性')]
+    validators['sex'] = [check_required, check_in(u'男性', u'女性', u'キッズ')]
     validators['age'] = [check_required, check_in('18-20', '21-23', '24-26',
         '27-29', '30-32', '33-35', '36-38', '39-41', '42-')]
     validators['car'] = [check_required, check_in(u'あり', u'なし')]
