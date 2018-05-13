@@ -129,7 +129,7 @@ class User(object):
         db = models.db()
         db.execute("""
             UPDATE User
-               SET logged_in = CURRENT_TIMESTAMP
+               SET logged_in = datetime('now', 'localtime')
              WHERE id = ?""", (self.id, ))
         db.commit()
 
