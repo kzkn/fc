@@ -31,6 +31,7 @@ class User(object):
         self.sex = row['sex']
         self.permission = row['permission']
         self.joined = row['joined']
+        self.logged_in = row['logged_in']
         profile = loads(row['profile'])
         self.email = profile.get('email', '')
         self.home = profile.get('home', '')
@@ -124,6 +125,13 @@ class User(object):
             self.entry_rate_cache[year] = r
         return r
 
+    def update_logged_in(self):
+        db = models.db()
+        db.execute("""
+            UPDATE User
+               SET logged_in = CURRENT_TIMESTAMP
+             WHERE id = ?""", (self.id, ))
+        db.commit()
 
 class NotUniquePassword(Exception):
     def __init__(self):

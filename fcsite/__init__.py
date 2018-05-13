@@ -69,6 +69,9 @@ def before_request():
     else:
         g.user = None
 
+    if g.user:
+        g.user.update_logged_in()
+
     if request_from_featurephone() and not request_for_mobile_page():
         return redirect(
                 url_for('mobile.index') +

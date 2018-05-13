@@ -180,19 +180,23 @@ def sanitize_markdown(markdown_text):
 #############
 
 def format_datetime_full(dt):
-    return dt.strftime('%Y-%m-%d(%a) %H:%M').decode('utf8')
+    return _format(dt, '%Y-%m-%d(%a) %H:%M')
 
 
 def format_datetime(dt):
-    return dt.strftime('%m-%d(%a) %H:%M').decode('utf8')
+    return _format(dt, '%m-%d(%a) %H:%M')
 
 
 def format_date(dt):
-    return dt.strftime('%m-%d(%a)').decode('utf8')
+    return _format(dt, '%m-%d(%a)')
 
 
 def format_time(dt):
-    return dt.strftime('%H:%M').decode('utf8')
+    return _format(dt, '%H:%M')
+
+
+def _format(dt, pattern):
+    return (dt and dt.strftime(pattern).decode('utf8')) or '-'
 
 
 def format_date_str(s):
