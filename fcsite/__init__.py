@@ -120,15 +120,6 @@ def check_forced_registration_blueprint(name, import_name, **kwargs):
 # VIEWS
 #############
 
-@app.route('/update', methods=['POST'])
-def update():
-    from subprocess import Popen, PIPE
-    proc = Popen(app.config['UPDATE_SCRIPT'], shell=True,
-            stdout=PIPE, stderr=PIPE, close_fds=True)
-    print ''.join(proc.communicate())
-    return 'ok'
-
-
 @app.route('/message')
 def message():
     return redirect(url_for('general.index'))
