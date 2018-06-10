@@ -11,6 +11,8 @@ from fcsite.models import schedules as scheds
 from fcsite.models import stats
 from fcsite.utils import sanitize_html
 
+SPECIAL_USER = -1
+
 SEX_MALE = 1
 SEX_FEMALE = 2
 
@@ -144,7 +146,7 @@ def from_row(row):
 
 def find_all():
     # 特殊ユーザ以外
-    cur = models.db().execute("SELECT * FROM User WHERE id <> -1")
+    cur = models.db().execute("SELECT * FROM User WHERE id <> ?", (SPECIAL_USER, ))
     return [from_row(r) for r in cur.fetchall()]
 
 def find_by_id(uid):
@@ -153,19 +155,19 @@ def find_by_id(uid):
 
 
 def find_by_password(password):
-    # 特殊ユーザ (id=-1) はログインさせないように無視する
-    cur = models.db().execute('SELECT * FROM User WHERE password = ? AND id <> -1',
-                       (password, ))
+    # 特殊ユーザはログインさせないように無視する
+    cur = models.db().execute('SELECT * FROM User WHERE password = ? AND id <> ?',
+                       (password, SPECIAL_USER))
     return from_row(cur.fetchone())
 
 
 def find_group_by_sex():
-    # 特殊ユーザ (id=-1) は一覧上に表示させないように無視する
+    # 特殊ユーザは一覧上に表示させないように無視する
     users = models.db().execute('''
         SELECT *
           FROM User
-         WHERE id <> -1
-      ORDER BY sex, id''').fetchall()
+         WHERE id <> ?
+      ORDER BY sex, id''', (SPECIAL_USER, )).fetchall()
     bysex = {}
     for sex, us in groupby(users, lambda u: u['sex']):
         bysex[sex] = [from_row(u) for u in us]
@@ -283,8 +285,11 @@ def update_profile(id, form):
 
 
 def delete_by_id(id):
-    models.db().execute('DELETE FROM User WHERE id = ?', (id, ))
-    models.db().commit()
+    db = models.db()
+    db.execute('UPDATE TaxPaymentHistory SET user_id = ? WHERE user_id = ?', (SPECIAL_USER, id))
+    db.execute('UPDATE TaxPaymentHistory SET updater_user_id = ? WHERE updater_user_id = ?', (SPECIAL_USER, id))
+    db.execute('DELETE FROM User WHERE id = ?', (id, ))
+    db.commit()
 
 
 def make_obj(form, id=-9999):
