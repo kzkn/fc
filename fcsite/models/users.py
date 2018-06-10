@@ -299,6 +299,7 @@ def make_obj(form, id=-9999):
             'sex': sex_atoi(form['sex']),
             'permission': permission_atoi(form),
             'joined': datetime.now(),
+            'logged_in': None,
             'profile': '{}'}
     return User(dummy_row)
 
