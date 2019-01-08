@@ -2,10 +2,7 @@
 
 from datetime import datetime
 from itertools import groupby
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict  # NOQA
+from collections import OrderedDict
 
 from flask import Blueprint, request, render_template, redirect, url_for, g, \
     abort, jsonify
