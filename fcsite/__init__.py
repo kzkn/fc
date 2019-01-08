@@ -81,6 +81,16 @@ def before_request():
         request.charset = 'Shift_JIS'
 
 
+@app.before_request
+def redirect_jp_to_in():
+    if request.host == 'thefightclub.jp':
+        if g.user:
+            url = 'http://fightclub.in/forcelogin?k=%s' % g.user.password
+        else:
+            url = 'http://fightclub.in/'
+        return redirect(url, code=301)
+
+
 @app.after_request
 def after_request(response):
     if request_for_mobile_page():

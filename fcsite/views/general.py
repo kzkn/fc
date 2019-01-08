@@ -312,3 +312,15 @@ def tax_histories(year, page):
     begin = (page - 1) * TAX_HISTORIES_STEP
     hists = taxes.find_histories(year, begin, TAX_HISTORIES_STEP)
     return json.dumps([history_to_dict(h) for h in hists])
+
+
+@mod.route('/forcelogin')
+def forcelogin():
+    passwd = request.args.get('k')
+    if do_login(passwd):
+        logi('login successed')
+        return redirect(url_for('general.index'))
+    else:
+        logi('login failed')
+        error_message(u'ログインできません。パスワードが間違っています。')
+        return redirect(url_for('general.login'))
